@@ -1,6 +1,13 @@
-# STAT 312 Interactive Quiz Generator
+# STAT 312 Interactive Quiz Generator 
 
 Interactive concept quizzes and computational practice tools for STAT 312 students.
+
+## 👨‍🏫 Author & Course Info
+
+* **Developed by:** [Byung-Jun Kim](https://sites.google.com/)
+* **Department:** Department of Mathematics, Applied Mathematics, and Statistics
+* **Institution:** Case Western Reserve University
+* **Course:** STAT 312 (Basic Statistics for Engineering and Science)
 
 ## 🚀 Quick Access Links
 
