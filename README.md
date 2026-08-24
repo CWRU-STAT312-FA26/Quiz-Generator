@@ -4,7 +4,7 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 
 ## 👨‍🏫 Author & Course Info
 
-* **Developed by:** [Byung-Jun Kim](https://sites.google.com/)
+* **Developed by:** [Byung-Jun Kim](https://sites.google.com/view/byungjunkim/home)
 * **Department:** Department of Mathematics, Applied Mathematics, and Statistics
 * **Institution:** Case Western Reserve University
 * **Course:** STAT 312 (Basic Statistics for Engineering and Science)
