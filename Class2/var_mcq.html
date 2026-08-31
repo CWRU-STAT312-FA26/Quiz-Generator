@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STAT 312 - Types of Variables Quiz</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #0984e3;
+      --bg: #f5f6fa;
+      --card-bg: #ffffff;
+      --correct: #00b894;
+      --wrong: #d63031;
+      --text: #2d3436;
+      --border: #dfe6e9;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 24px;
+    }
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .header h2 {
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+    .header p {
+      margin-top: 0;
+      color: #636e72;
+    }
+    .nav-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 26px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      border-left: 5px solid var(--accent);
+      margin-bottom: 20px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .topic-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+    .progress-tracker {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #636e72;
+      background: #f1f2f6;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    .scenario-box {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+    }
+    .step-section {
+      margin-bottom: 24px;
+      padding: 16px;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .step-title {
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-badge {
+      background: var(--primary);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 600px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .opt-btn {
+      padding: 14px 16px;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+      transition: all 0.2s ease;
+    }
+    .opt-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #f0f8ff;
+    }
+    .opt-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    .opt-btn.correct-choice {
+      background: #e8f8f5;
+      border-color: var(--correct);
+      color: #008f72;
+    }
+    .opt-btn.wrong-choice {
+      background: #fdeaea;
+      border-color: var(--wrong);
+      color: #b32a2a;
+    }
+    .mini-feedback {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+    }
+    #step2 {
+      display: none;
+      border-color: var(--accent);
+      background: #f8fbff;
+    }
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-next {
+      padding: 10px 22px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s ease;
+      display: none;
+    }
+    .btn-next:hover {
+      background: #1a252f;
+    }
+    .final-feedback {
+      margin-top: 15px;
+      padding: 16px 20px;
+      border-radius: 6px;
+      display: none;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .final-feedback.correct {
+      background: #e8f8f5;
+      color: #008f72;
+      border-left: 4px solid var(--correct);
+    }
+    .final-feedback.wrong {
+      background: #fdeaea;
+      color: #b32a2a;
+      border-left: 4px solid var(--wrong);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="https://cwru-stat312-fa26.github.io/Quiz-Generator/" class="nav-link">← Back to Overview</a>
+    
+    <div class="header">
+      <h2>STAT 312: Types of Variables</h2>
+      <p>Interactive 2-Step Quiz (Broad vs. Specific Types)</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="topic-badge" id="qBadge">Topic</div>
+        <div class="progress-tracker" id="progressText">1 / 10</div>
+      </div>
+      
+      <div class="scenario-box" id="scenarioBox">Loading scenario...</div>
+
+      <!-- Step 1: Broad Category -->
+      <div class="step-section" id="step1">
+        <div class="step-title"><span class="step-badge">Step 1</span> Is this variable Qualitative or Quantitative?</div>
+        <div class="options-grid">
+          <button class="opt-btn step1-btn" onclick="checkStep1('Qualitative variable (categorical variable)')">Qualitative variable (categorical variable)</button>
+          <button class="opt-btn step1-btn" onclick="checkStep1('Quantitative variable (numerical variable)')">Quantitative variable (numerical variable)</button>
+        </div>
+        <div class="mini-feedback" id="step1-fb"></div>
+      </div>
+
+      <!-- Step 2: Specific Category -->
+      <div class="step-section" id="step2">
+        <div class="step-title"><span class="step-badge">Step 2</span> Now, be more specific. Which subtype is it?</div>
+        <div class="options-grid" id="step2-options">
+          <!-- Populated dynamically based on correct broad type -->
+        </div>
+        <div class="final-feedback" id="final-fb"></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const originalQuizPool = [
+      {
+        tag: "Manufacturing Tolerances",
+        scenario: "A mechanical engineer logs the <strong>standardized drill bit sizes</strong> used in a CNC machine. The available sizes are strictly in fractional increments: 1/16 inch, 5/64 inch, 3/32 inch, etc. No intermediate fractional sizes are manufactured.",
+        broad: "Quantitative variable (numerical variable)",
+        specific: "Discrete variable",
+        exp: "<strong>Misconception Alert!</strong> Even though the values are fractions (1/16), this is a <strong>Discrete variable</strong>. The sizes are restricted to distinct, separated values with fixed steps. A drill bit cannot be 1.0532/16 inches."
+      },
+      {
+        tag: "Financial Engineering",
+        scenario: "A financial analyst records the daily closing prices of a tech stock in US Dollars (e.g., $150.25, $150.26). The stock exchange strictly limits price movements to increments of exactly one cent ($0.01).",
+        broad: "Quantitative variable (numerical variable)",
+        specific: "Discrete variable",
+        exp: "<strong>Misconception Alert!</strong> Currency is a <strong>Discrete variable</strong>. Although written as a decimal, money is counted in distinct, indivisible minimum units (cents). A stock price cannot be $150.254 on this exchange."
+      },
+      {
+        tag: "Ergonomics & Design",
+        scenario: "A textile engineer documents the <strong>standard shoe sizes</strong> (e.g., 7.5, 8.0, 8.5, 9.0) issued to cleanroom workers to track inventory volume.",
+        broad: "Quantitative variable (numerical variable)",
+        specific: "Discrete variable",
+        exp: "<strong>Misconception Alert!</strong> Shoe sizes involve decimals (half sizes), but they form a <strong>Discrete variable</strong>. You can count the exact possible sizes, and there is no such thing as a size 8.12 shoe."
+      },
+      {
+        tag: "IT & Systems",
+        scenario: "An IT administrator logs the <strong>HTTP status error codes</strong> generated by a web server. The codes recorded are 404 (Not Found), 500 (Internal Server Error), and 502 (Bad Gateway).",
+        broad: "Qualitative variable (categorical variable)",
+        specific: "Nominal variable",
+        exp: "<strong>Misconception Alert!</strong> Even though they look like numbers, these codes do not measure a quantity. They are purely categorical labels for distinct types of errors with no mathematical ranking, making it a <strong>Nominal variable</strong>."
+      },
+      {
+        tag: "Fluid Dynamics",
+        scenario: "A chemical engineer monitors the <strong>exact volume of chemical solvent (in mL)</strong> dispensed into a beaker. The highly sensitive sensor records values such as 25.432 mL.",
+        broad: "Quantitative variable (numerical variable)",
+        specific: "Continuous variable",
+        exp: "Volume is a measurable physical quantity that can take on any real value (infinitely many intermediate points) along a continuum, depending entirely on the precision of the measuring instrument. Thus, it is a <strong>Continuous variable</strong>."
+      },
+      {
+        tag: "Civil Engineering",
+        scenario: "A structural inspector rates the <strong>damage level of buildings</strong> post-earthquake using a classification system: None, Minor, Moderate, Severe, and Total.",
+        broad: "Qualitative variable (categorical variable)",
+        specific: "Ordinal variable",
+        exp: "The damage levels describe a quality rather than a measured numerical amount, but they possess a clear, inherent ranking or hierarchy (None < Minor < Moderate...). Therefore, it is an <strong>Ordinal variable</strong>."
+      },
+      {
+        tag: "Quality Control",
+        scenario: "An electronics inspector counts the <strong>number of defective pixels</strong> on newly manufactured 4K LCD monitors. Observations include 0, 1, 2, or 3 defective pixels per screen.",
+        broad: "Quantitative variable (numerical variable)",
+        specific: "Discrete variable",
+        exp: "The data represents a measured quantity obtained strictly by counting. Since you cannot have 1.5 defective pixels, the values are distinct whole numbers, making it a <strong>Discrete variable</strong>."
+      },
+      {
+        tag: "Networking & Hardware",
+        scenario: "A systems engineer logs the <strong>type of network topology</strong> used across different server clusters: Star, Ring, Mesh, or Bus.",
+        broad: "Qualitative variable (categorical variable)",
+        specific: "Nominal variable",
+        exp: "The topologies represent mutually exclusive groups with no natural ordering, ranking, or numerical value. This is a classic <strong>Nominal variable</strong>."
+      },
+      {
+        tag: "Materials Science",
+        scenario: "A materials scientist records the <strong>maximum tensile strength (in MPa)</strong> required to snap braided carbon fiber cables before failure. The testing machine logs values like 845.67 MPa.",
+        broad: "Quantitative variable (numerical variable)",
+        specific: "Continuous variable",
+        exp: "Tensile strength is a physical force measured along an unbroken scale. The value can theoretically be broken down into infinitely smaller decimals depending on sensor precision. It is a <strong>Continuous variable</strong>."
+      },
+      {
+        tag: "Human Factors Engineering",
+        scenario: "Operators rate the <strong>usability of a new control dashboard</strong> using a 5-point Likert scale: 1 (Very Difficult), 2, 3, 4, 5 (Very Easy).",
+        broad: "Qualitative variable (categorical variable)",
+        specific: "Ordinal variable",
+        exp: "<strong>Misconception Alert!</strong> Although numbers (1 to 5) are used, they do not represent measurable quantitative amounts with equal intervals. They represent ranked, subjective categories. Therefore, this is an <strong>Ordinal variable</strong>."
+      }
+    ];
+
+    let shuffledPool = [];
+    let currentIndex = 0;
+    let currentQ = null;
+    let step1Done = false;
+    let step2Done = false;
+
+    // Fisher-Yates Shuffle Function
+    function shuffleArray(array) {
+      let cur = array.length, rand;
+      while (cur != 0) {
+        rand = Math.floor(Math.random() * cur);
+        cur--;
+        [array[cur], array[rand]] = [array[rand], array[cur]];
+      }
+      return array;
+    }
+
+    function initQuiz() {
+      shuffledPool = shuffleArray([...originalQuizPool]);
+      currentIndex = 0;
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      currentQ = shuffledPool[currentIndex];
+      step1Done = false;
+      step2Done = false;
+
+      // Update Header & Tracker
+      document.getElementById('qBadge').innerText = `Topic: ${currentQ.tag}`;
+      document.getElementById('progressText').innerText = `${currentIndex + 1} / ${shuffledPool.length}`;
+      document.getElementById('scenarioBox').innerHTML = currentQ.scenario;
+
+      // Reset Step 1
+      const step1Btns = document.querySelectorAll('.step1-btn');
+      step1Btns.forEach(btn => {
+        btn.disabled = false;
+        btn.className = 'opt-btn step1-btn';
+      });
+      const step1Fb = document.getElementById('step1-fb');
+      step1Fb.style.display = 'none';
+
+      // Hide Step 2 & Reset Feedback/Next Button
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('final-fb').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'none';
+    }
+
+    function checkStep1(selected) {
+      if (step1Done) return;
+      step1Done = true;
+
+      const isCorrect = (selected === currentQ.broad);
+      const btns = document.querySelectorAll('.step1-btn');
+      
+      btns.forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText === currentQ.broad) {
+          btn.classList.add('correct-choice');
+        } else if (btn.innerText === selected && !isCorrect) {
+          btn.classList.add('wrong-choice');
+        }
+      });
+
+      const fb = document.getElementById('step1-fb');
+      if (isCorrect) {
+        fb.style.color = 'var(--correct)';
+        fb.innerHTML = '✓ Correct! Now proceed to Step 2.';
+      } else {
+        fb.style.color = 'var(--wrong)';
+        fb.innerHTML = `✗ Incorrect. This is a <strong>${currentQ.broad}</strong>. Now proceed to Step 2 to find its specific subtype.`;
+      }
+      fb.style.display = 'block';
+
+      // Setup and reveal Step 2 based on the TRUE broad type
+      setupStep2(currentQ.broad);
+    }
+
+    function setupStep2(broadType) {
+      const s2Container = document.getElementById('step2-options');
+      s2Container.innerHTML = ''; // Clear previous
+
+      let options = [];
+      if (broadType === 'Qualitative variable (categorical variable)') {
+        options = ['Nominal variable', 'Ordinal variable'];
+      } else {
+        options = ['Discrete variable', 'Continuous variable'];
+      }
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn step2-btn';
+        btn.innerText = opt;
+        btn.onclick = () => checkStep2(opt);
+        s2Container.appendChild(btn);
+      });
+
+      document.getElementById('step2').style.display = 'block';
+    }
+
+    function checkStep2(selected) {
+      if (step2Done) return;
+      step2Done = true;
+
+      const isCorrect = (selected === currentQ.specific);
+      const btns = document.querySelectorAll('.step2-btn');
+
+      btns.forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText === currentQ.specific) {
+          btn.classList.add('correct-choice');
+        } else if (btn.innerText === selected && !isCorrect) {
+          btn.classList.add('wrong-choice');
+        }
+      });
+
+      const fb = document.getElementById('final-fb');
+      fb.className = 'final-feedback ' + (isCorrect ? 'correct' : 'wrong');
+      fb.innerHTML = (isCorrect ? '<strong>✓ Spot on!</strong><br>' : `<strong>✗ Incorrect. (Correct subtype: ${currentQ.specific})</strong><br>`) + currentQ.exp;
+      fb.style.display = 'block';
+
+      // Next / Restart Button
+      const nextBtn = document.getElementById('nextBtn');
+      if (currentIndex === shuffledPool.length - 1) {
+        nextBtn.innerText = "Restart Quiz ↻";
+      } else {
+        nextBtn.innerText = "Next Question →";
+      }
+      nextBtn.style.display = 'block';
+    }
+
+    function nextQuestion() {
+      if (currentIndex < shuffledPool.length - 1) {
+        currentIndex++;
+        loadQuestion();
+      } else {
+        initQuiz();
+      }
+    }
+
+    window.onload = function() {
+      initQuiz();
+    };
+  </script>
+</body>
+</html>

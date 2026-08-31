@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STAT 312 - Graphs & Data Visualization Quiz</title>
+  <!-- MathJax 3 for rendering mathematical symbols -->
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --primary: #4834d4;
+      --accent: #686de0;
+      --bg: #f1f2f6;
+      --card-bg: #ffffff;
+      --correct: #2ed573;
+      --wrong: #ff4757;
+      --text: #2f3542;
+      --border: #dcdde1;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 24px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .header h2 {
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+    .header p {
+      margin-top: 0;
+      color: #57606f;
+    }
+    .nav-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 26px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border-left: 5px solid var(--primary);
+      margin-bottom: 20px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .topic-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+    .progress-tracker {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #57606f;
+      background: #f1f2f6;
+      padding: 5px 12px;
+      border-radius: 15px;
+    }
+    .scenario-box {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 18px 22px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+    }
+    .viz-container {
+      background: #ffffff;
+      padding: 15px;
+      border: 1px solid #ced6e0;
+      border-radius: 6px;
+      font-family: "Courier New", Courier, monospace;
+      margin: 15px 0;
+      width: fit-content;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .opt-btn {
+      padding: 14px 18px;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--text);
+      text-align: left;
+      transition: all 0.2s ease;
+      line-height: 1.4;
+    }
+    .opt-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #f4f5fc;
+    }
+    .opt-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+    .opt-btn.correct-choice {
+      background: #e8f8f0;
+      border-color: var(--correct);
+      color: #1e7e48;
+      font-weight: 600;
+    }
+    .opt-btn.wrong-choice {
+      background: #ffebee;
+      border-color: var(--wrong);
+      color: #b71524;
+      font-weight: 600;
+    }
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .btn-next {
+      padding: 12px 24px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.2s ease;
+      display: none;
+    }
+    .btn-next:hover {
+      background: #341f97;
+    }
+    .feedback {
+      margin-top: 20px;
+      padding: 16px 22px;
+      border-radius: 8px;
+      display: none;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .feedback.correct {
+      background: #e8f8f0;
+      color: #1e7e48;
+      border-left: 4px solid var(--correct);
+    }
+    .feedback.wrong {
+      background: #ffebee;
+      color: #b71524;
+      border-left: 4px solid var(--wrong);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="https://cwru-stat312-fa26.github.io/Quiz-Generator/" class="nav-link">← Back to Overview</a>
+    
+    <div class="header">
+      <h2>STAT 312: Statistical Graphs & Visualization</h2>
+      <p>Interactive Self-Assessment Quiz (10 Questions)</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="topic-badge" id="qBadge">Topic</div>
+        <div class="progress-tracker" id="progressText">1 / 10</div>
+      </div>
+      
+      <div class="scenario-box" id="scenarioBox">Loading scenario...</div>
+
+      <div class="options-grid" id="optionsGrid">
+        <!-- Options populated dynamically -->
+      </div>
+
+      <div class="feedback" id="feedbackBox"></div>
+
+      <div class="controls">
+        <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const originalQuizPool = [
+      {
+        tag: "Box Plot: Outlier Fences",
+        scenario: "A dataset of structural stress tests has a First Quartile (\\(Q_1\\)) of 45 MPa and a Third Quartile (\\(Q_3\\)) of 75 MPa. Any value above the <strong>Upper Inner Fence</strong> is considered a potential outlier.<br><br>What is the value of the Upper Fence?",
+        options: [
+          "90 MPa",
+          "105 MPa",
+          "120 MPa",
+          "150 MPa"
+        ],
+        correct: "120 MPa",
+        exp: "1. Find the Interquartile Range (IQR): \\(IQR = Q_3 - Q_1 = 75 - 45 = 30\\).<br>2. Calculate the Upper Fence: \\(Q_3 + (1.5 \\times IQR) = 75 + (1.5 \\times 30) = 75 + 45 = 120\\) MPa."
+      },
+      {
+        tag: "Stem-and-Leaf Plot: Reading Data",
+        scenario: "Consider the following stem-and-leaf plot for the number of defects found in daily production batches:<br><div class='viz-container'>Stem | Leaf<br>&nbsp;&nbsp;0&nbsp;&nbsp;| 2 5<br>&nbsp;&nbsp;1&nbsp;&nbsp;| 0 4 4 8<br>&nbsp;&nbsp;2&nbsp;&nbsp;| 1 3</div><em>Key: 1 | 4 means 14 defects.</em><br><br>What is the <strong>Sample Median (\\(\\tilde{x}\\))</strong> number of defects?",
+        options: [
+          "10",
+          "12",
+          "14",
+          "18"
+        ],
+        correct: "14",
+        exp: "The sorted dataset is: 2, 5, 10, 14, 14, 18, 21, 23. There are \\(n = 8\\) observations. The median is the average of the 4th and 5th values: \\(\\frac{14 + 14}{2} = 14\\)."
+      },
+      {
+        tag: "Histogram vs. Bar Chart",
+        scenario: "An engineer wants to display the distribution of <strong>continuous</strong> breaking strengths (in kg) of 500 steel cables.<br><br>Why should they use a <strong>Frequency Histogram</strong> rather than a Bar Chart?",
+        options: [
+          "A histogram separates bars with gaps to show distinct qualitative categories.",
+          "A histogram uses contiguous bars (no gaps) to represent continuous numerical class intervals.",
+          "A bar chart cannot have a y-axis representing frequency or relative frequency.",
+          "A histogram is strictly designed for discrete count data, not continuous data."
+        ],
+        correct: "A histogram uses contiguous bars (no gaps) to represent continuous numerical class intervals.",
+        exp: "Histograms represent continuous numerical data, so the bars touch to show an unbroken, continuous scale (bins). Bar charts are for categorical data, so they have gaps between discrete categories."
+      },
+      {
+        tag: "Box Plot: 5-Number Summary",
+        scenario: "In a standard Box Plot (Box-and-Whisker Plot), a central box is drawn with whiskers extending outward. A thick vertical line is drawn <strong>inside the central box</strong>.<br><br>Which part of the 5-number summary does this thick line represent?",
+        options: [
+          "Sample Mean (\\(\\bar{x}\\))",
+          "First Quartile (\\(Q_1\\))",
+          "Sample Median (\\(\\tilde{x}\\))",
+          "Maximum Value"
+        ],
+        correct: "Sample Median (\\(\\tilde{x}\\))",
+        exp: "The central box spans from the First Quartile (\\(Q_1\\)) to the Third Quartile (\\(Q_3\\)). The thick line inside the box always represents the <strong>Sample Median</strong> (the 50th percentile)."
+      },
+      {
+        tag: "Interpreting Distribution Shape",
+        scenario: "A histogram showing the lifetime of industrial lightbulbs reveals a massive peak on the right side (around 1000 hours), with a long, thin tail extending far to the left (down to 200 hours).<br><br>What is the shape of this distribution?",
+        options: [
+          "Symmetric (Bell-shaped)",
+          "Right-Skewed (Positively Skewed)",
+          "Left-Skewed (Negatively Skewed)",
+          "Bimodal"
+        ],
+        correct: "Left-Skewed (Negatively Skewed)",
+        exp: "Skewness is dictated by the direction of the \"tail,\" not the peak. Because the long tail points to the left (lower values), the distribution is <strong>Left-Skewed</strong>. In this shape, the mean is typically pulled lower than the median."
+      },
+      {
+        tag: "Visualizing Proportions",
+        scenario: "A manufacturing plant wants to visualize the proportion of total production defects caused by four distinct assembly lines (A, B, C, D). The percentages add up to exactly 100%.<br><br>Which graph is best suited for showing these <strong>parts of a whole</strong>?",
+        options: [
+          "Frequency Histogram",
+          "Box Plot",
+          "Stem-and-Leaf Plot",
+          "Pie Chart"
+        ],
+        correct: "Pie Chart",
+        exp: "A Pie Chart is ideal for categorical data when the primary goal is to show how a total amount is divided into proportional slices (parts of a whole)."
+      },
+      {
+        tag: "Histogram Interpretation",
+        scenario: "A frequency histogram of curing times (in hours) has the following contiguous bins and frequencies:<br><ul><li>[10, 20) hours : 5 batches</li><li>[20, 30) hours : 12 batches</li><li>[30, 40) hours : 8 batches</li></ul><br>How many batches took <strong>20 hours or more</strong> to cure?",
+        options: [
+          "12 batches",
+          "20 batches",
+          "25 batches",
+          "8 batches"
+        ],
+        correct: "20 batches",
+        exp: "Batches taking 20 hours or more fall into the [20, 30) bin and the [30, 40) bin. Adding those frequencies: 12 + 8 = 20 batches."
+      },
+      {
+        tag: "Box Plot: Interpreting Spread (IQR)",
+        scenario: "Two Box Plots, representing the battery life of Brand X and Brand Y laptops, are placed side-by-side. The \"box\" portion for Brand X is much wider than the \"box\" for Brand Y.<br><br>What does this visually indicate?",
+        options: [
+          "Brand X has a higher maximum overall battery life.",
+          "Brand Y has more variability in the middle 50% of its data.",
+          "Brand X has a larger Interquartile Range (IQR), indicating greater variability in the middle 50% of its data.",
+          "Brand X definitively has a higher median battery life."
+        ],
+        correct: "Brand X has a larger Interquartile Range (IQR), indicating greater variability in the middle 50% of its data.",
+        exp: "The width of the box in a box plot represents the Interquartile Range (\\(IQR = Q_3 - Q_1\\)), which measures the spread of the middle 50% of the dataset. A wider box means greater variability in that central core of data."
+      },
+      {
+        tag: "Stem-and-Leaf Plot Advantage",
+        scenario: "Both Stem-and-Leaf plots and Histograms group numerical data into intervals. However, what is a unique advantage of using a <strong>Stem-and-Leaf Plot</strong> for smaller datasets?",
+        options: [
+          "It can easily plot and organize categorical (qualitative) data.",
+          "It preserves and displays the exact original numerical values of the dataset.",
+          "It automatically hides outliers to make the distribution look more symmetric.",
+          "It eliminates the need to sort the data."
+        ],
+        correct: "It preserves and displays the exact original numerical values of the dataset.",
+        exp: "Unlike a histogram where individual data points are \"lost\" inside the bins (you only see counts), a stem-and-leaf plot uses the actual digits of the data, allowing you to completely reconstruct the original raw dataset."
+      },
+      {
+        tag: "Misleading Data Visualization",
+        scenario: "A bar chart comparing the efficiency of two algorithms shows Algorithm A's bar appearing twice as tall as Algorithm B's bar. However, the y-axis (efficiency score) starts at 90 instead of 0. Algorithm A scored 96, and B scored 93.<br><br>What is the primary issue with this graph?",
+        options: [
+          "The graph is perfectly fine; starting at 90 saves space and improves readability.",
+          "Bar charts should always be used for continuous data, not discrete scores.",
+          "A truncated y-axis violates the area principle, visually exaggerating a small absolute difference into a massive relative difference.",
+          "The x and y axes are swapped, confusing the independent and dependent variables."
+        ],
+        correct: "A truncated y-axis violates the area principle, visually exaggerating a small absolute difference into a massive relative difference.",
+        exp: "Starting a bar chart's y-axis above zero (a truncated axis) is highly misleading. It violates the principle of proportional areas, causing a minor difference (96 vs 93) to look like a 100% improvement."
+      }
+    ];
+
+    let shuffledPool = [];
+    let currentIndex = 0;
+    let answered = false;
+
+    // Fisher-Yates Shuffle Function
+    function shuffleArray(array) {
+      let cur = array.length, rand;
+      while (cur != 0) {
+        rand = Math.floor(Math.random() * cur);
+        cur--;
+        [array[cur], array[rand]] = [array[rand], array[cur]];
+      }
+      return array;
+    }
+
+    function initQuiz() {
+      shuffledPool = shuffleArray([...originalQuizPool]);
+      currentIndex = 0;
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      answered = false;
+      const currentQ = shuffledPool[currentIndex];
+
+      // Update Header & Tracker
+      document.getElementById('qBadge').innerText = `${currentQ.tag}`;
+      document.getElementById('progressText').innerText = `${currentIndex + 1} / ${shuffledPool.length}`;
+      document.getElementById('scenarioBox').innerHTML = currentQ.scenario;
+
+      // Shuffle Options
+      const shuffledOptions = shuffleArray([...currentQ.options]);
+      const optionsContainer = document.getElementById('optionsGrid');
+      optionsContainer.innerHTML = '';
+
+      shuffledOptions.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.innerHTML = opt;
+        btn.onclick = () => checkChoice(opt, btn);
+        optionsContainer.appendChild(btn);
+      });
+      
+      // Reset Feedback & Next Button
+      const fb = document.getElementById('feedbackBox');
+      fb.style.display = 'none';
+      fb.className = 'feedback';
+      fb.innerHTML = '';
+      document.getElementById('nextBtn').style.display = 'none';
+
+      if (window.MathJax) {
+        MathJax.typesetPromise([document.getElementById('scenarioBox'), optionsContainer]);
+      }
+    }
+
+    function checkChoice(selected, btnElement) {
+      if (answered) return;
+      answered = true;
+
+      const currentQ = shuffledPool[currentIndex];
+      const isCorrect = (selected === currentQ.correct);
+      const fb = document.getElementById('feedbackBox');
+      const allBtns = document.querySelectorAll('.opt-btn');
+
+      // Highlight options
+      allBtns.forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerHTML === currentQ.correct) {
+          btn.classList.add('correct-choice');
+        } else if (btn === btnElement && !isCorrect) {
+          btn.classList.add('wrong-choice');
+        }
+      });
+
+      // Show Feedback
+      fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+      fb.innerHTML = (isCorrect ? '<strong>✓ Correct!</strong><br>' : '<strong>✗ Incorrect.</strong><br>') + currentQ.exp;
+      fb.style.display = 'block';
+
+      // Show Next / Restart Button
+      const nextBtn = document.getElementById('nextBtn');
+      if (currentIndex === shuffledPool.length - 1) {
+        nextBtn.innerText = "Restart Quiz ↻";
+      } else {
+        nextBtn.innerText = "Next Question →";
+      }
+      nextBtn.style.display = 'block';
+
+      if (window.MathJax) {
+        MathJax.typesetPromise([fb]);
+      }
+    }
+
+    function nextQuestion() {
+      if (currentIndex < shuffledPool.length - 1) {
+        currentIndex++;
+        loadQuestion();
+      } else {
+        initQuiz(); // Loop back to start
+      }
+    }
+
+    window.onload = function() {
+      initQuiz();
+    };
+  </script>
+</body>
+</html>

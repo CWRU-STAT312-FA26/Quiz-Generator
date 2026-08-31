@@ -1,0 +1,68 @@
+---
+title: "README"
+subtitle: "Interactive Practice Quizzes & Module Overview"
+author: "Byung-Jun Kim"
+format: html
+---
+
+## Overview
+
+Welcome to the self-assessment portal for **Class 2 (Introduction to Statistics)**. This module is designed to reinforce your foundational understanding of data scale type, variable type, and statistical graphs.
+
+The practice material is divided into three focused interactive quiz modules:
+
+::: {.callout-note appearance="simple"}
+### 📋 Module Structure
+
+1.  **Module 1:** Types of Data Scales (*Multiple-Choice*)
+2.  **Module 2:** Types of Variables (*Multiple-Choice*)
+3.  **Module 3:** Data Visualization (*Multiple-Choice*)
+:::
+
+------------------------------------------------------------------------
+## Quiz Modules
+
+::: panel-tabset
+### Module 1: Types of Data Scales
+
+- **Format:** Multiple-Choice Scenario Questions
+- **Topics Covered:**
+  - Nominal Scale
+  - Ordinal Scale
+  - Interval Scale
+  - Ratio Scale
+- **Goal:** Identify the correct measurement scale based on engineering and real-world scenarios.
+
+[👉 Launch Module 1: Data Scales Quiz](scale_mcq.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Module 2: Types of Variables
+
+- **Format:** 2-Step Interactive Multiple-Choice Questions
+- **Topics Covered:**
+  - Broad Classification: Qualitative (Categorical) vs. Quantitative (Numerical)
+  - Specific Subtypes: Nominal, Ordinal, Discrete, and Continuous
+  - Clarifying Misconceptions (e.g., discrete variables that use fractional or decimal values)
+- **Goal:** Accurately classify variable types through a step-by-step logical process.
+
+[👉 Launch Module 2: Types of Variables Quiz](var_mcq.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Module 3: Statistical Graphs & Data Visualization
+
+- **Format:** Multiple-Choice Questions
+- **Topics Covered:**
+  - Box Plots (5-Number Summary, IQR, and Outlier Fences)
+  - Stem-and-Leaf Plots (Reconstructing raw data, finding median)
+  - Histograms vs. Bar Charts (Continuous vs. discrete/categorical bins)
+  - Pie Charts (Visualizing proportions)
+  - Interpreting Distribution Shapes (Left/Right Skewness)
+  - Identifying Misleading Data Visualizations (e.g., truncated axes)
+- **Goal:** Interpret statistical graphics, deduce summary statistics from plots, and understand visualization best practices.
+
+[👉 Launch Module 3: Data Visualization Quiz](dv_mcq.html){.btn .btn-outline-primary .btn-sm role="button"}
+:::
+------------------------------------------------------------------------
+
+## Instructions for Students
+
+1.  **Self-Paced Practice:** These interactive quizzes are designed for self-study and concept verification. You can attempt them as many times as you like.
+2.  **Questions & Feedback:** If you encounter unexpected results or need further conceptual clarification, bring your questions to class or office hours!

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STAT 312 - Scales of Measurement Quiz</title>
+  <!-- MathJax 3 -->
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --primary: #1e3799;
+      --accent: #4a69bd;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --correct: #2ed573;
+      --wrong: #ff4757;
+      --text: #2f3542;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 24px;
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .header h2 {
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+    .header p {
+      margin-top: 0;
+      color: #57606f;
+    }
+    .nav-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 26px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      border-left: 5px solid var(--primary);
+      margin-bottom: 20px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .topic-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+    .progress-tracker {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #747d8c;
+      background: #f1f2f6;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    .scenario-box {
+      background: #f1f2f6;
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      border: 1px solid #dcdde1;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 600px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .opt-btn {
+      padding: 14px 16px;
+      background: #ffffff;
+      border: 2px solid #ced6e0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+    .opt-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #f1f5fa;
+    }
+    .opt-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+    .opt-btn.correct-choice {
+      background: #e8f8f0;
+      border-color: var(--correct);
+      color: #1e7e48;
+    }
+    .opt-btn.wrong-choice {
+      background: #ffebee;
+      border-color: var(--wrong);
+      color: #b71524;
+    }
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-next {
+      padding: 10px 22px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s ease;
+      display: none; /* 정답을 고르기 전까지 숨김 */
+    }
+    .btn-next:hover {
+      background: var(--primary);
+    }
+    .feedback {
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: 6px;
+      display: none;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .feedback.correct {
+      background: #e8f8f0;
+      color: #1e7e48;
+      border-left: 4px solid var(--correct);
+      display: block;
+    }
+    .feedback.wrong {
+      background: #ffebee;
+      color: #b71524;
+      border-left: 4px solid var(--wrong);
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="https://cwru-stat312-fa26.github.io/Quiz-Generator/" class="nav-link">← Back to Overview</a>
+    
+    <div class="header">
+      <h2>STAT 312: Scales of Measurement</h2>
+      <p>Interactive Self-Assessment Quiz</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="topic-badge" id="qBadge">Topic</div>
+        <div class="progress-tracker" id="progressText">1 / 10</div>
+      </div>
+      
+      <div class="scenario-box" id="scenarioBox">Loading scenario...</div>
+
+      <div class="options-grid" id="optionsGrid">
+        <button class="opt-btn" onclick="checkChoice('Nominal scale')">A) Nominal scale</button>
+        <button class="opt-btn" onclick="checkChoice('Ordinal scale')">B) Ordinal scale</button>
+        <button class="opt-btn" onclick="checkChoice('Interval scale')">C) Interval scale</button>
+        <button class="opt-btn" onclick="checkChoice('Ratio scale')">D) Ratio scale</button>
+      </div>
+
+      <div class="feedback" id="feedbackBox"></div>
+
+      <div class="controls" style="margin-top: 15px;">
+        <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const originalQuizPool = [
+      {
+        tag: "Chemical Engineering",
+        scenario: "A petrochemical refinery categorizes raw crude oils based on source grade: <strong>Heavy Sour, Medium Sour, Light Sweet,</strong> and <strong>Extra Light Sweet</strong>. Database numerical identifiers (101, 102, 103, 104) are assigned to these classes.",
+        correct: "Ordinal scale",
+        exp: "Although the numerical IDs are purely for cataloging, the categories themselves possess a natural, inherent ranking based on physical properties like density and quality. However, the quantitative difference between these grades is not mathematically uniform."
+      },
+      {
+        tag: "Software Engineering",
+        scenario: "A cloud reliability team classifies system performance degradation during network load testing into four distinct severity tiers: <strong>Minor Alert, Moderate Degradation, Severe Bottleneck,</strong> and <strong>Total Outage</strong>.",
+        correct: "Ordinal scale",
+        exp: "The severity ratings have a natural, ordered hierarchy (Minor < Moderate < Severe < Total), but the exact operational difference between consecutive levels is not constant or numerically measurable."
+      },
+      {
+        tag: "Thermodynamics",
+        scenario: "A cryogenic materials laboratory measures the temperature of superconducting coils in <strong>degrees Celsius (&deg;C)</strong>, noting observations such as -196.0&deg;C, -50.0&deg;C, and 0.0&deg;C.",
+        correct: "Interval scale",
+        exp: "Temperature in Celsius has equal, standardized intervals between degree marks, but 0&deg;C is an arbitrary freezing point rather than an absolute absence of thermal energy."
+      },
+      {
+        tag: "Electrical Engineering",
+        scenario: "An electrical engineer measures the <strong>electric current (in amperes, A)</strong> flowing through a high-frequency alternating circuit. A meter reading of 0.0 A represents the complete absence of electrical charge flow, and 12.0 A is exactly three times 4.0 A.",
+        correct: "Ratio scale",
+        exp: "Electric current has ordered values, equal interval divisions, and an absolute, non-arbitrary zero point (0 A = zero flow), allowing meaningful multiplicative ratios."
+      },
+      {
+        tag: "Materials Science",
+        scenario: "A metallurgist measures the <strong>Mohs hardness scale</strong> rating (ranging from 1 for Talc to 10 for Diamond) for newly developed mineral alloys to determine scratch resistance.",
+        correct: "Ordinal scale",
+        exp: "Mohs hardness provides an exact ranking of scratch resistance, but the step from 1 to 2 is not physically equal to the step from 9 to 10 in absolute indentation hardness."
+      },
+      {
+        tag: "Civil & Structural Engineering",
+        scenario: "A geotechnical engineer records the <strong>water depth (in meters)</strong> in groundwater monitoring wells across a construction foundation, logging values such as 0.00 m, 4.50 m, and 9.00 m.",
+        correct: "Ratio scale",
+        exp: "Water depth has a natural, absolute zero point (0 m represents no standing water depth), and a depth of 9.0 m is exactly twice as deep as 4.5 m."
+      },
+      {
+        tag: "Computer Systems",
+        scenario: "A systems architect classifies high-performance computing nodes by <strong>processor microarchitecture family</strong>: x86-64, ARM64, RISC-V, and PowerPC.",
+        correct: "Nominal scale",
+        exp: "Processor families represent distinct, qualitative hardware designs with no intrinsic numerical hierarchy, order, or arithmetic distance."
+      },
+      {
+        tag: "Environmental Engineering",
+        scenario: "A hydrological dataset records the <strong>calendar year</strong> of major flood occurrences along a river basin over the past century (e.g., 1937, 1964, 1993, 2020).",
+        correct: "Interval scale",
+        exp: "Calendar years possess consistent and equal 1-year intervals, but the year 0 is an arbitrary historical milestone, not the physical start or nonexistence of time."
+      },
+      {
+        tag: "Industrial Engineering",
+        scenario: "A quality supervisor tests the <strong>maximum tensile load (in kilonewtons, kN)</strong> required to snap braided carbon fiber cables before failure.",
+        correct: "Ratio scale",
+        exp: "Force in kilonewtons has an absolute zero (0 kN represents no applied load) and valid multiplicative relationships (200 kN is double 100 kN)."
+      },
+      {
+        tag: "Network Engineering",
+        scenario: "A network administrator logs the <strong>network topology structure</strong> used in different server clusters: Star, Ring, Mesh, or Bus. These are recorded in a spreadsheet using codes 1, 2, 3, and 4.",
+        correct: "Nominal scale",
+        exp: "The topology types are mutually exclusive categories with no inherent mathematical rank or numerical spacing. The numeric codes serve purely as labels."
+      }
+    ];
+
+    let shuffledPool = [];
+    let currentIndex = 0;
+    let answered = false;
+
+    // Fisher-Yates Shuffle Function
+    function shuffleArray(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+
+    function initQuiz() {
+      // Create a fresh shuffled copy of the pool
+      shuffledPool = shuffleArray([...originalQuizPool]);
+      currentIndex = 0;
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      answered = false;
+      const currentQ = shuffledPool[currentIndex];
+
+      // Update UI
+      document.getElementById('qBadge').innerText = `Topic: ${currentQ.tag}`;
+      document.getElementById('progressText').innerText = `${currentIndex + 1} / ${shuffledPool.length}`;
+      document.getElementById('scenarioBox').innerHTML = `${currentQ.scenario}<br><br><strong>Which scale of measurement best describes this variable?</strong>`;
+      
+      // Reset Feedback & Next Button
+      const fb = document.getElementById('feedbackBox');
+      fb.style.display = 'none';
+      fb.className = 'feedback';
+      fb.innerHTML = '';
+      document.getElementById('nextBtn').style.display = 'none';
+
+      // Reset Option Buttons
+      const buttons = document.querySelectorAll('.opt-btn');
+      buttons.forEach(btn => {
+        btn.disabled = false;
+        btn.className = 'opt-btn';
+      });
+
+      if (window.MathJax) {
+        MathJax.typesetPromise([document.getElementById('scenarioBox')]);
+      }
+    }
+
+    function checkChoice(selected) {
+      if (answered) return;
+      answered = true;
+
+      const currentQ = shuffledPool[currentIndex];
+      const isCorrect = selected === currentQ.correct;
+      const fb = document.getElementById('feedbackBox');
+      const buttons = document.querySelectorAll('.opt-btn');
+
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText.includes(currentQ.correct)) {
+          btn.classList.add('correct-choice');
+        } else if (btn.innerText.includes(selected) && !isCorrect) {
+          btn.classList.add('wrong-choice');
+        }
+      });
+
+      fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+      fb.innerHTML = (isCorrect ? '<strong>✓ Correct!</strong><br>' : `<strong>✗ Incorrect. (Correct Scale: ${currentQ.correct})</strong><br>`) + currentQ.exp;
+      fb.style.display = 'block';
+
+      // Show Next / Restart Button
+      const nextBtn = document.getElementById('nextBtn');
+      if (currentIndex === shuffledPool.length - 1) {
+        nextBtn.innerText = "Restart Quiz ↻";
+      } else {
+        nextBtn.innerText = "Next Question →";
+      }
+      nextBtn.style.display = 'block';
+
+      if (window.MathJax) {
+        MathJax.typesetPromise([fb]);
+      }
+    }
+
+    function nextQuestion() {
+      if (currentIndex < shuffledPool.length - 1) {
+        currentIndex++;
+        loadQuestion();
+      } else {
+        initQuiz(); // Restart if at the end
+      }
+    }
+
+    window.onload = function() {
+      initQuiz();
+    };
+  </script>
+</body>
+</html>
