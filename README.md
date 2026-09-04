@@ -20,3 +20,6 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 - [Types of Data Scale (Multiple-Choice Quiz)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class2/scale_mcq.html)
 - [Types of Variables (Multiple-Choice Quiz)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class2/var_mcq.html)
 - [Data Visualization (Multiple-Choice Quiz)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class2/dv_mcq.html)
+
+### Class 3: Descriptive Statistics and Data Visualization in R
+- [Types of Data Scale (Multiple-Choice Quiz)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class3/R_DS_DV.html)

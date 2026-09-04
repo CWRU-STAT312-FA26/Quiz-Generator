@@ -1,0 +1,57 @@
+---
+title: "README"
+subtitle: "Interactive Class 3 R Practice Quiz & Overview"
+author: "Byung-Jun Kim"
+format: html
+---
+
+## Overview
+
+Welcome to the self-assessment portal for **Class 3 (Descriptive Statistics and Data Visualization in R)**. This practice quiz is designed to reinforce your understanding of the basic R functions introduced in class and help you become more comfortable reading and writing R code.
+
+The quiz combines short-answer and multiple-choice questions in one interactive activity.
+
+::: {.callout-note appearance="simple"}
+### 📋 Quiz Structure
+
+1.  **10 Short-Answer Questions:** Write or complete an appropriate R command.
+2.  **10 Multiple-Choice Questions:** Identify the correct R function, argument, syntax, or interpretation.
+3.  **Randomized Practice:** Questions appear one at a time in a different random order each session.
+:::
+
+------------------------------------------------------------------------
+
+## Class 3 Practice Quiz
+
+- **Format:** Short-Answer and Multiple-Choice Questions
+- **Number of Questions:** 20
+- **Topics Covered:**
+  - Creating and working with vectors using `c()`
+  - Computing descriptive statistics using `mean()`, `median()`, `var()`, `sd()`, `min()`, `max()`, `range()`, and `summary()`
+  - Rounding numerical results using `round()`
+  - Constructing frequency tables using `table()`
+  - Creating bar charts and pie charts using `barplot()` and `pie()`
+  - Creating and modifying histograms using `hist()`, `breaks`, `probability`, `xlim`, `xaxt`, and `axis()`
+  - Creating stem-and-leaf plots and boxplots using `stem()` and `boxplot()`
+  - Importing CSV files using `read.csv()` and selecting data-frame columns using `$`
+- **Goal:** Apply the basic R commands used for descriptive statistics and data visualization and correctly interpret their syntax, arguments, and output.
+
+[👉 Launch the Class 3 Practice Quiz](index.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+------------------------------------------------------------------------
+
+## How the Quiz Works
+
+1.  The 20 questions are randomly ordered at the beginning of each session.
+2.  Only one question is displayed at a time.
+3.  For a short-answer question, enter the requested R expression in the answer box.
+4.  For a multiple-choice question, select the best answer from the available choices.
+5.  Submit your response to receive immediate feedback and an explanation.
+6.  After completing all 20 questions, you will see your total score and may restart the quiz for additional practice.
+
+## Instructions for Students
+
+1.  **Self-Paced Practice:** This quiz is intended for self-study and concept review. You may attempt it as many times as you like.
+2.  **Write Complete R Expressions:** Unless a question asks only for an argument or function name, enter the complete R expression.
+3.  **Focus on Understanding:** Use the feedback to review why an answer is correct rather than memorizing a particular question order.
+4.  **Questions & Feedback:** If you encounter an unexpected result or need further clarification, bring your question to class or office hours.

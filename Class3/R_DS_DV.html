@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Randomized practice questions for STAT 312 Class 3: descriptive statistics and data visualization in R.">
+  <title>STAT 312 | Class 3 Practice</title>
+  <style>
+    :root {
+      --navy: #0b2d4d;
+      --blue: #1f6fb2;
+      --blue-soft: #eaf4fc;
+      --ink: #17212b;
+      --muted: #5f6b76;
+      --line: #d9e1e8;
+      --paper: #ffffff;
+      --page: #f3f6f9;
+      --correct: #147a45;
+      --correct-bg: #eaf8f0;
+      --incorrect: #b42318;
+      --incorrect-bg: #fff0ee;
+      --radius: 18px;
+      --shadow: 0 18px 55px rgba(11, 45, 77, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(31, 111, 178, 0.10), transparent 34rem),
+        var(--page);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    .shell {
+      width: min(860px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 42px 0 56px;
+    }
+
+    header { margin-bottom: 22px; }
+
+    .course {
+      margin: 0 0 5px;
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(1.7rem, 4vw, 2.55rem);
+      line-height: 1.15;
+      letter-spacing: -0.035em;
+    }
+
+    .subtitle {
+      max-width: 680px;
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 22px 0 8px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dfe7ee;
+    }
+
+    .progress-bar {
+      width: 5%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), #48a3d8);
+      transition: width 220ms ease;
+    }
+
+    .card {
+      margin-top: 18px;
+      padding: clamp(22px, 5vw, 38px);
+      border: 1px solid rgba(11, 45, 77, 0.08);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .question-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .chip {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .chip.secondary {
+      background: #f0f2f4;
+      color: #59636d;
+    }
+
+    #question-text {
+      margin: 0 0 22px;
+      color: var(--ink);
+      font-size: clamp(1.08rem, 2.4vw, 1.3rem);
+      font-weight: 720;
+      line-height: 1.5;
+    }
+
+    code, .code-block, input[type="text"] {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    code {
+      padding: 0.12em 0.36em;
+      border-radius: 5px;
+      background: #edf2f6;
+      font-size: 0.92em;
+    }
+
+    .code-block {
+      overflow-x: auto;
+      margin: -8px 0 22px;
+      padding: 15px 17px;
+      border-radius: 10px;
+      background: #102a43;
+      color: #eef7ff;
+      font-size: 0.94rem;
+      white-space: pre-wrap;
+    }
+
+    fieldset {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 150ms ease, background 150ms ease;
+    }
+
+    .choice:hover { border-color: #96bddb; background: #f8fbfe; }
+    .choice input { margin-top: 4px; accent-color: var(--blue); }
+    .choice code { background: transparent; padding: 0; }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid #aebbc6;
+      border-radius: 10px;
+      color: var(--ink);
+      background: #fff;
+      font-size: 1rem;
+    }
+
+    input[type="text"]:focus,
+    button:focus-visible {
+      outline: 3px solid rgba(31, 111, 178, 0.25);
+      outline-offset: 2px;
+    }
+
+    .answer-hint {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 10px 17px;
+      border: 0;
+      border-radius: 10px;
+      font: inherit;
+      font-weight: 760;
+      cursor: pointer;
+    }
+
+    .primary { color: white; background: var(--blue); }
+    .primary:hover { background: #165d98; }
+    .secondary-button { color: var(--navy); background: #e8edf2; }
+    .secondary-button:hover { background: #dce4eb; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .feedback {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-left: 4px solid;
+      border-radius: 8px;
+    }
+
+    .feedback.correct { border-color: var(--correct); background: var(--correct-bg); }
+    .feedback.incorrect { border-color: var(--incorrect); background: var(--incorrect-bg); }
+    .feedback strong { display: block; margin-bottom: 3px; }
+    .feedback p { margin: 0; }
+
+    .summary { text-align: center; }
+    .summary h2 { margin-top: 0; color: var(--navy); font-size: 1.8rem; }
+    .score-large { margin: 10px 0; color: var(--blue); font-size: 3rem; font-weight: 850; }
+    .summary .actions { justify-content: center; }
+    .hidden { display: none !important; }
+
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 20px, 860px); padding-top: 24px; }
+      .card { padding: 22px 18px; }
+      .status-row { align-items: flex-end; }
+      .actions button { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <p class="course">STAT 312 · Class 3</p>
+      <h1>R Practice Quiz</h1>
+      <p class="subtitle">Practice descriptive statistics and data visualization in base R. Questions appear one at a time in a new random order each session.</p>
+    </header>
+
+    <section id="quiz-view" aria-live="polite">
+      <div class="status-row">
+        <span id="progress-text">Question 1 of 20</span>
+        <span id="score-text">Score: 0</span>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <article class="card">
+        <div class="question-meta">
+          <span id="topic-chip" class="chip"></span>
+          <span id="type-chip" class="chip secondary"></span>
+        </div>
+        <h2 id="question-text"></h2>
+        <pre id="code-block" class="code-block hidden"></pre>
+        <div id="answer-area"></div>
+        <div class="actions">
+          <button id="check-button" class="primary" type="button">Check Answer</button>
+          <button id="next-button" class="secondary-button hidden" type="button">Next Question</button>
+        </div>
+        <div id="feedback" class="feedback hidden" role="status"></div>
+      </article>
+    </section>
+
+    <section id="summary-view" class="card summary hidden" aria-live="polite">
+      <p class="course">Session complete</p>
+      <h2>Nice work practicing Class 3.</h2>
+      <div id="final-score" class="score-large"></div>
+      <p id="final-message"></p>
+      <div class="actions">
+        <button id="restart-button" class="primary" type="button">Practice Again</button>
+      </div>
+    </section>
+
+    <footer>Answers are checked in your browser. No response data are collected.</footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const questions = [
+      {
+        id: 1,
+        topic: "Descriptive Statistics",
+        type: "short",
+        prompt: "Write one line of R code that creates a vector named <code>data.val</code> containing the values 3.4, 2.5, and 4.8.",
+        placeholder: "data.val <- ...",
+        answer: "data.val <- c(3.4, 2.5, 4.8)",
+        accepts: [/^data\.val(?:<-|=)c\(3\.4,?2\.5,?4\.8\)$/i],
+        explanation: "The <code>c()</code> function combines the three values into a vector. Either <code>&lt;-</code> or <code>=</code> is accepted for assignment."
+      },
+      {
+        id: 2,
+        topic: "Descriptive Statistics",
+        type: "short",
+        prompt: "Which R function computes the arithmetic mean of <code>data.val</code>? Enter the complete expression.",
+        placeholder: "function(data.val)",
+        answer: "mean(data.val)",
+        accepts: [/^mean\(data\.val\)$/i],
+        explanation: "<code>mean(data.val)</code> returns the arithmetic mean of the observations."
+      },
+      {
+        id: 3,
+        topic: "Descriptive Statistics",
+        type: "short",
+        prompt: "Write the R expression that computes the median of <code>data.val</code>.",
+        placeholder: "function(data.val)",
+        answer: "median(data.val)",
+        accepts: [/^median\(data\.val\)$/i],
+        explanation: "The base R function <code>median()</code> returns the sample median."
+      },
+      {
+        id: 4,
+        topic: "Descriptive Statistics",
+        type: "short",
+        prompt: "Write an R expression that returns the sample variance of <code>data.val</code>.",
+        placeholder: "function(data.val)",
+        answer: "var(data.val)",
+        accepts: [/^var\(data\.val\)$/i],
+        explanation: "For a numeric vector, <code>var()</code> uses the sample-variance denominator <code>n - 1</code>."
+      },
+      {
+        id: 5,
+        topic: "Descriptive Statistics",
+        type: "short",
+        prompt: "Write one R expression that computes the numerical range, maximum minus minimum, of <code>data.val</code>.",
+        placeholder: "R expression",
+        answer: "max(data.val) - min(data.val)",
+        accepts: [
+          /^max\(data\.val\)-min\(data\.val\)$/i,
+          /^diff\(range\(data\.val\)\)$/i
+        ],
+        explanation: "The numerical range is <code>max(data.val) - min(data.val)</code>. An equivalent compact expression is <code>diff(range(data.val))</code>."
+      },
+      {
+        id: 6,
+        topic: "Descriptive Statistics",
+        type: "short",
+        prompt: "Complete the R expression to round <code>data.std</code> to three decimal places.",
+        code: "round(data.std, _____)",
+        placeholder: "Enter the missing argument",
+        answer: "digits = 3",
+        accepts: [/^digits=3$/i, /^3$/],
+        explanation: "The named argument is <code>digits = 3</code>, so the complete call is <code>round(data.std, digits = 3)</code>."
+      },
+      {
+        id: 7,
+        topic: "Data Visualization",
+        type: "short",
+        prompt: "Write the R expression that creates a frequency table for the categorical vector <code>hs.stat.class</code>.",
+        placeholder: "function(hs.stat.class)",
+        answer: "table(hs.stat.class)",
+        accepts: [/^table\(hs\.stat\.class\)$/i],
+        explanation: "<code>table()</code> counts the observations in each category; its output can be passed to <code>barplot()</code> or <code>pie()</code>."
+      },
+      {
+        id: 8,
+        topic: "Data Visualization",
+        type: "short",
+        prompt: "Complete the argument that makes this histogram use a relative-frequency or density scale on the vertical axis.",
+        code: "hist(uppr.salary, _____)",
+        placeholder: "Enter the missing argument",
+        answer: "probability = TRUE",
+        accepts: [/^probability=true$/i, /^prob=true$/i],
+        explanation: "Setting <code>probability = TRUE</code> changes the vertical scale from counts to density. For equal-width bins, the bar areas correspond to relative frequencies."
+      },
+      {
+        id: 9,
+        topic: "Data Visualization",
+        type: "short",
+        prompt: "The data frame <code>Eck</code> contains a column named <code>thickness</code>. Write the expression that selects this column using <code>$</code>.",
+        placeholder: "data_frame$column",
+        answer: "Eck$thickness",
+        accepts: [/^eck\$thickness$/i],
+        explanation: "The <code>$</code> operator selects a named column from a data frame: <code>Eck$thickness</code>."
+      },
+      {
+        id: 10,
+        topic: "Data Visualization",
+        type: "short",
+        prompt: "Write the complete R command that draws a horizontal boxplot of <code>Eck$thickness</code>.",
+        placeholder: "boxplot(...) ",
+        answer: "boxplot(Eck$thickness, horizontal = TRUE)",
+        accepts: [
+          /^boxplot\(eck\$thickness,horizontal=true\)$/i,
+          /^boxplot\(horizontal=true,eck\$thickness\)$/i
+        ],
+        explanation: "The data vector is the first argument and <code>horizontal = TRUE</code> changes the orientation."
+      },
+      {
+        id: 11,
+        topic: "Descriptive Statistics",
+        type: "mcq",
+        prompt: "Which statistic is <em>not</em> included in the default output of <code>summary(data.val)</code>?",
+        choices: ["Minimum", "Median", "Standard deviation", "Maximum"],
+        correct: 2,
+        answer: "Standard deviation",
+        explanation: "For a numeric vector, <code>summary()</code> reports the minimum, first quartile, median, mean, third quartile, and maximum—not the standard deviation."
+      },
+      {
+        id: 12,
+        topic: "Descriptive Statistics",
+        type: "mcq",
+        prompt: "What does <code>range(data.val)</code> return in base R?",
+        choices: [
+          "A single value equal to max minus min",
+          "A two-element vector containing the minimum and maximum",
+          "The interquartile range",
+          "All values arranged from smallest to largest"
+        ],
+        correct: 1,
+        answer: "A two-element vector containing the minimum and maximum",
+        explanation: "<code>range(x)</code> returns <code>c(min(x), max(x))</code>. Use <code>diff(range(x))</code> for max minus min."
+      },
+      {
+        id: 13,
+        topic: "Data Preparation",
+        type: "mcq",
+        prompt: "Why set explicit levels when creating this factor?",
+        code: "factor(hs.stat.class,\n       levels = c(\"freshman\", \"sophomore\", \"junior\", \"senior\"))",
+        choices: [
+          "To convert the category labels to numeric measurements",
+          "To remove categories with small counts",
+          "To control the logical order used in tables and plots",
+          "To sort students alphabetically within each category"
+        ],
+        correct: 2,
+        answer: "To control the logical order used in tables and plots",
+        explanation: "Without explicit levels, R often uses alphabetical order. The stated levels preserve the intended class-year order."
+      },
+      {
+        id: 14,
+        topic: "Data Visualization",
+        type: "mcq",
+        prompt: "Which object is the most appropriate input to <code>barplot()</code> for displaying the number of students in each class year?",
+        choices: ["The raw character vector only", "A frequency table such as hs.tab", "The sample mean", "A vector of histogram break points"],
+        correct: 1,
+        answer: "A frequency table such as hs.tab",
+        explanation: "<code>hs.tab &lt;- table(hs.stat.class)</code> produces the category counts needed as bar heights."
+      },
+      {
+        id: 15,
+        topic: "Data Visualization",
+        type: "mcq",
+        prompt: "In <code>hist(uppr.salary, xlim = c(0, 100))</code>, what does <code>xlim</code> control?",
+        choices: ["The number of bins", "The displayed range of the x-axis", "The labels on the y-axis", "Whether counts or densities are shown"],
+        correct: 1,
+        answer: "The displayed range of the x-axis",
+        explanation: "<code>xlim = c(0, 100)</code> sets the lower and upper display limits of the horizontal axis."
+      },
+      {
+        id: 16,
+        topic: "Data Visualization",
+        type: "mcq",
+        prompt: "What is the effect of <code>xaxt = \"n\"</code> in a base R plotting function?",
+        choices: ["It suppresses the x-axis", "It normalizes the x-values", "It removes the plot title", "It adds minor tick marks"],
+        correct: 0,
+        answer: "It suppresses the x-axis",
+        explanation: "The argument suppresses the default x-axis so that a customized axis can be added later with <code>axis()</code>."
+      },
+      {
+        id: 17,
+        topic: "Data Visualization",
+        type: "mcq",
+        prompt: "What does <code>side = 1</code> specify in the following command?",
+        code: "axis(side = 1, at = xtck.pts, labels = xtck.pts)",
+        choices: ["Draw the axis at the bottom", "Draw the axis on the left", "Use one decimal place", "Use the first histogram bin"],
+        correct: 0,
+        answer: "Draw the axis at the bottom",
+        explanation: "In base R graphics, side 1 is bottom, side 2 is left, side 3 is top, and side 4 is right."
+      },
+      {
+        id: 18,
+        topic: "Data Visualization",
+        type: "mcq",
+        prompt: "What is controlled by the <code>breaks</code> argument in <code>hist(uppr.salary, breaks = cut.pts)</code>?",
+        choices: ["The plot color", "The histogram bin boundaries", "The observation labels", "The axis title"],
+        correct: 1,
+        answer: "The histogram bin boundaries",
+        explanation: "When supplied as a numeric vector, <code>breaks</code> specifies the boundaries separating histogram bins."
+      },
+      {
+        id: 19,
+        topic: "Data Import",
+        type: "mcq",
+        prompt: "What does <code>header = TRUE</code> indicate in <code>read.csv(\"Eck.csv\", header = TRUE)</code>?",
+        choices: [
+          "The first row contains variable names",
+          "The file is located in the current working directory",
+          "Missing observations should be deleted",
+          "The imported data should be displayed immediately"
+        ],
+        correct: 0,
+        answer: "The first row contains variable names",
+        explanation: "With <code>header = TRUE</code>, R treats the first row of the CSV file as column names."
+      },
+      {
+        id: 20,
+        topic: "Data Visualization",
+        type: "mcq",
+        prompt: "Which plot from Class 3 retains every individual numerical observation in its display?",
+        choices: ["Pie chart", "Histogram", "Stem-and-leaf plot", "Boxplot"],
+        correct: 2,
+        answer: "Stem-and-leaf plot",
+        explanation: "A stem-and-leaf plot displays each observation through its stem and leaf, whereas histograms and boxplots summarize the data."
+      }
+    ];
+
+    const quizView = document.querySelector("#quiz-view");
+    const summaryView = document.querySelector("#summary-view");
+    const questionText = document.querySelector("#question-text");
+    const codeBlock = document.querySelector("#code-block");
+    const answerArea = document.querySelector("#answer-area");
+    const topicChip = document.querySelector("#topic-chip");
+    const typeChip = document.querySelector("#type-chip");
+    const feedback = document.querySelector("#feedback");
+    const checkButton = document.querySelector("#check-button");
+    const nextButton = document.querySelector("#next-button");
+    const restartButton = document.querySelector("#restart-button");
+    const progressText = document.querySelector("#progress-text");
+    const scoreText = document.querySelector("#score-text");
+    const progressBar = document.querySelector("#progress-bar");
+
+    let order = [];
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function normalize(value) {
+      return value
+        .trim()
+        .replace(/[“”]/g, '"')
+        .replace(/[‘’]/g, "'")
+        .replace(/\s+/g, "")
+        .replace(/;$/, "");
+    }
+
+    function currentQuestion() {
+      return questions[order[current]];
+    }
+
+    function renderQuestion() {
+      const q = currentQuestion();
+      answered = false;
+      questionText.innerHTML = q.prompt;
+      topicChip.textContent = q.topic;
+      typeChip.textContent = q.type === "mcq" ? "Multiple Choice" : "Short Answer";
+      progressText.textContent = `Question ${current + 1} of ${questions.length}`;
+      scoreText.textContent = `Score: ${score}`;
+      progressBar.style.width = `${((current + 1) / questions.length) * 100}%`;
+
+      codeBlock.classList.toggle("hidden", !q.code);
+      codeBlock.textContent = q.code || "";
+      feedback.className = "feedback hidden";
+      feedback.innerHTML = "";
+      checkButton.classList.remove("hidden");
+      nextButton.classList.add("hidden");
+
+      if (q.type === "mcq") {
+        const fieldset = document.createElement("fieldset");
+        fieldset.setAttribute("aria-label", "Answer choices");
+        const randomizedChoices = shuffle(q.choices.map((choice, index) => ({ choice, index })));
+        randomizedChoices.forEach(({ choice, index }) => {
+          const label = document.createElement("label");
+          label.className = "choice";
+          label.innerHTML = `<input type="radio" name="answer" value="${index}"><span>${choice}</span>`;
+          fieldset.appendChild(label);
+        });
+        answerArea.replaceChildren(fieldset);
+      } else {
+        const wrapper = document.createElement("div");
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = "short-answer";
+        input.placeholder = q.placeholder || "Enter your answer";
+        input.autocomplete = "off";
+        input.spellcheck = false;
+        input.setAttribute("aria-label", "Short answer");
+        const hint = document.createElement("p");
+        hint.className = "answer-hint";
+        hint.textContent = "Spacing does not affect grading. Do not include explanatory text.";
+        wrapper.append(input, hint);
+        answerArea.replaceChildren(wrapper);
+        setTimeout(() => input.focus(), 0);
+      }
+    }
+
+    function selectedAnswer(q) {
+      if (q.type === "mcq") {
+        const selected = document.querySelector('input[name="answer"]:checked');
+        return selected ? Number(selected.value) : null;
+      }
+      return document.querySelector("#short-answer").value;
+    }
+
+    function grade(q, response) {
+      if (q.type === "mcq") return response === q.correct;
+      const value = normalize(response);
+      return q.accepts.some(pattern => pattern.test(value));
+    }
+
+    function showFeedback(isCorrect, q) {
+      feedback.className = `feedback ${isCorrect ? "correct" : "incorrect"}`;
+      feedback.innerHTML = `
+        <strong>${isCorrect ? "Correct!" : "Not quite."}</strong>
+        <p><b>Answer:</b> <code>${q.answer}</code><br>${q.explanation}</p>
+      `;
+    }
+
+    function checkAnswer() {
+      if (answered) return;
+      const q = currentQuestion();
+      const response = selectedAnswer(q);
+      const empty = q.type === "mcq" ? response === null : response.trim() === "";
+
+      if (empty) {
+        feedback.className = "feedback incorrect";
+        feedback.innerHTML = "<strong>Please enter or select an answer first.</strong>";
+        return;
+      }
+
+      answered = true;
+      const isCorrect = grade(q, response);
+      if (isCorrect) score += 1;
+      scoreText.textContent = `Score: ${score}`;
+      showFeedback(isCorrect, q);
+      answerArea.querySelectorAll("input").forEach(input => { input.disabled = true; });
+      checkButton.classList.add("hidden");
+      nextButton.textContent = current === questions.length - 1 ? "See Results" : "Next Question";
+      nextButton.classList.remove("hidden");
+      nextButton.focus();
+    }
+
+    function nextQuestion() {
+      if (!answered) return;
+      current += 1;
+      if (current >= questions.length) {
+        showSummary();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function showSummary() {
+      quizView.classList.add("hidden");
+      summaryView.classList.remove("hidden");
+      const percent = Math.round((score / questions.length) * 100);
+      document.querySelector("#final-score").textContent = `${score} / ${questions.length}`;
+      document.querySelector("#final-message").textContent =
+        percent >= 90 ? "Excellent command of the Class 3 R functions." :
+        percent >= 75 ? "Good work. Review the explanations for any missed items." :
+        "Use the explanations to review, then try a newly randomized session.";
+      restartButton.focus();
+    }
+
+    function startQuiz() {
+      order = shuffle(questions.map((_, index) => index));
+      current = 0;
+      score = 0;
+      quizView.classList.remove("hidden");
+      summaryView.classList.add("hidden");
+      renderQuestion();
+    }
+
+    checkButton.addEventListener("click", checkAnswer);
+    nextButton.addEventListener("click", nextQuestion);
+    restartButton.addEventListener("click", startQuiz);
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Enter") return;
+      if (!quizView.classList.contains("hidden") && !answered) checkAnswer();
+      else if (!quizView.classList.contains("hidden") && answered) nextQuestion();
+    });
+
+    startQuiz();
+  </script>
+</body>
+</html>
