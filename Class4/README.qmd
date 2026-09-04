@@ -1,0 +1,73 @@
+---
+title: "README"
+subtitle: "Interactive Class 4 Probability Foundations & Counting Practice"
+author: "Byung-Jun Kim"
+format: html
+---
+
+## Overview
+
+Welcome to the self-assessment portal for **Class 4 (Introductory Probability and Counting Techniques)**. These practice activities are designed to reinforce the distinction among a sample space, a variable, an outcome, and an observation and to develop fluency in selecting and applying appropriate counting techniques.
+
+The practice set is organized into two interactive sections. Each section displays only one question at a time and presents the complete question bank in a different random order each session.
+
+::: {.callout-note appearance="simple"}
+### 📋 Practice Structure
+
+1.  **Section 1 — Statistical Concepts (10 scenarios):** Identify the sample space, variable, realized outcome, and observation in each scenario.
+2.  **Section 2 — Counting Techniques (15 short-answer questions):** Compute the requested number of outcomes, arrangements, or selections.
+3.  **Randomized Practice:** Questions appear one at a time in a different random order each round.
+4.  **Immediate Feedback:** Check each response, review the correct answer and explanation, and monitor your score.
+:::
+
+------------------------------------------------------------------------
+
+## Section 1: Sample Space, Variable, Outcome, and Observation
+
+- **Format:** Four-part short-answer scenarios
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Identifying the set of all possible outcomes of an experiment
+  - Describing the variable being recorded or computed
+  - Distinguishing a realized outcome from the observed value of a variable
+  - Recognizing when an outcome and an observation look the same because the variable directly records the outcome
+  - Working with discrete and continuous sample spaces
+- **Goal:** Correctly identify the role of each statistical concept within a clearly defined experiment.
+
+[👉 Launch Section 1: Statistical Concepts](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class4/class4_concepts.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+------------------------------------------------------------------------
+
+## Section 2: Counting Techniques
+
+- **Format:** Short-answer numerical questions
+- **Number of Questions:** 15
+- **Topics Covered:**
+  - Applying the Fundamental Principle of Counting (Multiplication Rule)
+  - Counting ordered arrangements using factorials and permutations
+  - Counting unordered selections using combinations
+  - Deciding whether order matters
+  - Combining the Multiplication Rule with combinations in multi-stage selections
+- **Goal:** Select an appropriate counting method, carry out the calculation correctly, and interpret the result in context.
+
+[👉 Launch Section 2: Counting Techniques](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class4/class4_counting.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+------------------------------------------------------------------------
+
+## How the Practice Activities Work
+
+1.  Open either section using the corresponding button above.
+2.  The questions are randomly ordered at the beginning of each round.
+3.  Only one question is displayed at a time.
+4.  Enter your response and select **Check Answer(s)** to receive immediate feedback.
+5.  Use **Show Answer** or **Show Solution** when you need to review the expected response and reasoning.
+6.  Continue until every question in the section has appeared once.
+7.  At the end of the round, review your score and restart for a newly randomized order.
+
+## Instructions for Students
+
+1.  **Self-Paced Practice:** These activities are intended for self-study and concept review. You may attempt each section as many times as you like.
+2.  **Use Precise Language in Section 1:** Describe the sample space and variable clearly. Equivalent wording is accepted when possible, and the displayed solution provides the intended terminology.
+3.  **Enter a Final Number in Section 2:** Numerical responses may be entered with or without commas.
+4.  **Focus on Method Selection:** Before calculating, decide whether the situation calls for the Multiplication Rule, a permutation, a combination, or a combination of methods.
+5.  **Questions & Feedback:** If you encounter an unexpected result or need further clarification, bring your question to class or office hours.

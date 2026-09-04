@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 4 Practice: Sample Space, Variable, Outcome, and Observation</title>
+  <style>
+    :root {
+      --navy: #17365d;
+      --blue: #2f6fb0;
+      --pale-blue: #eef5fc;
+      --ink: #1f2937;
+      --muted: #5f6b7a;
+      --line: #d9e2ec;
+      --success: #16794b;
+      --success-bg: #ecf8f1;
+      --error: #b42318;
+      --error-bg: #fff1f0;
+      --paper: #ffffff;
+      --page: #f4f7fa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: linear-gradient(145deg, #eef4fa 0%, #f8fafc 52%, #edf3f8 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    .page {
+      width: min(920px, calc(100% - 32px));
+      margin: 36px auto;
+    }
+
+    .hero {
+      padding: 28px 30px;
+      color: white;
+      background: linear-gradient(125deg, var(--navy), #285d93);
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 16px 45px rgba(23, 54, 93, 0.16);
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      font-weight: 750;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      opacity: 0.86;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.55rem, 4vw, 2.25rem);
+      line-height: 1.2;
+    }
+
+    .subtitle { margin: 10px 0 0; max-width: 760px; opacity: 0.93; }
+
+    main {
+      padding: 28px 30px 32px;
+      background: var(--paper);
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 16px 45px rgba(23, 54, 93, 0.12);
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .progress-track {
+      height: 8px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      background: #e8eef4;
+      border-radius: 999px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--blue), #60a5d8);
+      transition: width 220ms ease;
+    }
+
+    .scenario {
+      padding: 20px 22px;
+      background: var(--pale-blue);
+      border-left: 5px solid var(--blue);
+      border-radius: 10px;
+    }
+
+    .scenario h2 { margin: 0 0 8px; color: var(--navy); font-size: 1.12rem; }
+    .scenario p { margin: 0; }
+
+    .prompt {
+      margin: 22px 0 16px;
+      font-weight: 650;
+    }
+
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--navy);
+      font-weight: 750;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      color: var(--ink);
+      background: white;
+      border: 1.5px solid #b8c6d6;
+      border-radius: 8px;
+      font: inherit;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47, 111, 176, 0.14);
+    }
+
+    .field input.correct { border-color: var(--success); background: var(--success-bg); }
+    .field input.incorrect { border-color: var(--error); background: var(--error-bg); }
+
+    .field-feedback {
+      min-height: 1.25rem;
+      margin-top: 5px;
+      font-size: 0.84rem;
+    }
+
+    .field-feedback.correct { color: var(--success); }
+    .field-feedback.incorrect { color: var(--error); }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 9px 16px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .primary { color: white; background: var(--navy); }
+    .secondary { color: var(--navy); background: white; border-color: #9fb2c8; }
+    button:hover { filter: brightness(1.05); }
+    button:focus-visible { outline: 3px solid rgba(47, 111, 176, 0.3); outline-offset: 2px; }
+    button:disabled { cursor: not-allowed; opacity: 0.55; }
+
+    .feedback {
+      display: none;
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: 10px;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.success { color: #0d5f3a; background: var(--success-bg); border: 1px solid #abdcc5; }
+    .feedback.partial { color: #7a2e0e; background: #fff7ed; border: 1px solid #fed7aa; }
+    .feedback h3 { margin: 0 0 5px; font-size: 1rem; }
+    .feedback p { margin: 0; }
+
+    .completion {
+      display: none;
+      padding: 26px;
+      text-align: center;
+      background: var(--pale-blue);
+      border-radius: 12px;
+    }
+
+    .completion.show { display: block; }
+    .completion h2 { color: var(--navy); margin-top: 0; }
+    .completion p { font-size: 1.05rem; }
+    .quiz.hidden { display: none; }
+
+    .note {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 680px) {
+      .page { width: min(100% - 20px, 920px); margin: 10px auto; }
+      .hero, main { padding: 22px 18px; }
+      .answer-grid { grid-template-columns: 1fr; }
+      .status-row { align-items: flex-start; flex-direction: column; gap: 3px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">STAT 312 · Class 4 · Section 1</p>
+      <h1>Sample Space, Variable, Outcome, and Observation</h1>
+      <p class="subtitle">Identify all four statistical concepts from a randomly ordered set of scenarios.</p>
+    </header>
+
+    <main>
+      <section id="quiz" class="quiz" aria-live="polite">
+        <div class="status-row">
+          <span id="questionNumber">Question 1 of 10</span>
+          <span id="scoreDisplay">Scenario score: 0</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <article class="scenario">
+          <h2>Scenario</h2>
+          <p id="scenarioText"></p>
+        </article>
+
+        <p class="prompt">From the scenario, enter the word, phrase, value, or set that represents each concept.</p>
+
+        <div class="answer-grid">
+          <div class="field">
+            <label for="sampleSpace">Sample space</label>
+            <input id="sampleSpace" type="text" autocomplete="off" spellcheck="false">
+            <div id="sampleSpaceFeedback" class="field-feedback"></div>
+          </div>
+          <div class="field">
+            <label for="variable">Variable</label>
+            <input id="variable" type="text" autocomplete="off">
+            <div id="variableFeedback" class="field-feedback"></div>
+          </div>
+          <div class="field">
+            <label for="outcome">Outcome</label>
+            <input id="outcome" type="text" autocomplete="off" spellcheck="false">
+            <div id="outcomeFeedback" class="field-feedback"></div>
+          </div>
+          <div class="field">
+            <label for="observation">Observation</label>
+            <input id="observation" type="text" autocomplete="off" spellcheck="false">
+            <div id="observationFeedback" class="field-feedback"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="checkButton" class="primary" type="button">Check Answers</button>
+          <button id="showButton" class="secondary" type="button">Show Answer</button>
+          <button id="nextButton" class="secondary" type="button" disabled>Next Question</button>
+        </div>
+
+        <div id="overallFeedback" class="feedback" role="status"></div>
+        <p class="note">Equivalent wording is accepted when possible. Use “Show Answer” if the automatic checker does not recognize a valid phrasing.</p>
+      </section>
+
+      <section id="completion" class="completion" aria-live="polite">
+        <h2>Practice Round Complete</h2>
+        <p id="finalScore"></p>
+        <button id="restartButton" class="primary" type="button">Start a New Randomized Round</button>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        scenario: "A quality-control technician inspects four items in order. Each item is either non-defective (N) or defective (D). The realized result is N, D, N, N. The variable is defined as the number of defective items among the four inspected items.",
+        answers: {
+          sampleSpace: { display: "All 16 ordered N/D sequences of length 4, {NNNN, NNND, ..., DDDD}", accepted: ["all 16 ordered n d sequences of length 4", "16 ordered n d sequences", "n d sequences of length 4", "{nnnn nnnd nndn nndd ndnn ndnd nddn nddd dnnn dnnd dndn dndd ddnn ddnd dddn dddd}"] },
+          variable: { display: "the number of defective items among the four items", accepted: ["number of defective items", "the number of defective items", "number defective", "count of defective items"] },
+          outcome: { display: "N, D, N, N", accepted: ["n d n n", "ndnn"] },
+          observation: { display: "1", accepted: ["1", "one"] }
+        },
+        explanation: "The outcome records the full ordered result, while the variable converts that outcome to a count. Therefore, the observed value is 1."
+      },
+      {
+        scenario: "A fair die is rolled once, and the number on the top face is the basic result. The realized result is 5. The variable records whether the top-face number is odd or even.",
+        answers: {
+          sampleSpace: { display: "{1, 2, 3, 4, 5, 6}", accepted: ["{1 2 3 4 5 6}", "1 2 3 4 5 6"] },
+          variable: { display: "whether the top-face number is odd or even", accepted: ["whether the number is odd or even", "odd or even", "parity", "parity of the top face", "parity of the number"] },
+          outcome: { display: "5", accepted: ["5", "five"] },
+          observation: { display: "odd", accepted: ["odd"] }
+        },
+        explanation: "The die face is the outcome. Applying the parity variable to outcome 5 produces the observation “odd.”"
+      },
+      {
+        scenario: "A coin is flipped three times. The realized ordered result is H, T, H. The variable is the total number of heads in the three flips.",
+        answers: {
+          sampleSpace: { display: "{HHH, HHT, HTH, HTT, THH, THT, TTH, TTT}", accepted: ["{hhh hht hth htt thh tht tth ttt}", "hhh hht hth htt thh tht tth ttt", "all 8 ordered h t sequences of length 3", "8 ordered h t sequences"] },
+          variable: { display: "the number of heads in three flips", accepted: ["number of heads", "the number of heads", "number of heads in three flips", "count of heads"] },
+          outcome: { display: "H, T, H", accepted: ["h t h", "hth"] },
+          observation: { display: "2", accepted: ["2", "two"] }
+        },
+        explanation: "HTH is one element of the eight-outcome sample space. The head-count variable maps HTH to 2."
+      },
+      {
+        scenario: "A cell-phone camera is selected, and its flash recycle time is measured exactly in seconds. The recorded time is 3.7 seconds. The variable directly records the recycle time.",
+        answers: {
+          sampleSpace: { display: "{t : t ≥ 0} (all nonnegative real times)", accepted: ["{t t >= 0}", "{t t ≥ 0}", "t >= 0", "t ≥ 0", "all nonnegative real times", "nonnegative real numbers", "nonnegative times", "[0 infinity)", "[0 inf)"] },
+          variable: { display: "flash recycle time in seconds", accepted: ["flash recycle time", "recycle time", "recycle time in seconds", "flash recycle time in seconds"] },
+          outcome: { display: "3.7 seconds", accepted: ["3.7", "3.7 seconds", "3.7 sec"] },
+          observation: { display: "3.7 seconds", accepted: ["3.7", "3.7 seconds", "3.7 sec"] }
+        },
+        explanation: "Because the variable directly records exact recycle time, the outcome and the observation have the same numerical value."
+      },
+      {
+        scenario: "A customer orders exactly one beverage from a menu containing coffee, tea, juice, and water. The customer orders tea. The variable directly records the selected beverage.",
+        answers: {
+          sampleSpace: { display: "{coffee, tea, juice, water}", accepted: ["{coffee tea juice water}", "coffee tea juice water"] },
+          variable: { display: "the selected beverage (beverage type)", accepted: ["selected beverage", "the selected beverage", "beverage", "beverage type", "type of beverage"] },
+          outcome: { display: "tea", accepted: ["tea"] },
+          observation: { display: "tea", accepted: ["tea"] }
+        },
+        explanation: "The variable directly records the categorical outcome, so both the realized outcome and observed value are tea."
+      },
+      {
+        scenario: "One card is drawn from a standard 52-card deck. The realized card is the queen of hearts. The variable records only the suit of the selected card.",
+        answers: {
+          sampleSpace: { display: "the 52 distinct cards in a standard deck", accepted: ["the 52 distinct cards in a standard deck", "52 distinct cards", "all 52 cards", "standard 52 card deck", "the 52 cards"] },
+          variable: { display: "the suit of the selected card", accepted: ["suit", "the suit", "card suit", "suit of the selected card"] },
+          outcome: { display: "queen of hearts", accepted: ["queen of hearts", "q of hearts", "q hearts", "qh"] },
+          observation: { display: "hearts", accepted: ["hearts", "heart"] }
+        },
+        explanation: "The full card identity is the outcome, whereas the suit variable retains only “hearts” as the observation."
+      },
+      {
+        scenario: "Two dice are rolled in sequence, so the basic result is an ordered pair. The first die shows 3 and the second die shows 5. The variable is the sum of the two top-face numbers.",
+        answers: {
+          sampleSpace: { display: "{(i, j) : i, j ∈ {1, 2, 3, 4, 5, 6}} (36 ordered pairs)", accepted: ["{(i j) i j in {1 2 3 4 5 6}}", "36 ordered pairs", "all 36 ordered pairs", "{1 2 3 4 5 6} x {1 2 3 4 5 6}", "{1 2 3 4 5 6} cross {1 2 3 4 5 6}"] },
+          variable: { display: "the sum of the two top-face numbers", accepted: ["sum", "the sum", "sum of the dice", "sum of two dice", "sum of the two top face numbers"] },
+          outcome: { display: "(3, 5)", accepted: ["(3 5)", "3 5", "(3,5)"] },
+          observation: { display: "8", accepted: ["8", "eight"] }
+        },
+        explanation: "Because roll order is recorded, (3,5) is the outcome. The sum variable maps this ordered pair to 8."
+      },
+      {
+        scenario: "A light bulb is inspected and classified as non-defective (N) or defective (D). The selected bulb is defective. The variable directly records the bulb's status.",
+        answers: {
+          sampleSpace: { display: "{N, D}", accepted: ["{n d}", "n d", "{d n}", "d n", "non defective defective", "defective non defective"] },
+          variable: { display: "the bulb's defect status", accepted: ["bulb status", "status", "defect status", "the bulb's status", "whether the bulb is defective"] },
+          outcome: { display: "D (defective)", accepted: ["d", "defective"] },
+          observation: { display: "D (defective)", accepted: ["d", "defective"] }
+        },
+        explanation: "The variable records the experiment's basic outcome without transformation, so outcome and observation are both D."
+      },
+      {
+        scenario: "A spinner has eight equally sized sectors numbered 1 through 8. The pointer lands on 7. The variable records whether the number is greater than 5.",
+        answers: {
+          sampleSpace: { display: "{1, 2, 3, 4, 5, 6, 7, 8}", accepted: ["{1 2 3 4 5 6 7 8}", "1 2 3 4 5 6 7 8"] },
+          variable: { display: "whether the spinner number is greater than 5", accepted: ["whether the number is greater than 5", "number greater than 5", "is the number greater than 5", "greater than 5 indicator", "indicator of greater than 5"] },
+          outcome: { display: "7", accepted: ["7", "seven"] },
+          observation: { display: "yes (or true)", accepted: ["yes", "true", "greater than 5", "1"] }
+        },
+        explanation: "The outcome is the sector number 7. The yes/no variable evaluates that outcome and produces “yes” (or true)."
+      },
+      {
+        scenario: "One of five labeled books—A, B, C, D, and E—is selected. Book D is selected, and it is a nonfiction book. The variable records the genre (fiction or nonfiction) of the selected book.",
+        answers: {
+          sampleSpace: { display: "{A, B, C, D, E}", accepted: ["{a b c d e}", "a b c d e", "the five labeled books", "five labeled books"] },
+          variable: { display: "the genre of the selected book", accepted: ["genre", "book genre", "the genre", "genre of selected book", "fiction or nonfiction"] },
+          outcome: { display: "Book D", accepted: ["book d", "d"] },
+          observation: { display: "nonfiction", accepted: ["nonfiction", "non fiction"] }
+        },
+        explanation: "The outcome identifies which labeled book was selected; the genre variable maps Book D to the observation “nonfiction.”"
+      }
+    ];
+
+    const keys = ["sampleSpace", "variable", "outcome", "observation"];
+    const labels = { sampleSpace: "Sample space", variable: "Variable", outcome: "Outcome", observation: "Observation" };
+    let order = [];
+    let position = 0;
+    let score = 0;
+    let locked = false;
+    let currentAwarded = false;
+
+    function normalize(value) {
+      return value
+        .toLowerCase()
+        .replace(/[–—−]/g, "-")
+        .replace(/∞/g, "infinity")
+        .replace(/≥/g, ">=")
+        .replace(/∈/g, "in")
+        .replace(/[,:;|]/g, " ")
+        .replace(/[\[\]()]/g, match => match === "[" ? "[" : match === "]" ? "]" : match)
+        .replace(/[^a-z0-9{}<>=+.*\-\s\[\]]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function isAccepted(response, accepted) {
+      const candidate = normalize(response);
+      return candidate.length > 0 && accepted.some(answer => normalize(answer) === candidate);
+    }
+
+    function shuffle(array) {
+      const result = [...array];
+      for (let i = result.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    }
+
+    function currentQuestion() { return questions[order[position]]; }
+
+    function renderQuestion() {
+      locked = false;
+      currentAwarded = false;
+      const q = currentQuestion();
+      document.getElementById("scenarioText").textContent = q.scenario;
+      document.getElementById("questionNumber").textContent = `Question ${position + 1} of ${questions.length}`;
+      document.getElementById("scoreDisplay").textContent = `Scenario score: ${score}`;
+      document.getElementById("progressBar").style.width = `${((position + 1) / questions.length) * 100}%`;
+      document.getElementById("overallFeedback").className = "feedback";
+      document.getElementById("overallFeedback").innerHTML = "";
+      document.getElementById("nextButton").disabled = true;
+      document.getElementById("checkButton").disabled = false;
+      document.getElementById("showButton").disabled = false;
+
+      keys.forEach(key => {
+        const input = document.getElementById(key);
+        const feedback = document.getElementById(`${key}Feedback`);
+        input.value = "";
+        input.disabled = false;
+        input.className = "";
+        feedback.textContent = "";
+        feedback.className = "field-feedback";
+      });
+      document.getElementById("sampleSpace").focus();
+    }
+
+    function finishAttempt(showOnly = false) {
+      if (locked) return;
+      const q = currentQuestion();
+      let correctCount = 0;
+
+      keys.forEach(key => {
+        const input = document.getElementById(key);
+        const feedback = document.getElementById(`${key}Feedback`);
+        const correct = !showOnly && isAccepted(input.value, q.answers[key].accepted);
+        if (correct) correctCount += 1;
+        input.className = correct ? "correct" : "incorrect";
+        input.disabled = true;
+        feedback.className = `field-feedback ${correct ? "correct" : "incorrect"}`;
+        feedback.textContent = correct ? "Correct" : `Answer: ${q.answers[key].display}`;
+      });
+
+      const allCorrect = correctCount === keys.length;
+      if (allCorrect && !currentAwarded) {
+        score += 1;
+        currentAwarded = true;
+      }
+
+      locked = true;
+      document.getElementById("scoreDisplay").textContent = `Scenario score: ${score}`;
+      document.getElementById("checkButton").disabled = true;
+      document.getElementById("showButton").disabled = true;
+      document.getElementById("nextButton").disabled = false;
+
+      const box = document.getElementById("overallFeedback");
+      box.className = `feedback show ${allCorrect ? "success" : "partial"}`;
+      const heading = showOnly ? "Answer revealed" : allCorrect ? "All four entries are correct." : `${correctCount} of 4 entries are correct.`;
+      box.innerHTML = `<h3>${heading}</h3><p>${q.explanation}</p>`;
+      document.getElementById("nextButton").focus();
+    }
+
+    function nextQuestion() {
+      if (position === questions.length - 1) {
+        document.getElementById("quiz").classList.add("hidden");
+        document.getElementById("completion").classList.add("show");
+        document.getElementById("finalScore").textContent = `You identified all four concepts correctly in ${score} of ${questions.length} scenarios on the first check.`;
+        document.getElementById("restartButton").focus();
+        return;
+      }
+      position += 1;
+      renderQuestion();
+    }
+
+    function startRound() {
+      order = shuffle(questions.map((_, index) => index));
+      position = 0;
+      score = 0;
+      document.getElementById("quiz").classList.remove("hidden");
+      document.getElementById("completion").classList.remove("show");
+      renderQuestion();
+    }
+
+    document.getElementById("checkButton").addEventListener("click", () => finishAttempt(false));
+    document.getElementById("showButton").addEventListener("click", () => finishAttempt(true));
+    document.getElementById("nextButton").addEventListener("click", nextQuestion);
+    document.getElementById("restartButton").addEventListener("click", startRound);
+    keys.forEach(key => document.getElementById(key).addEventListener("keydown", event => {
+      if (event.key === "Enter" && !locked) finishAttempt(false);
+    }));
+
+    startRound();
+  </script>
+</body>
+</html>

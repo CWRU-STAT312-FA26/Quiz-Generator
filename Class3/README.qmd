@@ -36,7 +36,7 @@ The quiz combines short-answer and multiple-choice questions in one interactive 
   - Importing CSV files using `read.csv()` and selecting data-frame columns using `$`
 - **Goal:** Apply the basic R commands used for descriptive statistics and data visualization and correctly interpret their syntax, arguments, and output.
 
-[👉 Launch the Class 3 Practice Quiz](index.html){.btn .btn-outline-primary .btn-sm role="button"}
+[👉 Launch the Class 3 Practice Quiz](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class3/R_DS_DV.html){.btn .btn-outline-primary .btn-sm role="button"}
 
 ------------------------------------------------------------------------
 

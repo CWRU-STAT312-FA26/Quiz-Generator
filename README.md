@@ -23,3 +23,7 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 
 ### Class 3: Descriptive Statistics and Data Visualization in R
 - [Types of Data Scale (Multiple-Choice Quiz)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class3/R_DS_DV.html)
+
+### Class 4: Probability Foundations and Counting Practice 
+- [ Sample Space, Variable, Outcome, and Observation (short-answer scenarios)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class4/class4_concepts.html)
+- [ Counting Techniques (Multitplication Rule, Permutations, and Combinations) (short-answer questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class4/class4_counting.html)
