@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 6 Practice: Conditional Probability with a Frequency Table</title>
+  <style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(860px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.65rem,4vw,2.3rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:16px; color:var(--muted); font-size:.94rem; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .question-card { min-height:190px; padding:24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:10px; }
+    .question-card h2 { margin:0 0 10px; color:var(--navy); font-size:1.08rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:16px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    tbody th { color:var(--navy); background:#f7fafc; text-align:left; }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input { width:min(100%,420px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1.05rem; }
+    .answer-area input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:14px 0 0; color:var(--muted); font-size:.88rem; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,860px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row { align-items:flex-start; flex-direction:column; gap:3px; } th,td { padding:7px 8px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">STAT 312 · Class 6 · Section 1</p>
+      <h1>Conditional Probability with a Frequency Table</h1>
+      <p class="subtitle">Restrict the reference group to the given condition and compute a conditional relative frequency.</p>
+    </header>
+    <main>
+      <section id="quiz" class="quiz" aria-live="polite">
+        <div class="status-row"><span id="questionNumber">Question 1 of 10</span><span id="scoreDisplay">Score: 0</span></div>
+        <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+        <article class="question-card"><h2>Short-Answer Question</h2><div id="questionText"></div></article>
+        <div class="answer-area">
+          <label for="answerInput">Your answer</label>
+          <input id="answerInput" type="text" autocomplete="off" placeholder="Enter your answer">
+          <p id="answerNote" class="note">For a probability, enter a fraction, decimal, or percentage.</p>
+        </div>
+        <div class="actions">
+          <button id="checkButton" class="primary" type="button">Check Answer</button>
+          <button id="showButton" class="secondary" type="button">Show Solution</button>
+          <button id="nextButton" class="secondary" type="button" disabled>Next Question</button>
+        </div>
+        <div id="feedback" class="feedback" role="status"></div>
+      </section>
+      <section id="completion" class="completion" aria-live="polite">
+        <h2>Practice Round Complete</h2><p id="finalScore"></p>
+        <button id="restartButton" class="primary" type="button">Start a New Randomized Round</button>
+      </section>
+    </main>
+  </div>
+  <script>
+    const questions = [{"text":"A random sample of adults is summarized below. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Education / Gender\u003c/th>\u003cth>Male\u003c/th>\u003cth>Female\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Elementary\u003c/th>\u003ctd>38\u003c/td>\u003ctd>45\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">High School\u003c/th>\u003ctd>28\u003c/td>\u003ctd>50\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">University\u003c/th>\u003ctd>22\u003c/td>\u003ctd>17\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a selected person is male, given that the person has a high school education?","answer":0.358974358974359,"displayAnswer":"28/78 = 14/39 ≈ 0.3590","method":"Conditional relative frequency","solution":"Restrict the denominator to the 28 + 50 = 78 high-school-educated adults. Of these, 28 are male, so the probability is 28/78 = 14/39."},{"text":"A random sample of adults is summarized below. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Education / Gender\u003c/th>\u003cth>Male\u003c/th>\u003cth>Female\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Elementary\u003c/th>\u003ctd>38\u003c/td>\u003ctd>45\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">High School\u003c/th>\u003ctd>28\u003c/td>\u003ctd>50\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">University\u003c/th>\u003ctd>22\u003c/td>\u003ctd>17\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a selected person is not university educated, given that the person is female?","answer":0.8482142857142857,"displayAnswer":"95/112 ≈ 0.8482","method":"Conditional relative frequency","solution":"There are 45 + 50 + 17 = 112 females. Among them, 45 + 50 = 95 are not university educated. Thus, the probability is 95/112."},{"text":"A wellness study reports the following counts. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Exercise\u003c/th>\u003cth>Healthy\u003c/th>\u003cth>Not healthy\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Regular\u003c/th>\u003ctd>54\u003c/td>\u003ctd>16\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">Not regular\u003c/th>\u003ctd>36\u003c/td>\u003ctd>44\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a participant exercises regularly, given that the participant is healthy?","answer":0.6,"displayAnswer":"54/90 = 0.60","method":"Conditional relative frequency","solution":"The condition 'healthy' restricts the denominator to 54 + 36 = 90 participants. Of those, 54 exercise regularly, so the probability is 54/90 = 0.60."},{"text":"Students' preferred devices are shown below. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Student level\u003c/th>\u003cth>Laptop\u003c/th>\u003cth>Tablet\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Undergraduate\u003c/th>\u003ctd>72\u003c/td>\u003ctd>28\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">Graduate\u003c/th>\u003ctd>45\u003c/td>\u003ctd>55\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a student is a graduate student, given that the student prefers a tablet?","answer":0.6626506024096386,"displayAnswer":"55/83 ≈ 0.6627","method":"Conditional relative frequency","solution":"There are 28 + 55 = 83 tablet-preferring students, and 55 of them are graduate students. Thus, the probability is 55/83."},{"text":"Commute outcomes are summarized below. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Transportation\u003c/th>\u003cth>On time\u003c/th>\u003cth>Late\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Car\u003c/th>\u003ctd>68\u003c/td>\u003ctd>12\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">Bus\u003c/th>\u003ctd>42\u003c/td>\u003ctd>18\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">Bicycle\u003c/th>\u003ctd>25\u003c/td>\u003ctd>5\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a commuter is late, given that the commuter takes the bus?","answer":0.3,"displayAnswer":"18/60 = 0.30","method":"Conditional relative frequency","solution":"The bus group contains 42 + 18 = 60 commuters, of whom 18 are late. Therefore, P(late | bus) = 18/60 = 0.30."},{"text":"A clinical study reports the following outcomes. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Treatment\u003c/th>\u003cth>Recovered\u003c/th>\u003cth>Not recovered\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Standard\u003c/th>\u003ctd>64\u003c/td>\u003ctd>36\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">New\u003c/th>\u003ctd>81\u003c/td>\u003ctd>19\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a patient received the new treatment, given that the patient recovered?","answer":0.5586206896551724,"displayAnswer":"81/145 ≈ 0.5586","method":"Conditional relative frequency","solution":"There are 64 + 81 = 145 recovered patients, and 81 received the new treatment. Thus, the probability is 81/145."},{"text":"Inspection results by shift are shown below. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Shift\u003c/th>\u003cth>Nondefective\u003c/th>\u003cth>Defective\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Day\u003c/th>\u003ctd>190\u003c/td>\u003ctd>10\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">Evening\u003c/th>\u003ctd>135\u003c/td>\u003ctd>15\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">Night\u003c/th>\u003ctd>90\u003c/td>\u003ctd>10\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a product is defective, given that it was produced during the night shift?","answer":0.1,"displayAnswer":"10/100 = 0.10","method":"Conditional relative frequency","solution":"The night shift produced 90 + 10 = 100 products, and 10 were defective. Therefore, P(defective | night) = 10/100 = 0.10."},{"text":"Streaming subscriptions are summarized below. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Age group\u003c/th>\u003cth>Subscriber\u003c/th>\u003cth>Nonsubscriber\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">18–34\u003c/th>\u003ctd>84\u003c/td>\u003ctd>36\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">35 or older\u003c/th>\u003ctd>66\u003c/td>\u003ctd>54\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a person is age 18–34, given that the person is a subscriber?","answer":0.56,"displayAnswer":"84/150 = 0.56","method":"Conditional relative frequency","solution":"There are 84 + 66 = 150 subscribers, and 84 are age 18–34. Thus, the probability is 84/150 = 0.56."},{"text":"Course outcomes are summarized below. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Course format\u003c/th>\u003cth>Pass\u003c/th>\u003cth>Fail\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Online\u003c/th>\u003ctd>96\u003c/td>\u003ctd>24\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">In person\u003c/th>\u003ctd>126\u003c/td>\u003ctd>14\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a student fails, given that the student is in the online course?","answer":0.2,"displayAnswer":"24/120 = 0.20","method":"Conditional relative frequency","solution":"The online group contains 96 + 24 = 120 students, of whom 24 fail. Therefore, P(fail | online) = 24/120 = 0.20."},{"text":"Blood-type results are summarized below. \u003cdiv class=\"table-wrap\">\u003ctable>\u003cthead>\u003ctr>\u003cth>Gender\u003c/th>\u003cth>Type O\u003c/th>\u003cth>Not Type O\u003c/th>\u003c/tr>\u003c/thead>\u003ctbody>\u003ctr>\u003cth scope=\"row\">Male\u003c/th>\u003ctd>40\u003c/td>\u003ctd>60\u003c/td>\u003c/tr>\u003ctr>\u003cth scope=\"row\">Female\u003c/th>\u003ctd>55\u003c/td>\u003ctd>45\u003c/td>\u003c/tr>\u003c/tbody>\u003c/table>\u003c/div> What is the probability that a donor is female, given that the donor has Type O blood?","answer":0.5789473684210527,"displayAnswer":"55/95 = 11/19 ≈ 0.5789","method":"Conditional relative frequency","solution":"There are 40 + 55 = 95 Type O donors, and 55 are female. Thus, the probability is 55/95 = 11/19."}];
+    let order = [], position = 0, score = 0, locked = false;
+    function shuffle(array) { const result=[...array]; for(let i=result.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];} return result; }
+    function currentQuestion(){ return questions[order[position]]; }
+    function parseProbability(value){
+      const cleaned=value.trim().replace(/,/g,"");
+      if(/^[-+]?\d*\.?\d+%$/.test(cleaned)) return Number(cleaned.slice(0,-1))/100;
+      const fraction=cleaned.match(/^([-+]?\d*\.?\d+)\s*\/\s*([-+]?\d*\.?\d+)$/);
+      if(fraction && Number(fraction[2])!==0) return Number(fraction[1])/Number(fraction[2]);
+      return /^[-+]?\d*\.?\d+$/.test(cleaned) ? Number(cleaned) : NaN;
+    }
+    function normalizeText(value){ return value.toLowerCase().replace(/[.?!]/g,"").replace(/\s+/g," ").trim(); }
+    function isCorrect(q,value){
+      if(q.type==="text") return q.accepted.map(normalizeText).includes(normalizeText(value));
+      const entered=parseProbability(value);
+      return Number.isFinite(entered) && Math.abs(entered-q.answer) <= (q.tolerance || 0.0006);
+    }
+    function renderQuestion(){
+      locked=false; const q=currentQuestion();
+      document.getElementById("questionText").innerHTML=q.text;
+      document.getElementById("questionNumber").textContent="Question "+(position+1)+" of "+questions.length;
+      document.getElementById("scoreDisplay").textContent="Score: "+score;
+      document.getElementById("progressBar").style.width=(((position+1)/questions.length)*100)+"%";
+      const input=document.getElementById("answerInput"); input.value=""; input.disabled=false; input.className="";
+      input.placeholder=q.type==="text" ? "Enter independent or not independent" : "Enter a fraction, decimal, or percentage";
+      document.getElementById("answerNote").textContent=q.type==="text" ? "Enter independent or not independent." : "Enter a fraction, decimal, or percentage.";
+      const feedback=document.getElementById("feedback"); feedback.className="feedback"; feedback.innerHTML="";
+      document.getElementById("checkButton").disabled=false; document.getElementById("showButton").disabled=false; document.getElementById("nextButton").disabled=true; input.focus();
+    }
+    function finishAttempt(showOnly=false){
+      if(locked)return; const q=currentQuestion(), input=document.getElementById("answerInput"), correct=!showOnly&&isCorrect(q,input.value);
+      if(correct)score+=1; locked=true; input.disabled=true; input.className=correct?"correct":"incorrect";
+      document.getElementById("scoreDisplay").textContent="Score: "+score;
+      document.getElementById("checkButton").disabled=true; document.getElementById("showButton").disabled=true; document.getElementById("nextButton").disabled=false;
+      const feedback=document.getElementById("feedback"); feedback.className="feedback show "+(correct?"correct":"incorrect");
+      const heading=showOnly?("Answer: "+q.displayAnswer):correct?"Correct.":("Not quite. The answer is "+q.displayAnswer+".");
+      feedback.innerHTML='<h3>'+heading+'</h3><p><span class="method">Method: '+q.method+'.</span> '+q.solution+'</p>';
+      document.getElementById("nextButton").focus();
+    }
+    function nextQuestion(){
+      if(position===questions.length-1){document.getElementById("quiz").classList.add("hidden");document.getElementById("completion").classList.add("show");document.getElementById("finalScore").textContent="Your score is "+score+" out of "+questions.length+".";document.getElementById("restartButton").focus();return;}
+      position+=1; renderQuestion();
+    }
+    function startRound(){order=shuffle(questions.map((_,i)=>i));position=0;score=0;document.getElementById("quiz").classList.remove("hidden");document.getElementById("completion").classList.remove("show");renderQuestion();}
+    document.getElementById("checkButton").addEventListener("click",()=>finishAttempt(false));
+    document.getElementById("showButton").addEventListener("click",()=>finishAttempt(true));
+    document.getElementById("nextButton").addEventListener("click",nextQuestion);
+    document.getElementById("restartButton").addEventListener("click",startRound);
+    document.getElementById("answerInput").addEventListener("keydown",(event)=>{if(event.key==="Enter"&&!locked)finishAttempt(false);});
+    startRound();
+  </script>
+</body>
+</html>

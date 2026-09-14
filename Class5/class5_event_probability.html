@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 5 Practice: Probability of an Event</title>
+  <style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(860px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.65rem,4vw,2.3rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:16px; color:var(--muted); font-size:.94rem; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .question-card { min-height:190px; padding:24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:10px; }
+    .question-card h2 { margin:0 0 10px; color:var(--navy); font-size:1.08rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:16px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    tbody th { color:var(--navy); background:#f7fafc; text-align:left; }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input { width:min(100%,420px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1.05rem; }
+    .answer-area input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:14px 0 0; color:var(--muted); font-size:.88rem; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,860px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row { align-items:flex-start; flex-direction:column; gap:3px; } th,td { padding:7px 8px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">STAT 312 · Class 5 · Section 1</p>
+      <h1>Probability of an Event</h1>
+      <p class="subtitle">Calculate event probabilities for experiments with equally or unequally likely outcomes.</p>
+    </header>
+    <main>
+      <section id="quiz" class="quiz" aria-live="polite">
+        <div class="status-row"><span id="questionNumber">Question 1 of 10</span><span id="scoreDisplay">Score: 0</span></div>
+        <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+        <article class="question-card"><h2>Short-Answer Question</h2><div id="questionText"></div></article>
+        <div class="answer-area">
+          <label for="answerInput">Your answer</label>
+          <input id="answerInput" type="text" autocomplete="off" placeholder="Enter your answer">
+          <p id="answerNote" class="note">For a probability, enter a fraction, decimal, or percentage.</p>
+        </div>
+        <div class="actions">
+          <button id="checkButton" class="primary" type="button">Check Answer</button>
+          <button id="showButton" class="secondary" type="button">Show Solution</button>
+          <button id="nextButton" class="secondary" type="button" disabled>Next Question</button>
+        </div>
+        <div id="feedback" class="feedback" role="status"></div>
+      </section>
+      <section id="completion" class="completion" aria-live="polite">
+        <h2>Practice Round Complete</h2><p id="finalScore"></p>
+        <button id="restartButton" class="primary" type="button">Start a New Randomized Round</button>
+      </section>
+    </main>
+  </div>
+  <script>
+    const questions = [{"text":"A fair six-sided die is rolled once. What is the probability of obtaining a number greater than 4?","answer":0.3333333333333333,"displayAnswer":"1/3 ≈ 0.3333","method":"Equally likely outcomes","solution":"The favorable outcomes are {5, 6}, so P(A) = 2/6 = 1/3."},{"text":"Two fair coins are tossed. What is the probability of obtaining exactly one head?","answer":0.5,"displayAnswer":"1/2 = 0.50","method":"Equally likely outcomes","solution":"The equally likely outcomes are HH, HT, TH, and TT. Exactly one head occurs in HT and TH, so the probability is 2/4 = 1/2."},{"text":"A fair spinner has eight equal sectors labeled 1 through 8. What is the probability that the pointer lands on a prime number?","answer":0.5,"displayAnswer":"1/2 = 0.50","method":"Equally likely outcomes","solution":"The prime labels are 2, 3, 5, and 7. Thus, P(A) = 4/8 = 1/2."},{"text":"One card is drawn at random from a standard 52-card deck. What is the probability of drawing a face card (jack, queen, or king)?","answer":0.23076923076923078,"displayAnswer":"3/13 ≈ 0.2308","method":"Equally likely outcomes","solution":"There are 3 face-card ranks in each of 4 suits, giving 12 face cards. Therefore, P(A) = 12/52 = 3/13."},{"text":"A box contains 75 envelopes with $100, 150 envelopes with $25, and 275 envelopes with $10. One envelope is selected at random. What is the probability that it contains less than $100?","answer":0.85,"displayAnswer":"0.85","method":"Unequally likely recorded values","solution":"Although the three dollar amounts are not equally likely, the 500 envelopes are. There are 150 + 275 = 425 favorable envelopes, so P(A) = 425/500 = 0.85."},{"text":"A weighted die is constructed so that 1 and 2 are each twice as likely as 5, while 5 is three times as likely as each of 3, 4, and 6. What is the probability of rolling an even number?","answer":0.4444444444444444,"displayAnswer":"4/9 ≈ 0.4444","method":"Unequally likely outcomes","solution":"Let each of 3, 4, and 6 have weight 1. Then 5 has weight 3, and 1 and 2 each have weight 6. The total weight is 18; the even outcomes 2, 4, and 6 have weight 6 + 1 + 1 = 8. Thus, P(even) = 8/18 = 4/9."},{"text":"A spinner has four colors with probabilities P(red) = 0.15, P(blue) = 0.30, P(green) = 0.25, and P(yellow) = 0.30. What is the probability of landing on blue or green?","answer":0.55,"displayAnswer":"0.55","method":"Sum of sample-point weights","solution":"Blue and green are distinct outcomes, so P(blue or green) = 0.30 + 0.25 = 0.55."},{"text":"Among 240 manufactured components, 156 are Grade A, 54 are Grade B, and 30 are rejected. One component is selected at random. What is the probability that it is usable (Grade A or Grade B)?","answer":0.875,"displayAnswer":"7/8 = 0.875","method":"Relative frequency","solution":"There are 156 + 54 = 210 usable components, so P(usable) = 210/240 = 7/8 = 0.875."},{"text":"A filling machine produces an exactly filled package with probability 0.94, an underfilled package with probability 0.035, and an overfilled package with probability 0.025. What is the probability that a package is not exactly filled?","answer":0.06,"displayAnswer":"0.06","method":"Sum of unequal outcome probabilities","solution":"The non-exact outcomes are underfilled and overfilled. Their probabilities sum to 0.035 + 0.025 = 0.060."},{"text":"A raffle has 1,000 tickets: 20 win a small prize, 5 win a large prize, 1 wins the grand prize, and the remaining tickets win nothing. If one ticket is selected at random, what is the probability that it wins any prize?","answer":0.026,"displayAnswer":"0.026","method":"Relative frequency","solution":"There are 20 + 5 + 1 = 26 winning tickets, so P(any prize) = 26/1,000 = 0.026."}];
+    let order = [], position = 0, score = 0, locked = false;
+    function shuffle(array) { const result=[...array]; for(let i=result.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];} return result; }
+    function currentQuestion(){ return questions[order[position]]; }
+    function parseProbability(value){
+      const cleaned=value.trim().replace(/,/g,"");
+      if(/^[-+]?\d*\.?\d+%$/.test(cleaned)) return Number(cleaned.slice(0,-1))/100;
+      const fraction=cleaned.match(/^([-+]?\d*\.?\d+)\s*\/\s*([-+]?\d*\.?\d+)$/);
+      if(fraction && Number(fraction[2])!==0) return Number(fraction[1])/Number(fraction[2]);
+      return /^[-+]?\d*\.?\d+$/.test(cleaned) ? Number(cleaned) : NaN;
+    }
+    function normalizeText(value){ return value.toLowerCase().replace(/[.?!]/g,"").replace(/\s+/g," ").trim(); }
+    function isCorrect(q,value){
+      if(q.type==="text") return q.accepted.map(normalizeText).includes(normalizeText(value));
+      const entered=parseProbability(value);
+      return Number.isFinite(entered) && Math.abs(entered-q.answer) <= (q.tolerance || 0.0006);
+    }
+    function renderQuestion(){
+      locked=false; const q=currentQuestion();
+      document.getElementById("questionText").innerHTML=q.text;
+      document.getElementById("questionNumber").textContent="Question "+(position+1)+" of "+questions.length;
+      document.getElementById("scoreDisplay").textContent="Score: "+score;
+      document.getElementById("progressBar").style.width=(((position+1)/questions.length)*100)+"%";
+      const input=document.getElementById("answerInput"); input.value=""; input.disabled=false; input.className="";
+      input.placeholder=q.type==="text" ? "Enter independent or not independent" : "Enter a fraction, decimal, or percentage";
+      document.getElementById("answerNote").textContent=q.type==="text" ? "Enter independent or not independent." : "Enter a fraction, decimal, or percentage.";
+      const feedback=document.getElementById("feedback"); feedback.className="feedback"; feedback.innerHTML="";
+      document.getElementById("checkButton").disabled=false; document.getElementById("showButton").disabled=false; document.getElementById("nextButton").disabled=true; input.focus();
+    }
+    function finishAttempt(showOnly=false){
+      if(locked)return; const q=currentQuestion(), input=document.getElementById("answerInput"), correct=!showOnly&&isCorrect(q,input.value);
+      if(correct)score+=1; locked=true; input.disabled=true; input.className=correct?"correct":"incorrect";
+      document.getElementById("scoreDisplay").textContent="Score: "+score;
+      document.getElementById("checkButton").disabled=true; document.getElementById("showButton").disabled=true; document.getElementById("nextButton").disabled=false;
+      const feedback=document.getElementById("feedback"); feedback.className="feedback show "+(correct?"correct":"incorrect");
+      const heading=showOnly?("Answer: "+q.displayAnswer):correct?"Correct.":("Not quite. The answer is "+q.displayAnswer+".");
+      feedback.innerHTML='<h3>'+heading+'</h3><p><span class="method">Method: '+q.method+'.</span> '+q.solution+'</p>';
+      document.getElementById("nextButton").focus();
+    }
+    function nextQuestion(){
+      if(position===questions.length-1){document.getElementById("quiz").classList.add("hidden");document.getElementById("completion").classList.add("show");document.getElementById("finalScore").textContent="Your score is "+score+" out of "+questions.length+".";document.getElementById("restartButton").focus();return;}
+      position+=1; renderQuestion();
+    }
+    function startRound(){order=shuffle(questions.map((_,i)=>i));position=0;score=0;document.getElementById("quiz").classList.remove("hidden");document.getElementById("completion").classList.remove("show");renderQuestion();}
+    document.getElementById("checkButton").addEventListener("click",()=>finishAttempt(false));
+    document.getElementById("showButton").addEventListener("click",()=>finishAttempt(true));
+    document.getElementById("nextButton").addEventListener("click",nextQuestion);
+    document.getElementById("restartButton").addEventListener("click",startRound);
+    document.getElementById("answerInput").addEventListener("keydown",(event)=>{if(event.key==="Enter"&&!locked)finishAttempt(false);});
+    startRound();
+  </script>
+</body>
+</html>

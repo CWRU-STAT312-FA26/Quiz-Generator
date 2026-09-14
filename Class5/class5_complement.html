@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 5 Practice: Complementary Theorem</title>
+  <style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(860px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.65rem,4vw,2.3rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:16px; color:var(--muted); font-size:.94rem; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .question-card { min-height:190px; padding:24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:10px; }
+    .question-card h2 { margin:0 0 10px; color:var(--navy); font-size:1.08rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:16px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    tbody th { color:var(--navy); background:#f7fafc; text-align:left; }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input { width:min(100%,420px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1.05rem; }
+    .answer-area input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:14px 0 0; color:var(--muted); font-size:.88rem; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,860px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row { align-items:flex-start; flex-direction:column; gap:3px; } th,td { padding:7px 8px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">STAT 312 · Class 5 · Section 3</p>
+      <h1>Complementary Theorem</h1>
+      <p class="subtitle">Use P(Aᶜ) = 1 - P(A) to calculate the probability of a complementary event.</p>
+    </header>
+    <main>
+      <section id="quiz" class="quiz" aria-live="polite">
+        <div class="status-row"><span id="questionNumber">Question 1 of 10</span><span id="scoreDisplay">Score: 0</span></div>
+        <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+        <article class="question-card"><h2>Short-Answer Question</h2><div id="questionText"></div></article>
+        <div class="answer-area">
+          <label for="answerInput">Your answer</label>
+          <input id="answerInput" type="text" autocomplete="off" placeholder="Enter your answer">
+          <p id="answerNote" class="note">For a probability, enter a fraction, decimal, or percentage.</p>
+        </div>
+        <div class="actions">
+          <button id="checkButton" class="primary" type="button">Check Answer</button>
+          <button id="showButton" class="secondary" type="button">Show Solution</button>
+          <button id="nextButton" class="secondary" type="button" disabled>Next Question</button>
+        </div>
+        <div id="feedback" class="feedback" role="status"></div>
+      </section>
+      <section id="completion" class="completion" aria-live="polite">
+        <h2>Practice Round Complete</h2><p id="finalScore"></p>
+        <button id="restartButton" class="primary" type="button">Start a New Randomized Round</button>
+      </section>
+    </main>
+  </div>
+  <script>
+    const questions = [{"text":"The probability that it does not rain tomorrow is 0.32. What is the probability that it rains tomorrow?","answer":0.68,"displayAnswer":"0.68","method":"Complementary theorem","solution":"Rain and no rain are complementary events, so P(rain) = 1 - 0.32 = 0.68."},{"text":"A filling machine underfills a package with probability 0.001. What is the probability that a randomly selected package is not underfilled?","answer":0.999,"displayAnswer":"0.999","method":"Complementary theorem","solution":"P(not underfilled) = 1 - P(underfilled) = 1 - 0.001 = 0.999."},{"text":"A component is defective with probability 0.04. What is the probability that it is nondefective?","answer":0.96,"displayAnswer":"0.96","method":"Complementary theorem","solution":"Defective and nondefective are complementary, so P(nondefective) = 1 - 0.04 = 0.96."},{"text":"A fair six-sided die is rolled. What is the probability that the result is not a prime number?","answer":0.5,"displayAnswer":"1/2 = 0.50","method":"Complementary theorem","solution":"The prime results are {2, 3, 5}, so P(prime) = 3/6. Therefore, P(not prime) = 1 - 3/6 = 1/2."},{"text":"One card is drawn from a standard 52-card deck. What is the probability that the card is not a face card?","answer":0.7692307692307693,"displayAnswer":"10/13 ≈ 0.7692","method":"Complementary theorem","solution":"There are 12 face cards, so P(not a face card) = 1 - 12/52 = 40/52 = 10/13."},{"text":"A fair spinner has 12 equal sectors labeled 1 through 12. What is the probability that the result is not a multiple of 3?","answer":0.6666666666666666,"displayAnswer":"2/3 ≈ 0.6667","method":"Complementary theorem","solution":"The multiples of 3 are 3, 6, 9, and 12, so P(multiple of 3) = 4/12. Hence, P(not a multiple of 3) = 1 - 4/12 = 8/12 = 2/3."},{"text":"A diagnostic screening result is negative with probability 0.92. What is the probability that the result is positive?","answer":0.08,"displayAnswer":"0.08","method":"Complementary theorem","solution":"Positive and negative results are complementary, so P(positive) = 1 - 0.92 = 0.08."},{"text":"A flight arrives on time with probability 0.87. What is the probability that it does not arrive on time?","answer":0.13,"displayAnswer":"0.13","method":"Complementary theorem","solution":"P(not on time) = 1 - P(on time) = 1 - 0.87 = 0.13."},{"text":"In a population, 94% of adults own a smartphone. What is the probability that a randomly selected adult does not own a smartphone?","answer":0.06,"displayAnswer":"0.06","method":"Complementary theorem","solution":"P(no smartphone) = 1 - 0.94 = 0.06."},{"text":"In a batch of 200 packages, 18 fail inspection. If one package is selected at random, what is the probability that it does not fail inspection?","answer":0.91,"displayAnswer":"0.91","method":"Complementary theorem","solution":"P(fail) = 18/200 = 0.09. Therefore, P(not fail) = 1 - 0.09 = 0.91."}];
+    let order = [], position = 0, score = 0, locked = false;
+    function shuffle(array) { const result=[...array]; for(let i=result.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];} return result; }
+    function currentQuestion(){ return questions[order[position]]; }
+    function parseProbability(value){
+      const cleaned=value.trim().replace(/,/g,"");
+      if(/^[-+]?\d*\.?\d+%$/.test(cleaned)) return Number(cleaned.slice(0,-1))/100;
+      const fraction=cleaned.match(/^([-+]?\d*\.?\d+)\s*\/\s*([-+]?\d*\.?\d+)$/);
+      if(fraction && Number(fraction[2])!==0) return Number(fraction[1])/Number(fraction[2]);
+      return /^[-+]?\d*\.?\d+$/.test(cleaned) ? Number(cleaned) : NaN;
+    }
+    function normalizeText(value){ return value.toLowerCase().replace(/[.?!]/g,"").replace(/\s+/g," ").trim(); }
+    function isCorrect(q,value){
+      if(q.type==="text") return q.accepted.map(normalizeText).includes(normalizeText(value));
+      const entered=parseProbability(value);
+      return Number.isFinite(entered) && Math.abs(entered-q.answer) <= (q.tolerance || 0.0006);
+    }
+    function renderQuestion(){
+      locked=false; const q=currentQuestion();
+      document.getElementById("questionText").innerHTML=q.text;
+      document.getElementById("questionNumber").textContent="Question "+(position+1)+" of "+questions.length;
+      document.getElementById("scoreDisplay").textContent="Score: "+score;
+      document.getElementById("progressBar").style.width=(((position+1)/questions.length)*100)+"%";
+      const input=document.getElementById("answerInput"); input.value=""; input.disabled=false; input.className="";
+      input.placeholder=q.type==="text" ? "Enter independent or not independent" : "Enter a fraction, decimal, or percentage";
+      document.getElementById("answerNote").textContent=q.type==="text" ? "Enter independent or not independent." : "Enter a fraction, decimal, or percentage.";
+      const feedback=document.getElementById("feedback"); feedback.className="feedback"; feedback.innerHTML="";
+      document.getElementById("checkButton").disabled=false; document.getElementById("showButton").disabled=false; document.getElementById("nextButton").disabled=true; input.focus();
+    }
+    function finishAttempt(showOnly=false){
+      if(locked)return; const q=currentQuestion(), input=document.getElementById("answerInput"), correct=!showOnly&&isCorrect(q,input.value);
+      if(correct)score+=1; locked=true; input.disabled=true; input.className=correct?"correct":"incorrect";
+      document.getElementById("scoreDisplay").textContent="Score: "+score;
+      document.getElementById("checkButton").disabled=true; document.getElementById("showButton").disabled=true; document.getElementById("nextButton").disabled=false;
+      const feedback=document.getElementById("feedback"); feedback.className="feedback show "+(correct?"correct":"incorrect");
+      const heading=showOnly?("Answer: "+q.displayAnswer):correct?"Correct.":("Not quite. The answer is "+q.displayAnswer+".");
+      feedback.innerHTML='<h3>'+heading+'</h3><p><span class="method">Method: '+q.method+'.</span> '+q.solution+'</p>';
+      document.getElementById("nextButton").focus();
+    }
+    function nextQuestion(){
+      if(position===questions.length-1){document.getElementById("quiz").classList.add("hidden");document.getElementById("completion").classList.add("show");document.getElementById("finalScore").textContent="Your score is "+score+" out of "+questions.length+".";document.getElementById("restartButton").focus();return;}
+      position+=1; renderQuestion();
+    }
+    function startRound(){order=shuffle(questions.map((_,i)=>i));position=0;score=0;document.getElementById("quiz").classList.remove("hidden");document.getElementById("completion").classList.remove("show");renderQuestion();}
+    document.getElementById("checkButton").addEventListener("click",()=>finishAttempt(false));
+    document.getElementById("showButton").addEventListener("click",()=>finishAttempt(true));
+    document.getElementById("nextButton").addEventListener("click",nextQuestion);
+    document.getElementById("restartButton").addEventListener("click",startRound);
+    document.getElementById("answerInput").addEventListener("keydown",(event)=>{if(event.key==="Enter"&&!locked)finishAttempt(false);});
+    startRound();
+  </script>
+</body>
+</html>
