@@ -1,0 +1,157 @@
+---
+title: "README"
+subtitle: "Interactive Class 5-Class 7 Probability Practice"
+author: "Byung-Jun Kim"
+format: html
+---
+
+## Overview
+
+Welcome to the self-assessment portal for **Classes 5-7 (Probability Rules, Conditional Probability, Statistical Independence, Total Probability, and Bayes' Theorem)**. These seven practice activities develop fluency in calculating event probabilities and in selecting the correct probability rule for a given problem.
+
+The Class 5 and Class 6 sections contain 10 short-answer questions each. The Class 7 section contains 15 randomized main problems, each with three linked short-answer questions that build the numerator, denominator, and final Bayes probability.
+
+::: {.callout-note appearance="simple"}
+### 📋 Practice Structure
+
+1. **Class 5 — Probability Rules:** Probability of an event, probability of a union, and the complementary theorem.
+2. **Class 6 — Conditional Probability and Independence:** Conditional probability from frequency tables, the multiplication rule for intersections, and statistical independence.
+3. **Class 7 — Total Probability and Bayes' Theorem:** For each scenario, calculate the Bayes numerator with the multiplication rule, the denominator with total probability, and the final reversed conditional probability.
+4. **Randomized Practice:** Main problems appear one at a time in a different random order each round.
+5. **Flexible Probability Entry:** Numerical probabilities may be entered as fractions, decimals, percentages, or scientific notation.
+6. **Immediate Feedback:** Check each response, review the correct answer and explanation, and monitor your score.
+:::
+
+------------------------------------------------------------------------
+
+## Class 5: Probability Rules
+
+### Section 1: Probability of an Event
+
+- **Format:** Short-answer probability calculations
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Experiments with equally likely outcomes
+  - Experiments with unequally likely outcomes
+  - Probability as the sum of sample-point weights
+  - Probabilities obtained from counts and relative frequencies
+- **Goal:** Identify the relevant outcomes or weights and calculate the probability of an event correctly.
+
+[👉 Launch Class 5, Section 1: Probability of an Event](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class5/class5_event_probability.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Section 2: Probability of a Union
+
+- **Format:** Short-answer probability calculations
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Additive rule for two events
+  - Mutually exclusive events
+  - Overlapping events and subtraction of the intersection
+  - Three-event additive rule
+  - Union probabilities from counts and frequency tables
+- **Goal:** Distinguish mutually exclusive from overlapping events and apply the appropriate additive rule.
+
+[👉 Launch Class 5, Section 2: Probability of a Union](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class5/class5_union.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Section 3: Complementary Theorem
+
+- **Format:** Short-answer probability calculations
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Complementary events
+  - Using \(P(A^c)=1-P(A)\)
+  - Complements based on stated probabilities, equally likely outcomes, and observed counts
+- **Goal:** Recognize a complementary event and use the complementary theorem efficiently.
+
+[👉 Launch Class 5, Section 3: Complementary Theorem](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class5/class5_complement.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+------------------------------------------------------------------------
+
+## Class 6: Conditional Probability and Statistical Independence
+
+### Section 1: Conditional Probability with a Frequency Table
+
+- **Format:** Short-answer questions with two-way or multi-row frequency tables
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Identifying the conditioning group
+  - Restricting the denominator to the given condition
+  - Computing conditional relative frequencies
+  - Distinguishing \(P(A\mid B)\) from \(P(B\mid A)\)
+- **Goal:** Read a frequency table correctly and calculate a conditional probability using the appropriate restricted denominator.
+
+[👉 Launch Class 6, Section 1: Conditional Probability](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class6/class6_conditional_frequency_table.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Section 2: Multiplication Rule for an Intersection
+
+- **Format:** Short-answer probability calculations
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - \(P(A\cap B)=P(B\mid A)P(A)\)
+  - Intersections in sequential experiments
+  - Sampling without replacement
+  - Translating "both" and "and" into an intersection
+- **Goal:** Use a marginal probability and the correct conditional probability to calculate the probability that both events occur.
+
+[👉 Launch Class 6, Section 2: Multiplication Rule](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class6/class6_intersection_multiplication.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Section 3: Statistical Independence
+
+- **Format:** Short-answer classifications and probability calculations
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Conditional-probability criterion for independence
+  - Product criterion \(P(A\cap B)=P(A)P(B)\)
+  - Independence from probability statements and frequency tables
+  - Difference between mutually exclusive and independent events
+  - Product rule for multiple independent events
+- **Goal:** Determine whether events are independent and apply the product rule only when independence is justified or given.
+
+[👉 Launch Class 6, Section 3: Statistical Independence](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class6/class6_statistical_independence.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+------------------------------------------------------------------------
+
+## Class 7: Total Probability and Bayes' Theorem
+
+### Guided Bayes Practice: Numerator, Denominator, and Posterior
+
+- **Format:** 15 randomized main problems with 3 linked short-answer questions per problem
+- **Number of Questions:** 15 main problems; 45 total subquestions
+- **Topics Covered:**
+  - Multiplication rule for the Bayes numerator
+  - Total Probability Theorem for the Bayes denominator
+  - Bayes' Theorem for reversing a conditional probability
+  - Two-branch and multi-branch probability trees
+  - Base-rate effects in screening and classification
+- **Question Sequence:**
+  1. Calculate the relevant joint probability.
+  2. Calculate the total probability of the observed event.
+  3. Divide the two results to obtain the posterior probability.
+- **Goal:** Recognize Bayes' Theorem as a connected three-step calculation rather than an isolated formula.
+
+[👉 Launch Class 7: Total Probability and Bayes' Theorem](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class7/class7_total_probability_bayes.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+------------------------------------------------------------------------
+
+## How the Practice Activities Work
+
+1. Open a section using its corresponding button.
+2. Main problems are randomly ordered at the beginning of each round.
+3. Only one problem or subquestion is displayed at a time.
+4. In the Class 7 activity, complete the three subquestions in order so the numerator and denominator feed directly into Bayes' Theorem.
+5. Enter your response and select **Check Answer** to receive immediate feedback.
+6. For numerical probabilities, you may enter an equivalent fraction, decimal, percentage, or scientific notation.
+7. Use **Show Solution** when you need to review the expected answer and reasoning.
+8. Continue until every problem in the section has appeared once.
+9. At the end of the round, review your score and restart for a newly randomized order.
+
+## Instructions for Students
+
+1. **Self-Paced Practice:** These activities are intended for self-study and concept review. You may attempt each section as many times as you like.
+2. **Identify the Event First:** Translate words such as *or*, *and*, *given that*, and *not* into the appropriate event operation before calculating.
+3. **Show Your Own Work:** The quiz records only the final answer, so write the relevant formula and intermediate calculations separately.
+4. **Use Sufficient Precision:** When entering a decimal approximation, use at least four decimal places for nonterminating values.
+5. **Interpret the Condition Carefully:** In a conditional probability, the event after “given that” determines the restricted denominator.
+6. **Follow the Bayes Scaffold:** For Class 7, calculate the numerator with the multiplication rule, calculate the denominator with total probability, and then divide.
+7. **Questions & Feedback:** If you encounter an unexpected result or need further clarification, bring your question to class or office hours.
+

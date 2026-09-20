@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 7 Practice: Total Probability and Bayes' Theorem</title>
+  <style>
+    :root {
+      --navy:#17365d;
+      --blue:#2f6fb0;
+      --pale-blue:#eef5fc;
+      --ink:#1f2937;
+      --muted:#5f6b7a;
+      --success:#16794b;
+      --success-bg:#ecf8f1;
+      --error:#b42318;
+      --error-bg:#fff1f0;
+      --paper:#fff;
+      --gold:#9a6700;
+      --gold-bg:#fff8df;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      min-height:100vh;
+      color:var(--ink);
+      background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      line-height:1.55;
+    }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero {
+      padding:28px 30px;
+      color:white;
+      background:linear-gradient(125deg,var(--navy),#285d93);
+      border-radius:18px 18px 0 0;
+      box-shadow:0 16px 45px rgba(23,54,93,.16);
+    }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:8px; color:var(--muted); font-size:.94rem; }
+    .step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .scenario-card ul { margin:8px 0 2px; padding-left:23px; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; letter-spacing:.02em; }
+    .question-card { min-height:150px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .formula-hint { margin-top:12px !important; color:var(--muted); font-size:.93rem !important; }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input { width:min(100%,440px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1.05rem; }
+    .answer-area input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:14px 0 0; color:var(--muted); font-size:.88rem; }
+    @media (max-width:620px) {
+      .page { width:min(100% - 20px,940px); margin:10px auto; }
+      .hero,main { padding:22px 18px; }
+      .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; }
+      .scenario-card,.question-card { padding:19px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">STAT 312 · Class 7 · Guided Practice</p>
+      <h1>Total Probability and Bayes' Theorem</h1>
+      <p class="subtitle">For each scenario: find the numerator, find the denominator, and then reverse the condition.</p>
+    </header>
+    <main>
+      <section id="quiz" class="quiz" aria-live="polite">
+        <div class="status-row">
+          <span id="problemNumber">Main Problem 1 of 15</span>
+          <span id="scoreDisplay">Score: 0 / 45</span>
+        </div>
+        <div class="step-row">
+          <span id="stepNumber">Subquestion 1 of 3</span>
+          <span id="stepMethod">Multiplication Rule</span>
+        </div>
+        <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+        <article class="scenario-card">
+          <span id="sourceTag" class="tag">Lecture-based example</span>
+          <h2 id="scenarioTitle"></h2>
+          <div id="scenarioText"></div>
+        </article>
+        <article class="question-card">
+          <h3 id="questionHeading">Step 1: Bayes Numerator</h3>
+          <p id="questionText"></p>
+          <p id="formulaHint" class="formula-hint"></p>
+        </article>
+        <div class="answer-area">
+          <label for="answerInput">Your probability</label>
+          <input id="answerInput" type="text" inputmode="decimal" autocomplete="off" placeholder="Enter a fraction, decimal, or percentage">
+          <p class="note">Equivalent fractions, decimals, percentages, and scientific notation are accepted. Use at least four decimal places when rounding.</p>
+        </div>
+        <div class="actions">
+          <button id="checkButton" class="primary" type="button">Check Answer</button>
+          <button id="showButton" class="secondary" type="button">Show Solution</button>
+          <button id="nextButton" class="secondary" type="button" disabled>Next Subquestion</button>
+        </div>
+        <div id="feedback" class="feedback" role="status"></div>
+      </section>
+      <section id="completion" class="completion" aria-live="polite">
+        <h2>Practice Round Complete</h2>
+        <p id="finalScore"></p>
+        <p>You completed 15 Bayes scenarios and 45 linked short-answer questions.</p>
+        <button id="restartButton" class="primary" type="button">Start a New Randomized Round</button>
+      </section>
+    </main>
+  </div>
+  <script>
+    const problems = [
+      {
+        title:"John and Jim Draw Without Replacement",
+        source:"Lecture-based example",
+        scenario:"<p>A bag contains 3 red balls and 7 blue balls. John draws first and Jim draws second, without replacement.</p><ul><li><strong>R₁</strong>: John draws red</li><li><strong>R₂</strong>: Jim draws red</li></ul><p>Given that Jim drew a red ball, find the probability that John also drew a red ball.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute the numerator P(R₁ ∩ R₂).",hint:"Use P(R₁ ∩ R₂) = P(R₁)P(R₂ | R₁).",answer:1/15,display:"1/15 ≈ 0.0667",solution:"P(R₁ ∩ R₂) = (3/10)(2/9) = 6/90 = 1/15."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute the denominator P(R₂), the overall probability that Jim draws red.",hint:"Add the two nonoverlapping paths R₁ → R₂ and B₁ → R₂.",answer:0.3,display:"3/10 = 0.30",solution:"P(R₂) = (3/10)(2/9) + (7/10)(3/9) = 6/90 + 21/90 = 27/90 = 3/10."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(R₁ | R₂).",hint:"Divide the numerator from Step 1 by the denominator from Step 2.",answer:2/9,display:"2/9 ≈ 0.2222",solution:"P(R₁ | R₂) = P(R₁ ∩ R₂)/P(R₂) = (1/15)/(3/10) = 2/9."}
+        ]
+      },
+      {
+        title:"Transferring a Ball Between Two Bags",
+        source:"Lecture-based example",
+        scenario:"<p>Bag 1 contains 3 black and 4 white balls. Bag 2 contains 5 black and 3 white balls. One ball is transferred from Bag 1 to Bag 2, and then one ball is drawn from Bag 2.</p><ul><li><strong>B₁</strong>: the transferred ball is black</li><li><strong>B₂</strong>: the ball drawn from Bag 2 is black</li></ul><p>Given that the final draw is black, find the probability that the transferred ball was black.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(B₁ ∩ B₂).",hint:"If a black ball is transferred, Bag 2 has 6 black balls among 9 total.",answer:2/7,display:"2/7 ≈ 0.2857",solution:"P(B₁ ∩ B₂) = P(B₁)P(B₂ | B₁) = (3/7)(6/9) = 18/63 = 2/7."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(B₂).",hint:"Add the paths B₁ → B₂ and W₁ → B₂.",answer:38/63,display:"38/63 ≈ 0.6032",solution:"P(B₂) = (3/7)(6/9) + (4/7)(5/9) = 18/63 + 20/63 = 38/63."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(B₁ | B₂).",hint:"Use the joint probability from Step 1 over the total probability from Step 2.",answer:9/19,display:"9/19 ≈ 0.4737",solution:"P(B₁ | B₂) = (2/7)/(38/63) = 18/38 = 9/19."}
+        ]
+      },
+      {
+        title:"Flights with XM Radio",
+        source:"Lecture-based example",
+        scenario:"<p>Of all flights, 30% are morning, 55% are afternoon, and 15% are evening. The probability of XM radio is 0.70 for morning flights, 0.70 for afternoon flights, and 0.35 for evening flights.</p><p>Given that a randomly selected flight has XM radio, find the probability that it is a morning flight.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Morning ∩ XM).",hint:"Multiply the morning-flight proportion by the conditional XM rate for morning flights.",answer:0.21,display:"0.21",solution:"P(M ∩ XM) = P(M)P(XM | M) = (0.30)(0.70) = 0.21."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute the overall probability P(XM).",hint:"Add the morning, afternoon, and evening paths that end at XM.",answer:0.6475,display:"0.6475",solution:"P(XM) = (0.30)(0.70) + (0.55)(0.70) + (0.15)(0.35) = 0.21 + 0.385 + 0.0525 = 0.6475."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Morning | XM).",hint:"Divide P(Morning ∩ XM) by P(XM).",answer:84/259,display:"84/259 ≈ 0.3243",solution:"P(M | XM) = 0.21/0.6475 = 84/259 ≈ 0.3243."}
+        ]
+      },
+      {
+        title:"Red Candy and the Selected Bag",
+        source:"Lecture-based example",
+        scenario:"<p>A fair coin selects Bag I or Bag II. Bag I contains 2 red and 2 blue candies; Bag II contains 1 red and 3 blue candies. One candy is drawn from the selected bag.</p><p>Given that the candy is red, find the probability that Bag I was selected.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Bag I ∩ Red).",hint:"Multiply the probability of selecting Bag I by the probability of red from Bag I.",answer:0.25,display:"1/4 = 0.25",solution:"P(I ∩ R) = P(I)P(R | I) = (1/2)(2/4) = 1/4."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Red).",hint:"Add the red-candy paths through Bag I and Bag II.",answer:0.375,display:"3/8 = 0.375",solution:"P(R) = (1/2)(1/2) + (1/2)(1/4) = 1/4 + 1/8 = 3/8."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Bag I | Red).",hint:"Divide the Bag-I-and-red path by the total red probability.",answer:2/3,display:"2/3 ≈ 0.6667",solution:"P(I | R) = (1/4)/(3/8) = 2/3."}
+        ]
+      },
+      {
+        title:"A Painting Judged to Be Original",
+        source:"Lecture-based example",
+        scenario:"<p>In a gallery, 25% of paintings are fake and 75% are original. A collector misclassifies 15% of fake paintings as original and correctly classifies 85% of original paintings as original.</p><p>Given that the collector judges a painting to be original, find the probability that it is actually fake.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Fake ∩ Judged Original).",hint:"Use P(Fake)P(Judged Original | Fake).",answer:0.0375,display:"0.0375",solution:"P(F ∩ Jₒ) = (0.25)(0.15) = 0.0375."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Judged Original).",hint:"A painting judged original may actually be fake or actually be original.",answer:0.675,display:"0.675",solution:"P(Jₒ) = (0.25)(0.15) + (0.75)(0.85) = 0.0375 + 0.6375 = 0.675."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Fake | Judged Original).",hint:"Divide the false-original joint path by all judged-original outcomes.",answer:1/18,display:"1/18 ≈ 0.0556",solution:"P(F | Jₒ) = 0.0375/0.675 = 1/18 ≈ 0.0556."}
+        ]
+      },
+      {
+        title:"Positive Result for a Rare Illness",
+        source:"Lecture-based example",
+        scenario:"<p>The prevalence of an illness is 0.0001. A screening test has sensitivity 0.99 and specificity 0.95, so its false-positive rate is 0.05.</p><p>Given that a person tests positive, find the probability that the person has the illness.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Illness ∩ Positive).",hint:"Multiply prevalence by sensitivity.",answer:0.000099,tolerance:0.000005,display:"0.000099",solution:"P(D ∩ +) = P(D)P(+ | D) = (0.0001)(0.99) = 0.000099."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute the overall positive-test probability P(Positive).",hint:"Include both true-positive and false-positive paths.",answer:0.050094,display:"0.050094",solution:"P(+) = (0.0001)(0.99) + (0.9999)(0.05) = 0.000099 + 0.049995 = 0.050094."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Illness | Positive).",hint:"Divide the true-positive joint probability by all positive results.",answer:0.000099/0.050094,display:"≈ 0.001976 (about 0.1976%)",solution:"P(D | +) = 0.000099/0.050094 ≈ 0.001976, or about 0.1976%."}
+        ]
+      },
+      {
+        title:"Defective Part and Production Line",
+        source:"New application",
+        scenario:"<p>A factory produces 40% of its parts on Line A, 35% on Line B, and 25% on Line C. Their defect rates are 0.02, 0.04, and 0.07, respectively.</p><p>Given that a part is defective, find the probability that it came from Line C.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Line C ∩ Defective).",hint:"Multiply Line C's production share by its defect rate.",answer:0.0175,display:"0.0175",solution:"P(C ∩ D) = (0.25)(0.07) = 0.0175."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Defective).",hint:"Add the defective paths through Lines A, B, and C.",answer:0.0395,display:"0.0395",solution:"P(D) = (0.40)(0.02) + (0.35)(0.04) + (0.25)(0.07) = 0.008 + 0.014 + 0.0175 = 0.0395."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Line C | Defective).",hint:"Divide Line C's defective path by the overall defect probability.",answer:35/79,display:"35/79 ≈ 0.4430",solution:"P(C | D) = 0.0175/0.0395 = 35/79 ≈ 0.4430."}
+        ]
+      },
+      {
+        title:"Flagged Email and Spam",
+        source:"New application",
+        scenario:"<p>Twelve percent of incoming email is spam. A filter flags 95% of spam messages and also flags 4% of legitimate messages.</p><p>Given that an email is flagged, find the probability that it is spam.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Spam ∩ Flagged).",hint:"Multiply the spam base rate by the filter's sensitivity to spam.",answer:0.114,display:"0.114",solution:"P(S ∩ F) = (0.12)(0.95) = 0.114."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Flagged).",hint:"A flagged message may be spam or legitimate.",answer:0.1492,display:"0.1492",solution:"P(F) = (0.12)(0.95) + (0.88)(0.04) = 0.114 + 0.0352 = 0.1492."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Spam | Flagged).",hint:"Divide flagged spam by all flagged email.",answer:285/373,display:"285/373 ≈ 0.7641",solution:"P(S | F) = 0.114/0.1492 = 285/373 ≈ 0.7641."}
+        ]
+      },
+      {
+        title:"Late Component and Supplier",
+        source:"New application",
+        scenario:"<p>A company buys 50% of its components from Supplier 1, 30% from Supplier 2, and 20% from Supplier 3. Their late-delivery rates are 0.03, 0.08, and 0.12, respectively.</p><p>Given that a component arrived late, find the probability that it came from Supplier 3.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Supplier 3 ∩ Late).",hint:"Multiply Supplier 3's share by its late rate.",answer:0.024,display:"0.024",solution:"P(S₃ ∩ L) = (0.20)(0.12) = 0.024."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Late).",hint:"Add the late-delivery paths through all three suppliers.",answer:0.063,display:"0.063",solution:"P(L) = (0.50)(0.03) + (0.30)(0.08) + (0.20)(0.12) = 0.015 + 0.024 + 0.024 = 0.063."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Supplier 3 | Late).",hint:"Divide Supplier 3's late path by the overall late probability.",answer:8/21,display:"8/21 ≈ 0.3810",solution:"P(S₃ | L) = 0.024/0.063 = 8/21 ≈ 0.3810."}
+        ]
+      },
+      {
+        title:"Fraudulent Transaction and Payment Method",
+        source:"New application",
+        scenario:"<p>Sixty percent of transactions use a credit card, 30% use a debit card, and 10% use a digital wallet. Their fraud rates are 0.005, 0.01, and 0.02, respectively.</p><p>Given that a transaction is fraudulent, find the probability that it used a digital wallet.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Digital Wallet ∩ Fraud).",hint:"Multiply the digital-wallet share by its fraud rate.",answer:0.002,display:"0.002",solution:"P(W ∩ F) = (0.10)(0.02) = 0.002."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Fraud).",hint:"Add the fraud paths through all three payment methods.",answer:0.008,display:"0.008",solution:"P(F) = (0.60)(0.005) + (0.30)(0.01) + (0.10)(0.02) = 0.003 + 0.003 + 0.002 = 0.008."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Digital Wallet | Fraud).",hint:"Divide digital-wallet fraud by all fraudulent transactions.",answer:0.25,display:"1/4 = 0.25",solution:"P(W | F) = 0.002/0.008 = 1/4 = 0.25."}
+        ]
+      },
+      {
+        title:"High-Temperature Alert and Machine",
+        source:"New application",
+        scenario:"<p>Machine A produces 45% of items, Machine B produces 35%, and Machine C produces 20%. A high-temperature alert occurs for 10% of A's items, 6% of B's items, and 20% of C's items.</p><p>Given that an alert occurs, find the probability that the item came from Machine C.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Machine C ∩ Alert).",hint:"Multiply Machine C's production share by its alert rate.",answer:0.04,display:"0.04",solution:"P(C ∩ A) = (0.20)(0.20) = 0.04."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Alert).",hint:"Add the alert paths through Machines A, B, and C.",answer:0.106,display:"0.106",solution:"P(A) = (0.45)(0.10) + (0.35)(0.06) + (0.20)(0.20) = 0.045 + 0.021 + 0.040 = 0.106."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Machine C | Alert).",hint:"Divide Machine C's alert path by the overall alert probability.",answer:20/53,display:"20/53 ≈ 0.3774",solution:"P(C | A) = 0.04/0.106 = 20/53 ≈ 0.3774."}
+        ]
+      },
+      {
+        title:"Scholarship Recipient and Academic Division",
+        source:"New application",
+        scenario:"<p>Among applicants, 50% are from Engineering, 30% from Natural Sciences, and 20% from Arts. The scholarship selection rates are 0.08, 0.12, and 0.15, respectively.</p><p>Given that an applicant receives the scholarship, find the probability that the applicant is from Arts.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Arts ∩ Selected).",hint:"Multiply the Arts applicant share by the Arts selection rate.",answer:0.03,display:"0.03",solution:"P(A ∩ S) = (0.20)(0.15) = 0.03."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Selected).",hint:"Add the selection paths through all three academic divisions.",answer:0.106,display:"0.106",solution:"P(S) = (0.50)(0.08) + (0.30)(0.12) + (0.20)(0.15) = 0.040 + 0.036 + 0.030 = 0.106."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Arts | Selected).",hint:"Divide the Arts-and-selected path by the overall selection probability.",answer:15/53,display:"15/53 ≈ 0.2830",solution:"P(A | S) = 0.03/0.106 = 15/53 ≈ 0.2830."}
+        ]
+      },
+      {
+        title:"Damaged Package and Shipping Center",
+        source:"New application",
+        scenario:"<p>A retailer ships 25% of packages from the North center, 45% from the South center, and 30% from the West center. Their damage rates are 0.04, 0.02, and 0.05, respectively.</p><p>Given that a package is damaged, find the probability that it came from the West center.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(West ∩ Damaged).",hint:"Multiply the West center's shipping share by its damage rate.",answer:0.015,display:"0.015",solution:"P(W ∩ D) = (0.30)(0.05) = 0.015."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Damaged).",hint:"Add the damaged-package paths through all three centers.",answer:0.034,display:"0.034",solution:"P(D) = (0.25)(0.04) + (0.45)(0.02) + (0.30)(0.05) = 0.010 + 0.009 + 0.015 = 0.034."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(West | Damaged).",hint:"Divide West's damaged path by the overall damage probability.",answer:15/34,display:"15/34 ≈ 0.4412",solution:"P(W | D) = 0.015/0.034 = 15/34 ≈ 0.4412."}
+        ]
+      },
+      {
+        title:"Premium Subscription and Signup Channel",
+        source:"New application",
+        scenario:"<p>Half of customers sign up on the website, 30% through the mobile app, and 20% in a store. The premium-plan rates are 0.25, 0.40, and 0.60, respectively.</p><p>Given that a customer chooses the premium plan, find the probability that the customer signed up in a store.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Store ∩ Premium).",hint:"Multiply the store signup share by the store premium rate.",answer:0.12,display:"0.12",solution:"P(S ∩ P) = (0.20)(0.60) = 0.12."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Premium).",hint:"Add the premium-plan paths through all three signup channels.",answer:0.365,display:"0.365",solution:"P(P) = (0.50)(0.25) + (0.30)(0.40) + (0.20)(0.60) = 0.125 + 0.120 + 0.120 = 0.365."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Store | Premium).",hint:"Divide the store-and-premium path by the overall premium probability.",answer:24/73,display:"24/73 ≈ 0.3288",solution:"P(S | P) = 0.12/0.365 = 24/73 ≈ 0.3288."}
+        ]
+      },
+      {
+        title:"Detected Animal and Habitat Zone",
+        source:"New application",
+        scenario:"<p>In a wildlife study, 20% of tagged animals are in Zone A, 50% in Zone B, and 30% in Zone C. The detection probabilities are 0.80, 0.50, and 0.70, respectively.</p><p>Given that an animal is detected, find the probability that it is in Zone A.</p>",
+        steps:[
+          {heading:"Step 1: Bayes Numerator",method:"Multiplication Rule",prompt:"Compute P(Zone A ∩ Detected).",hint:"Multiply the Zone A proportion by its detection probability.",answer:0.16,display:"0.16",solution:"P(A ∩ D) = (0.20)(0.80) = 0.16."},
+          {heading:"Step 2: Bayes Denominator",method:"Total Probability Theorem",prompt:"Compute P(Detected).",hint:"Add the detected paths through Zones A, B, and C.",answer:0.62,display:"0.62",solution:"P(D) = (0.20)(0.80) + (0.50)(0.50) + (0.30)(0.70) = 0.16 + 0.25 + 0.21 = 0.62."},
+          {heading:"Step 3: Reverse the Condition",method:"Bayes' Theorem",prompt:"Compute P(Zone A | Detected).",hint:"Divide Zone A's detected path by the overall detection probability.",answer:8/31,display:"8/31 ≈ 0.2581",solution:"P(A | D) = 0.16/0.62 = 8/31 ≈ 0.2581."}
+        ]
+      }
+    ];
+
+    let order = [];
+    let problemPosition = 0;
+    let stepPosition = 0;
+    let score = 0;
+    let locked = false;
+
+    function shuffle(array) {
+      const result = [...array];
+      for (let i = result.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    }
+
+    function currentProblem() { return problems[order[problemPosition]]; }
+    function currentStep() { return currentProblem().steps[stepPosition]; }
+
+    function parseNumberPart(value) {
+      const numberPattern = /^[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i;
+      return numberPattern.test(value) ? Number(value) : NaN;
+    }
+
+    function parseProbability(value) {
+      const cleaned = value.trim().replace(/,/g,"").replace(/\s+/g,"");
+      if (cleaned.endsWith("%")) {
+        const percent = parseNumberPart(cleaned.slice(0,-1));
+        return Number.isFinite(percent) ? percent / 100 : NaN;
+      }
+      const fraction = cleaned.split("/");
+      if (fraction.length === 2) {
+        const numerator = parseNumberPart(fraction[0]);
+        const denominator = parseNumberPart(fraction[1]);
+        return Number.isFinite(numerator) && Number.isFinite(denominator) && denominator !== 0 ? numerator / denominator : NaN;
+      }
+      return parseNumberPart(cleaned);
+    }
+
+    function isCorrect(step,value) {
+      const entered = parseProbability(value);
+      const tolerance = step.tolerance ?? 0.00006;
+      return Number.isFinite(entered) && Math.abs(entered - step.answer) <= tolerance;
+    }
+
+    function updateNextButton() {
+      const button = document.getElementById("nextButton");
+      if (stepPosition < 2) button.textContent = "Next Subquestion";
+      else if (problemPosition < problems.length - 1) button.textContent = "Next Main Problem";
+      else button.textContent = "Finish Round";
+    }
+
+    function renderStep() {
+      locked = false;
+      const problem = currentProblem();
+      const step = currentStep();
+      const completedSteps = problemPosition * 3 + stepPosition;
+
+      document.getElementById("problemNumber").textContent = "Main Problem " + (problemPosition + 1) + " of " + problems.length;
+      document.getElementById("stepNumber").textContent = "Subquestion " + (stepPosition + 1) + " of 3";
+      document.getElementById("stepMethod").textContent = step.method;
+      document.getElementById("scoreDisplay").textContent = "Score: " + score + " / " + (problems.length * 3);
+      document.getElementById("progressBar").style.width = (((completedSteps + 1) / (problems.length * 3)) * 100) + "%";
+      document.getElementById("sourceTag").textContent = problem.source;
+      document.getElementById("scenarioTitle").textContent = problem.title;
+      document.getElementById("scenarioText").innerHTML = problem.scenario;
+      document.getElementById("questionHeading").textContent = step.heading;
+      document.getElementById("questionText").textContent = step.prompt;
+      document.getElementById("formulaHint").textContent = step.hint;
+
+      const input = document.getElementById("answerInput");
+      input.value = "";
+      input.disabled = false;
+      input.className = "";
+      const feedback = document.getElementById("feedback");
+      feedback.className = "feedback";
+      feedback.innerHTML = "";
+      document.getElementById("checkButton").disabled = false;
+      document.getElementById("showButton").disabled = false;
+      document.getElementById("nextButton").disabled = true;
+      updateNextButton();
+      input.focus();
+    }
+
+    function finishAttempt(showOnly = false) {
+      if (locked) return;
+      const step = currentStep();
+      const input = document.getElementById("answerInput");
+      const correct = !showOnly && isCorrect(step,input.value);
+      if (correct) score += 1;
+      locked = true;
+      input.disabled = true;
+      input.className = correct ? "correct" : "incorrect";
+      document.getElementById("scoreDisplay").textContent = "Score: " + score + " / " + (problems.length * 3);
+      document.getElementById("checkButton").disabled = true;
+      document.getElementById("showButton").disabled = true;
+      document.getElementById("nextButton").disabled = false;
+
+      const feedback = document.getElementById("feedback");
+      feedback.className = "feedback show " + (showOnly ? "solution" : correct ? "correct" : "incorrect");
+      const heading = showOnly ? "Solution: " + step.display : correct ? "Correct." : "Not quite. The answer is " + step.display + ".";
+      feedback.innerHTML = "<h3>" + heading + "</h3><p><span class=\"method\">Method: " + step.method + ".</span> " + step.solution + "</p>";
+      document.getElementById("nextButton").focus();
+    }
+
+    function nextStep() {
+      if (stepPosition < 2) {
+        stepPosition += 1;
+        renderStep();
+        return;
+      }
+      if (problemPosition < problems.length - 1) {
+        problemPosition += 1;
+        stepPosition = 0;
+        renderStep();
+        return;
+      }
+      document.getElementById("quiz").classList.add("hidden");
+      document.getElementById("completion").classList.add("show");
+      document.getElementById("finalScore").textContent = "Your score is " + score + " out of " + (problems.length * 3) + ".";
+      document.getElementById("restartButton").focus();
+    }
+
+    function startRound() {
+      order = shuffle(problems.map((_,index) => index));
+      problemPosition = 0;
+      stepPosition = 0;
+      score = 0;
+      document.getElementById("quiz").classList.remove("hidden");
+      document.getElementById("completion").classList.remove("show");
+      renderStep();
+    }
+
+    document.getElementById("checkButton").addEventListener("click",() => finishAttempt(false));
+    document.getElementById("showButton").addEventListener("click",() => finishAttempt(true));
+    document.getElementById("nextButton").addEventListener("click",nextStep);
+    document.getElementById("restartButton").addEventListener("click",startRound);
+    document.getElementById("answerInput").addEventListener("keydown",event => {
+      if (event.key === "Enter" && !locked) finishAttempt(false);
+    });
+
+    startRound();
+  </script>
+</body>
+</html>
