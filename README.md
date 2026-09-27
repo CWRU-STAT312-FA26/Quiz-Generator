@@ -40,3 +40,18 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 
 ### Class 7: Total Probability and Bayes' Theorem
 - [Guided Bayes Practice: Numerator, Denominator, and Posterior (15 randomized main problems; 3 linked short-answer questions each)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class7/class7_total_probability_bayes.html)
+
+### Class 8: Discrete Random Variables, PMF, CDF, Expectation, and Variance
+- [Probability Mass Functions (PMF)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class8/class8_pmf.html)
+- [Cumulative Distribution Functions (CDF)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class8/class8_cdf.html)
+- [Expectation and Variance](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class8/class8_expectation_variance.html)
+
+### Class 9: Binomial and Poisson Distributions
+- [Binomial Probability Calculations](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class9/class9_binomial_probabilities.html)
+- [From the Binomial PMF to Probabilities](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class9/class9_binomial_pmf_bridge.html)
+- [Binomial Distribution with a TI-84 Calculator](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class9/class9_binomial_ti84.html)
+- [Binomial Distribution in R](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class9/class9_binomial_r.html)
+- [Poisson Probability Calculations](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class9/class9_poisson_probabilities.html)
+- [Scaling the Poisson Rate](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class9/class9_poisson_rate_scaling.html)
+- [Poisson Distribution with a TI-84 Calculator](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class9/class9_poisson_ti84.html)
+- [Poisson Distribution in R](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class9/class9_poisson_r.html)

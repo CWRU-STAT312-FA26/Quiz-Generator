@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 9 Practice: Poisson Functions on the TI-84</title>
+  <style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">STAT 312 · Class 9 · Poisson · Section 2</p>
+      <h1>Poisson Functions on the TI-84</h1>
+      <p class="subtitle">Translate probability notation into the correct poissonpdf or poissoncdf expression.</p>
+    </header>
+    <main>
+      <section id="quiz" class="quiz" aria-live="polite">
+        <div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay"></span></div>
+        <div class="step-row"><span id="stepNumber"></span><span id="stepMethod"></span></div>
+        <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+        <article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle"></h2><div id="scenarioText"></div></article>
+        <article class="question-card"><h3 id="questionHeading"></h3><div id="questionText"></div></article>
+        <div class="answer-area">
+          <label id="answerLabel" for="answerInput"></label>
+          <input id="answerInput" type="text" autocomplete="off">
+          <select id="choiceInput" hidden></select>
+          <p id="answerNote" class="note"></p>
+        </div>
+        <div class="actions">
+          <button id="checkButton" class="primary" type="button">Check Answer</button>
+          <button id="showButton" class="secondary" type="button">Show Solution</button>
+          <button id="nextButton" class="secondary" type="button" disabled>Next Question</button>
+        </div>
+        <div id="feedback" class="feedback" role="status"></div>
+      </section>
+      <section id="completion" class="completion" aria-live="polite"><h2>Practice Round Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Start a New Randomized Round</button></section>
+    </main>
+  </div>
+  <script>
+    const problems = [{"title":"Exactly Five Printing Errors","scenario":"A batch of printed pages contains an average of 3.4 typographical errors. Let <i>X<\/i> be the number in a randomly selected batch.","steps":[{"prompt":"Enter one TI-84 expression for <i>P<\/i>(<i>X<\/i> = 5).","type":"function","answer":"poissonpdf(3.4, 5)","accepted":["poissonpdf(3.4,5)"],"displayAnswer":"poissonpdf(3.4, 5)","method":"TI-84 Poisson PDF","solution":"An exact count uses <code>poissonpdf(μ,x)<\/code>.","label":"Calculator or R expression","note":"Enter the requested function expression; spaces are ignored."}],"tag":"TI-84 function"},{"title":"At Most Two Service Calls","scenario":"A technician receives an average of 5.2 service calls per shift. Let <i>X<\/i> be the number in a randomly selected shift.","steps":[{"prompt":"Enter one TI-84 expression for <i>P<\/i>(<i>X<\/i> ≤ 2).","type":"function","answer":"poissoncdf(5.2, 2)","accepted":["poissoncdf(5.2,2)"],"displayAnswer":"poissoncdf(5.2, 2)","method":"TI-84 Poisson CDF","solution":"An at-most probability uses <code>poissoncdf(μ,x)<\/code>.","label":"Calculator or R expression","note":"Enter the requested function expression; spaces are ignored."}],"tag":"TI-84 function"},{"title":"At Least Seven Customer Arrivals","scenario":"A small store receives an average of 4.8 customer arrivals during a 15-minute interval. Let <i>X<\/i> be the count in a randomly selected interval.","steps":[{"prompt":"Enter one TI-84 expression for <i>P<\/i>(<i>X<\/i> ≥ 7).","type":"function","answer":"1 - poissoncdf(4.8, 6)","accepted":["1-poissoncdf(4.8,6)"],"displayAnswer":"1 - poissoncdf(4.8, 6)","method":"TI-84 CDF complement","solution":"The complement of <i>X<\/i> ≥ 7 is <i>X<\/i> ≤ 6.","label":"Calculator or R expression","note":"Enter the requested function expression; spaces are ignored."}],"tag":"TI-84 function"}];
+    let order=[], problemPosition=0, stepPosition=0, score=0, attempted=0, locked=false;
+    const totalSteps=problems.reduce((total,p)=>total+p.steps.length,0);
+    function shuffle(array){const result=[...array];for(let i=result.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
+    function currentProblem(){return problems[order[problemPosition]];}
+    function currentStep(){return currentProblem().steps[stepPosition];}
+    function parseNumber(value){
+      const cleaned=value.trim().replace(/,/g,"");
+      if(/^[-+]?\d*\.?\d+(?:e[-+]?\d+)?%$/i.test(cleaned))return Number(cleaned.slice(0,-1))/100;
+      const fraction=cleaned.match(/^([-+]?\d*\.?\d+)\s*\/\s*([-+]?\d*\.?\d+)$/);
+      if(fraction&&Number(fraction[2])!==0)return Number(fraction[1])/Number(fraction[2]);
+      return /^[-+]?\d*\.?\d+(?:e[-+]?\d+)?$/i.test(cleaned)?Number(cleaned):NaN;
+    }
+    function normalizeFunction(value){
+      return value.toLowerCase().replace(/[−–—]/g,"-").replace(/\s+/g,"").replace(/^=/,"").replace(/;+$/,"").replace(/(?<![a-z])0\.(\d+)/g,".$1");
+    }
+    function getResponse(){const q=currentStep();return q.type==="choice"?document.getElementById("choiceInput").value:document.getElementById("answerInput").value;}
+    function isCorrect(q,value){
+      if(q.type==="number"){const entered=parseNumber(value);return Number.isFinite(entered)&&Math.abs(entered-q.answer)<=q.tolerance;}
+      if(q.type==="function"){const entered=normalizeFunction(value);return q.accepted.map(normalizeFunction).includes(entered);}
+      return value===q.answer;
+    }
+    function renderInput(q){
+      const input=document.getElementById("answerInput"), select=document.getElementById("choiceInput");
+      input.className="";select.className="";input.value="";select.innerHTML="";
+      if(q.type==="choice"){
+        input.hidden=true;select.hidden=false;
+        const placeholder=document.createElement("option");placeholder.value="";placeholder.textContent="Select one option";placeholder.disabled=true;placeholder.selected=true;select.appendChild(placeholder);
+        q.options.forEach(option=>{const item=document.createElement("option");item.value=option.value;item.textContent=option.label;select.appendChild(item);});
+      }else{
+        select.hidden=true;input.hidden=false;input.placeholder=q.type==="function"?"Enter the function expression":"Enter a numerical answer";
+      }
+      input.disabled=false;select.disabled=false;
+    }
+    function renderQuestion(){
+      locked=false;const p=currentProblem(),q=currentStep();
+      document.getElementById("problemNumber").textContent="Main Problem "+(problemPosition+1)+" of "+problems.length;
+      document.getElementById("scoreDisplay").textContent="Score: "+score+" / "+totalSteps;
+      document.getElementById("stepNumber").textContent="Subquestion "+(stepPosition+1)+" of "+p.steps.length;
+      document.getElementById("stepMethod").textContent=q.method;
+      document.getElementById("progressBar").style.width=(((attempted+1)/totalSteps)*100)+"%";
+      document.getElementById("sourceTag").textContent=p.tag;
+      document.getElementById("scenarioTitle").textContent=p.title;
+      document.getElementById("scenarioText").innerHTML=p.scenario;
+      document.getElementById("questionHeading").textContent=q.label;
+      document.getElementById("questionText").innerHTML=q.prompt;
+      document.getElementById("answerLabel").textContent=q.label;
+      document.getElementById("answerNote").textContent=q.note;
+      renderInput(q);
+      const feedback=document.getElementById("feedback");feedback.className="feedback";feedback.innerHTML="";
+      document.getElementById("checkButton").disabled=false;document.getElementById("showButton").disabled=false;document.getElementById("nextButton").disabled=true;
+      (q.type==="choice"?document.getElementById("choiceInput"):document.getElementById("answerInput")).focus();
+    }
+    function finishAttempt(showOnly=false){
+      if(locked)return;const q=currentStep(),value=getResponse(),correct=!showOnly&&isCorrect(q,value);if(correct)score+=1;locked=true;attempted+=1;
+      const control=q.type==="choice"?document.getElementById("choiceInput"):document.getElementById("answerInput");control.disabled=true;control.className=correct?"correct":"incorrect";
+      document.getElementById("scoreDisplay").textContent="Score: "+score+" / "+totalSteps;
+      document.getElementById("checkButton").disabled=true;document.getElementById("showButton").disabled=true;document.getElementById("nextButton").disabled=false;
+      const feedback=document.getElementById("feedback");feedback.className="feedback show "+(showOnly?"solution":correct?"correct":"incorrect");
+      const heading=showOnly?("Answer: "+q.displayAnswer):correct?"Correct.":("Not quite. The answer is "+q.displayAnswer+".");
+      feedback.innerHTML='<h3>'+heading+'</h3><p><span class="method">Method: '+q.method+'.</span> '+q.solution+'</p>';
+      document.getElementById("nextButton").focus();
+    }
+    function nextQuestion(){
+      const p=currentProblem();if(stepPosition<p.steps.length-1){stepPosition+=1;renderQuestion();return;}
+      if(problemPosition<problems.length-1){problemPosition+=1;stepPosition=0;renderQuestion();return;}
+      document.getElementById("quiz").classList.add("hidden");document.getElementById("completion").classList.add("show");document.getElementById("finalScore").textContent="Your score is "+score+" out of "+totalSteps+".";document.getElementById("restartButton").focus();
+    }
+    function startRound(){order=shuffle(problems.map((_,i)=>i));problemPosition=0;stepPosition=0;score=0;attempted=0;document.getElementById("quiz").classList.remove("hidden");document.getElementById("completion").classList.remove("show");renderQuestion();}
+    document.getElementById("checkButton").addEventListener("click",()=>finishAttempt(false));
+    document.getElementById("showButton").addEventListener("click",()=>finishAttempt(true));
+    document.getElementById("nextButton").addEventListener("click",nextQuestion);
+    document.getElementById("restartButton").addEventListener("click",startRound);
+    document.getElementById("answerInput").addEventListener("keydown",event=>{if(event.key==="Enter"&&!locked)finishAttempt(false);});
+    document.getElementById("choiceInput").addEventListener("keydown",event=>{if(event.key==="Enter"&&!locked)finishAttempt(false);});
+    startRound();
+</script>
+</body>
+</html>

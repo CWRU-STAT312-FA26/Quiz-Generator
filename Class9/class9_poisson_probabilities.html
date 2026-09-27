@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 9 Practice: Poisson Probability Calculations</title>
+  <style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">STAT 312 · Class 9 · Poisson · Section 1</p>
+      <h1>Poisson Probability Calculations</h1>
+      <p class="subtitle">For each scenario, calculate a lower tail, an upper tail, and an inclusive interval probability.</p>
+    </header>
+    <main>
+      <section id="quiz" class="quiz" aria-live="polite">
+        <div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay"></span></div>
+        <div class="step-row"><span id="stepNumber"></span><span id="stepMethod"></span></div>
+        <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+        <article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle"></h2><div id="scenarioText"></div></article>
+        <article class="question-card"><h3 id="questionHeading"></h3><div id="questionText"></div></article>
+        <div class="answer-area">
+          <label id="answerLabel" for="answerInput"></label>
+          <input id="answerInput" type="text" autocomplete="off">
+          <select id="choiceInput" hidden></select>
+          <p id="answerNote" class="note"></p>
+        </div>
+        <div class="actions">
+          <button id="checkButton" class="primary" type="button">Check Answer</button>
+          <button id="showButton" class="secondary" type="button">Show Solution</button>
+          <button id="nextButton" class="secondary" type="button" disabled>Next Question</button>
+        </div>
+        <div id="feedback" class="feedback" role="status"></div>
+      </section>
+      <section id="completion" class="completion" aria-live="polite"><h2>Practice Round Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Start a New Randomized Round</button></section>
+    </main>
+  </div>
+  <script>
+    const problems = [{"title":"Help-Desk Requests","scenario":"A university help desk receives an average of 4.2 password-reset requests per hour. Let <i>X<\/i> be the number received in the next hour.<p><strong>Model:<\/strong> <i>X<\/i> ~ Poisson(μ = 4.2).<\/p>","steps":[{"prompt":"Calculate <i>P<\/i>(<i>X<\/i> ≤ 3).","type":"number","answer":0.3954033696023561,"displayAnswer":"0.3954","method":"Poisson CDF","solution":"Use <code>poissoncdf(4.2, 3)<\/code> = 0.3954.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05},{"prompt":"Calculate <i>P<\/i>(<i>X<\/i> ≥ 6).","type":"number","answer":0.24685711125451604,"displayAnswer":"0.2469","method":"Complement of a Poisson CDF","solution":"Because 6 is included, use 1 − <i>P<\/i>(<i>X<\/i> ≤ 5) = <code>1 - poissoncdf(4.2, 5)<\/code> = 0.2469.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05},{"prompt":"Calculate <i>P<\/i>(2 ≤ <i>X<\/i> ≤ 5).","type":"number","answer":0.6751658892789999,"displayAnswer":"0.6752","method":"Difference of Poisson CDFs","solution":"Use <code>poissoncdf(4.2, 5) - poissoncdf(4.2, 1)<\/code> = 0.6752.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05}],"tag":"Poisson probability"},{"title":"Potholes Along a Road","scenario":"A one-mile section of road has an average of 2.8 reportable potholes. Let <i>X<\/i> be the number on a randomly selected one-mile section.<p><strong>Model:<\/strong> <i>X<\/i> ~ Poisson(μ = 2.8).<\/p>","steps":[{"prompt":"Calculate <i>P<\/i>(<i>X<\/i> ≤ 1).","type":"number","answer":0.23107823797582827,"displayAnswer":"0.2311","method":"Poisson CDF","solution":"Use <code>poissoncdf(2.8, 1)<\/code> = 0.2311.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05},{"prompt":"Calculate <i>P<\/i>(<i>X<\/i> ≥ 4).","type":"number","answer":0.3080625674085199,"displayAnswer":"0.3081","method":"Complement of a Poisson CDF","solution":"Because 4 is included, use 1 − <i>P<\/i>(<i>X<\/i> ≤ 3) = <code>1 - poissoncdf(2.8, 3)<\/code> = 0.3081.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05},{"prompt":"Calculate <i>P<\/i>(2 ≤ <i>X<\/i> ≤ 5).","type":"number","answer":0.7038114486599307,"displayAnswer":"0.7038","method":"Difference of Poisson CDFs","solution":"Use <code>poissoncdf(2.8, 5) - poissoncdf(2.8, 1)<\/code> = 0.7038.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05}],"tag":"Poisson probability"},{"title":"Emergency-Room Arrivals","scenario":"A hospital receives an average of 6.5 ambulance arrivals during a 30-minute period. Let <i>X<\/i> be the number in a randomly selected 30-minute period.<p><strong>Model:<\/strong> <i>X<\/i> ~ Poisson(μ = 6.5).<\/p>","steps":[{"prompt":"Calculate <i>P<\/i>(<i>X<\/i> ≤ 4).","type":"number","answer":0.2236718168114993,"displayAnswer":"0.2237","method":"Poisson CDF","solution":"Use <code>poissoncdf(6.5, 4)<\/code> = 0.2237.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05},{"prompt":"Calculate <i>P<\/i>(<i>X<\/i> ≥ 8).","type":"number","answer":0.3272422198694327,"displayAnswer":"0.3272","method":"Complement of a Poisson CDF","solution":"Because 8 is included, use 1 − <i>P<\/i>(<i>X<\/i> ≤ 7) = <code>1 - poissoncdf(6.5, 7)<\/code> = 0.3272.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05},{"prompt":"Calculate <i>P<\/i>(5 ≤ <i>X<\/i> ≤ 9).","type":"number","answer":0.6537122324783203,"displayAnswer":"0.6537","method":"Difference of Poisson CDFs","solution":"Use <code>poissoncdf(6.5, 9) - poissoncdf(6.5, 4)<\/code> = 0.6537.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05}],"tag":"Poisson probability"},{"title":"Surface Flaws","scenario":"A square meter of finished glass has an average of 1.7 visible surface flaws. Let <i>X<\/i> be the number on a randomly selected square meter.<p><strong>Model:<\/strong> <i>X<\/i> ~ Poisson(μ = 1.7).<\/p>","steps":[{"prompt":"Calculate <i>P<\/i>(<i>X<\/i> ≤ 1).","type":"number","answer":0.49324551494238356,"displayAnswer":"0.4932","method":"Poisson CDF","solution":"Use <code>poissoncdf(1.7, 1)<\/code> = 0.4932.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05},{"prompt":"Calculate <i>P<\/i>(<i>X<\/i> ≥ 3).","type":"number","answer":0.24277679280141484,"displayAnswer":"0.2428","method":"Complement of a Poisson CDF","solution":"Because 3 is included, use 1 − <i>P<\/i>(<i>X<\/i> ≤ 2) = <code>1 - poissoncdf(1.7, 2)<\/code> = 0.2428.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05},{"prompt":"Calculate <i>P<\/i>(1 ≤ <i>X<\/i> ≤ 4).","type":"number","answer":0.7877016696427332,"displayAnswer":"0.7877","method":"Difference of Poisson CDFs","solution":"Use <code>poissoncdf(1.7, 4) - poissoncdf(1.7, 0)<\/code> = 0.7877.","label":"Probability","note":"Enter a probability as a decimal rounded to at least four decimal places.","tolerance":6e-05}],"tag":"Poisson probability"}];
+    let order=[], problemPosition=0, stepPosition=0, score=0, attempted=0, locked=false;
+    const totalSteps=problems.reduce((total,p)=>total+p.steps.length,0);
+    function shuffle(array){const result=[...array];for(let i=result.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
+    function currentProblem(){return problems[order[problemPosition]];}
+    function currentStep(){return currentProblem().steps[stepPosition];}
+    function parseNumber(value){
+      const cleaned=value.trim().replace(/,/g,"");
+      if(/^[-+]?\d*\.?\d+(?:e[-+]?\d+)?%$/i.test(cleaned))return Number(cleaned.slice(0,-1))/100;
+      const fraction=cleaned.match(/^([-+]?\d*\.?\d+)\s*\/\s*([-+]?\d*\.?\d+)$/);
+      if(fraction&&Number(fraction[2])!==0)return Number(fraction[1])/Number(fraction[2]);
+      return /^[-+]?\d*\.?\d+(?:e[-+]?\d+)?$/i.test(cleaned)?Number(cleaned):NaN;
+    }
+    function normalizeFunction(value){
+      return value.toLowerCase().replace(/[−–—]/g,"-").replace(/\s+/g,"").replace(/^=/,"").replace(/;+$/,"").replace(/(?<![a-z])0\.(\d+)/g,".$1");
+    }
+    function getResponse(){const q=currentStep();return q.type==="choice"?document.getElementById("choiceInput").value:document.getElementById("answerInput").value;}
+    function isCorrect(q,value){
+      if(q.type==="number"){const entered=parseNumber(value);return Number.isFinite(entered)&&Math.abs(entered-q.answer)<=q.tolerance;}
+      if(q.type==="function"){const entered=normalizeFunction(value);return q.accepted.map(normalizeFunction).includes(entered);}
+      return value===q.answer;
+    }
+    function renderInput(q){
+      const input=document.getElementById("answerInput"), select=document.getElementById("choiceInput");
+      input.className="";select.className="";input.value="";select.innerHTML="";
+      if(q.type==="choice"){
+        input.hidden=true;select.hidden=false;
+        const placeholder=document.createElement("option");placeholder.value="";placeholder.textContent="Select one option";placeholder.disabled=true;placeholder.selected=true;select.appendChild(placeholder);
+        q.options.forEach(option=>{const item=document.createElement("option");item.value=option.value;item.textContent=option.label;select.appendChild(item);});
+      }else{
+        select.hidden=true;input.hidden=false;input.placeholder=q.type==="function"?"Enter the function expression":"Enter a numerical answer";
+      }
+      input.disabled=false;select.disabled=false;
+    }
+    function renderQuestion(){
+      locked=false;const p=currentProblem(),q=currentStep();
+      document.getElementById("problemNumber").textContent="Main Problem "+(problemPosition+1)+" of "+problems.length;
+      document.getElementById("scoreDisplay").textContent="Score: "+score+" / "+totalSteps;
+      document.getElementById("stepNumber").textContent="Subquestion "+(stepPosition+1)+" of "+p.steps.length;
+      document.getElementById("stepMethod").textContent=q.method;
+      document.getElementById("progressBar").style.width=(((attempted+1)/totalSteps)*100)+"%";
+      document.getElementById("sourceTag").textContent=p.tag;
+      document.getElementById("scenarioTitle").textContent=p.title;
+      document.getElementById("scenarioText").innerHTML=p.scenario;
+      document.getElementById("questionHeading").textContent=q.label;
+      document.getElementById("questionText").innerHTML=q.prompt;
+      document.getElementById("answerLabel").textContent=q.label;
+      document.getElementById("answerNote").textContent=q.note;
+      renderInput(q);
+      const feedback=document.getElementById("feedback");feedback.className="feedback";feedback.innerHTML="";
+      document.getElementById("checkButton").disabled=false;document.getElementById("showButton").disabled=false;document.getElementById("nextButton").disabled=true;
+      (q.type==="choice"?document.getElementById("choiceInput"):document.getElementById("answerInput")).focus();
+    }
+    function finishAttempt(showOnly=false){
+      if(locked)return;const q=currentStep(),value=getResponse(),correct=!showOnly&&isCorrect(q,value);if(correct)score+=1;locked=true;attempted+=1;
+      const control=q.type==="choice"?document.getElementById("choiceInput"):document.getElementById("answerInput");control.disabled=true;control.className=correct?"correct":"incorrect";
+      document.getElementById("scoreDisplay").textContent="Score: "+score+" / "+totalSteps;
+      document.getElementById("checkButton").disabled=true;document.getElementById("showButton").disabled=true;document.getElementById("nextButton").disabled=false;
+      const feedback=document.getElementById("feedback");feedback.className="feedback show "+(showOnly?"solution":correct?"correct":"incorrect");
+      const heading=showOnly?("Answer: "+q.displayAnswer):correct?"Correct.":("Not quite. The answer is "+q.displayAnswer+".");
+      feedback.innerHTML='<h3>'+heading+'</h3><p><span class="method">Method: '+q.method+'.</span> '+q.solution+'</p>';
+      document.getElementById("nextButton").focus();
+    }
+    function nextQuestion(){
+      const p=currentProblem();if(stepPosition<p.steps.length-1){stepPosition+=1;renderQuestion();return;}
+      if(problemPosition<problems.length-1){problemPosition+=1;stepPosition=0;renderQuestion();return;}
+      document.getElementById("quiz").classList.add("hidden");document.getElementById("completion").classList.add("show");document.getElementById("finalScore").textContent="Your score is "+score+" out of "+totalSteps+".";document.getElementById("restartButton").focus();
+    }
+    function startRound(){order=shuffle(problems.map((_,i)=>i));problemPosition=0;stepPosition=0;score=0;attempted=0;document.getElementById("quiz").classList.remove("hidden");document.getElementById("completion").classList.remove("show");renderQuestion();}
+    document.getElementById("checkButton").addEventListener("click",()=>finishAttempt(false));
+    document.getElementById("showButton").addEventListener("click",()=>finishAttempt(true));
+    document.getElementById("nextButton").addEventListener("click",nextQuestion);
+    document.getElementById("restartButton").addEventListener("click",startRound);
+    document.getElementById("answerInput").addEventListener("keydown",event=>{if(event.key==="Enter"&&!locked)finishAttempt(false);});
+    document.getElementById("choiceInput").addEventListener("keydown",event=>{if(event.key==="Enter"&&!locked)finishAttempt(false);});
+    startRound();
+</script>
+</body>
+</html>

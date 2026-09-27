@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 8 Practice: Expectation and Variance</title><style>
+:root{--navy:#17365d;--blue:#2f6fb0;--pale:#eef5fc;--ink:#1f2937;--muted:#5f6b7a;--ok:#16794b;--okbg:#ecf8f1;--bad:#b42318;--badbg:#fff1f0;--gold:#9a6700;--goldbg:#fff8df}
+*{box-sizing:border-box} body{margin:0;min-height:100vh;color:var(--ink);background:linear-gradient(145deg,#eef4fa,#f8fafc 52%,#edf3f8);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+.page{width:min(940px,calc(100% - 32px));margin:36px auto}.hero{padding:28px 30px;color:#fff;background:linear-gradient(125deg,var(--navy),#285d93);border-radius:18px 18px 0 0;box-shadow:0 16px 45px rgba(23,54,93,.16)}
+.eyebrow{margin:0 0 6px;font-size:.78rem;font-weight:750;letter-spacing:.11em;text-transform:uppercase;opacity:.86}h1{margin:0;font-size:clamp(1.6rem,4vw,2.25rem);line-height:1.2}.subtitle{margin:10px 0 0;opacity:.93}
+main{padding:28px 30px 32px;background:#fff;border-radius:0 0 18px 18px;box-shadow:0 16px 45px rgba(23,54,93,.12)}
+.status{display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:.94rem;margin-bottom:12px}.track{height:8px;background:#e8eef4;border-radius:999px;overflow:hidden;margin-bottom:24px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#60a5d8)}
+.card{padding:22px 24px;background:#f8fafc;border:1px solid #d8e2ec;border-radius:12px}.card h2{margin:0 0 8px;color:var(--navy);font-size:1.2rem}.tag{display:inline-block;margin-bottom:9px;padding:3px 9px;color:var(--navy);background:#dbeafe;border-radius:999px;font-size:.77rem;font-weight:750}
+.question{margin-top:0;padding:20px 24px;background:var(--pale);border-left:5px solid var(--blue);border-radius:0 0 10px 10px}.question p{margin:5px 0}.support{font-weight:750;color:var(--navy)}
+.answer{margin-top:20px}.answer label{display:block;margin:10px 0 6px;color:var(--navy);font-weight:750}.answer input{width:min(100%,620px);min-height:46px;padding:10px 13px;border:1.5px solid #b8c6d6;border-radius:8px;font:inherit;font-size:1.02rem}.answer input.correct{border-color:var(--ok);background:var(--okbg)}.answer input.incorrect{border-color:var(--bad);background:var(--badbg)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}button{min-height:42px;padding:9px 16px;border:1px solid transparent;border-radius:8px;font:inherit;font-weight:750;cursor:pointer}.primary{color:#fff;background:var(--navy)}.secondary{color:var(--navy);background:#fff;border-color:#9fb2c8}button:disabled{opacity:.55;cursor:not-allowed}
+.feedback{display:none;margin-top:20px;padding:17px 19px;border-radius:10px}.feedback.show{display:block}.feedback.correct{color:#0d5f3a;background:var(--okbg);border:1px solid #abdcc5}.feedback.incorrect{color:#7b251c;background:var(--badbg);border:1px solid #f0b6b1}.feedback.solution{color:#654b00;background:var(--goldbg);border:1px solid #ead486}
+.note{color:var(--muted);font-size:.9rem}.completion{display:none;padding:28px;text-align:center;background:var(--pale);border-radius:12px}.completion.show{display:block}.hidden{display:none}
+table{border-collapse:collapse;margin:12px 0;width:min(100%,640px)}th,td{border:1px solid #cbd5e1;padding:8px 10px;text-align:center}th{background:#eaf2fb;color:var(--navy)}
+@media(max-width:620px){.page{width:min(100% - 20px,940px);margin:10px auto}.hero,main{padding:22px 18px}.status{flex-direction:column;gap:3px}.card,.question{padding:18px}}
+</style>
+</head>
+<body><div class="page">
+<header class="hero"><p class="eyebrow">STAT 312 · Class 8 · Randomized Practice</p><h1>Class 8 Practice: Expectation and Variance</h1><p class="subtitle">Calculate the mean and variance of a discrete random variable from its PMF.</p></header>
+<main>
+<section id="quiz">
+  <div class="status"><span id="counter"></span><span id="score"></span></div>
+  <div class="track"><div id="bar" class="bar"></div></div>
+  <article class="card"><span class="tag">Mean and variance of a discrete random variable</span><h2 id="title"></h2><p>The PMF of X is given below.</p><div id="table"></div></article>
+  <article class="question"><p>Calculate <strong>E(X)</strong> and <strong>Var(X)</strong>.</p><p class="note">You may use Var(X)=E(X²)-[E(X)]².</p></article>
+  <div class="answer">
+    <label for="mean">E(X)</label><input id="mean" type="text" autocomplete="off">
+    <label for="var">Var(X)</label><input id="var" type="text" autocomplete="off">
+    <p class="note">Fractions or decimals are accepted. Use at least four decimal places when rounding.</p>
+  </div>
+  <div class="actions"><button id="check" class="primary">Check Answer</button><button id="show" class="secondary">Show Solution</button><button id="next" class="secondary" disabled>Next Problem</button></div>
+  <div id="feedback" class="feedback"></div>
+</section>
+<section id="done" class="completion"><h2>Practice Round Complete</h2><p id="final"></p><button id="restart" class="primary">Start a New Randomized Round</button></section>
+</main></div>
+<script>
+function numPart(v){return /^[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(v)?Number(v):NaN}
+function parseOne(v){v=v.trim().replace(/\s+/g,"");if(v.endsWith("%")){const z=numPart(v.slice(0,-1));return Number.isFinite(z)?z/100:NaN}const f=v.split("/");if(f.length===2){const a=numPart(f[0]),b=numPart(f[1]);return Number.isFinite(a)&&Number.isFinite(b)&&b!==0?a/b:NaN}return numPart(v)}
+function parseList(v){return v.split(/[,;]+/).map(parseOne)}
+function close(a,b,t=0.00006){return Number.isFinite(a)&&Math.abs(a-b)<=t}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
+
+const problems=[{"title": "Three Defectives", "support": [0, 1, 2, 3], "probs": [0.125, 0.375, 0.375, 0.125], "mean": 1.5, "var": 0.75, "solution": "E(X)=\u03a3x f(x)=1.5. E(X\u00b2)=\u03a3x\u00b2f(x)=3, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=0.75."}, {"title": "Four Tails", "support": [0, 1, 2, 3, 4], "probs": [0.0625, 0.25, 0.375, 0.25, 0.0625], "mean": 2.0, "var": 1.0, "solution": "E(X)=\u03a3x f(x)=2. E(X\u00b2)=\u03a3x\u00b2f(x)=5, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=1."}, {"title": "Two Red Draws", "support": [0, 1, 2], "probs": [0.09, 0.42, 0.49], "mean": 1.4, "var": 0.42000000000000015, "solution": "E(X)=\u03a3x f(x)=1.4. E(X\u00b2)=\u03a3x\u00b2f(x)=2.38, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=0.42."}, {"title": "Game Payoff", "support": [-1, 0, 3], "probs": [0.3333333333333333, 0.5, 0.16666666666666666], "mean": 0.16666666666666669, "var": 1.8055555555555556, "solution": "E(X)=\u03a3x f(x)=0.166667. E(X\u00b2)=\u03a3x\u00b2f(x)=1.83333, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=1.80556."}, {"title": "Number of Sixes", "support": [0, 1, 2], "probs": [0.6944444444444444, 0.2777777777777778, 0.027777777777777776], "mean": 0.33333333333333337, "var": 0.2777777777777778, "solution": "E(X)=\u03a3x f(x)=0.333333. E(X\u00b2)=\u03a3x\u00b2f(x)=0.388889, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=0.277778."}, {"title": "Spinner A Count", "support": [0, 1, 2], "probs": [0.25, 0.5, 0.25], "mean": 1.0, "var": 0.5, "solution": "E(X)=\u03a3x f(x)=1. E(X\u00b2)=\u03a3x\u00b2f(x)=1.5, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=0.5."}, {"title": "Unfair Die Outcome", "support": [1, 2, 3, 4, 5, 6], "probs": [0.1, 0.1, 0.2, 0.2, 0.1, 0.3], "mean": 4.0, "var": 2.8000000000000007, "solution": "E(X)=\u03a3x f(x)=4. E(X\u00b2)=\u03a3x\u00b2f(x)=18.8, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=2.8."}, {"title": "Color Score", "support": [0, 1, 2], "probs": [0.1, 0.2, 0.7], "mean": 1.5999999999999999, "var": 0.4400000000000004, "solution": "E(X)=\u03a3x f(x)=1.6. E(X\u00b2)=\u03a3x\u00b2f(x)=3, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=0.44."}, {"title": "Discrete Uniform", "support": [1, 2, 3, 4, 5], "probs": [0.2, 0.2, 0.2, 0.2, 0.2], "mean": 3.0, "var": 2.0, "solution": "E(X)=\u03a3x f(x)=3. E(X\u00b2)=\u03a3x\u00b2f(x)=11, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=2."}, {"title": "Custom PMF", "support": [0, 2, 5], "probs": [0.2, 0.5, 0.3], "mean": 2.5, "var": 3.25, "solution": "E(X)=\u03a3x f(x)=2.5. E(X\u00b2)=\u03a3x\u00b2f(x)=9.5, so Var(X)=E(X\u00b2)-[E(X)]\u00b2=3.25."}];let order=[],pos=0,score=0,locked=false;
+function current(){return problems[order[pos]]}
+function fmtJS(x){return Math.abs(x-Math.round(x))<1e-10?String(Math.round(x)):Number(x.toFixed(6)).toString()}
+function tableHtml(p){return '<table><tr><th>x</th>'+p.support.map(x=>'<th>'+x+'</th>').join('')+'</tr><tr><th>f(x)</th>'+p.probs.map(x=>'<td>'+fmtJS(x)+'</td>').join('')+'</tr></table>'}
+function render(){locked=false;const p=current();document.getElementById('counter').textContent='Problem '+(pos+1)+' of '+problems.length;document.getElementById('score').textContent='Score: '+score+' / '+problems.length;document.getElementById('bar').style.width=(100*pos/problems.length)+'%';document.getElementById('title').textContent=p.title;document.getElementById('table').innerHTML=tableHtml(p);['mean','var'].forEach(id=>{const e=document.getElementById(id);e.value='';e.className=''});document.getElementById('feedback').className='feedback';document.getElementById('feedback').innerHTML='';document.getElementById('check').disabled=false;document.getElementById('show').disabled=false;document.getElementById('next').disabled=true;document.getElementById('next').textContent=pos===problems.length-1?'Finish Round':'Next Problem';document.getElementById('mean').focus()}
+function check(){if(locked)return;const p=current(),m=parseOne(document.getElementById('mean').value),v=parseOne(document.getElementById('var').value),okm=close(m,p.mean),okv=close(v,p.var),ok=okm&&okv;document.getElementById('mean').className=okm?'correct':'incorrect';document.getElementById('var').className=okv?'correct':'incorrect';const f=document.getElementById('feedback');f.className='feedback show '+(ok?'correct':'incorrect');if(ok){score++;locked=true;f.innerHTML='<h3>Correct</h3><p>Both the expected value and variance are correct.</p>';document.getElementById('check').disabled=true;document.getElementById('show').disabled=true;document.getElementById('next').disabled=false;document.getElementById('score').textContent='Score: '+score+' / '+problems.length}else f.innerHTML='<h3>Not quite</h3><p>Recheck Σx f(x), E(X²), and E(X²)-[E(X)]².</p>'}
+function show(){if(locked)return;const p=current();locked=true;const f=document.getElementById('feedback');f.className='feedback show solution';f.innerHTML='<h3>Solution</h3><p><strong>E(X) = '+fmtJS(p.mean)+'</strong></p><p><strong>Var(X) = '+fmtJS(p.var)+'</strong></p><p>'+p.solution+'</p>';document.getElementById('check').disabled=true;document.getElementById('show').disabled=true;document.getElementById('next').disabled=false}
+function next(){if(pos<problems.length-1){pos++;render()}else finish()}function finish(){document.getElementById('quiz').classList.add('hidden');document.getElementById('done').classList.add('show');document.getElementById('final').textContent='Score: '+score+' / '+problems.length}function start(){order=shuffle(problems.map((_,i)=>i));pos=0;score=0;document.getElementById('quiz').classList.remove('hidden');document.getElementById('done').classList.remove('show');render()}
+document.getElementById('check').onclick=check;document.getElementById('show').onclick=show;document.getElementById('next').onclick=next;document.getElementById('restart').onclick=start;start();
+</script>
+</body></html>
