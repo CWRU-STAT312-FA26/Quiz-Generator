@@ -1,0 +1,175 @@
+---
+title: "README"
+subtitle: "Interactive Probability Practice: Classes 10-11"
+author: "Byung-Jun Kim"
+format: html
+---
+
+## Overview
+
+Welcome to the self-assessment portal for **Classes 10-11**. The activities develop fluency in the normal distribution and the exponential distribution.
+
+Classes 10 and 11 add five sections with 10 numerical questions each (50 new questions total).
+
+::: {.callout-note appearance="simple"}
+### 📋 Practice Structure
+
+1. **Classes 10 and 11 — Continuous Distributions:** Normal probabilities and quantiles for Z and X, exponential probabilities, and the Poisson–exponential connection.
+2. **Randomized Practice:** Main problems appear one at a time in a different random order each round.
+3. **Flexible Probability Entry:** Numerical probabilities may be entered as fractions, decimals, percentages, or scientific notation.
+4. **Immediate Feedback:** Check each response, review the correct answer and explanation, and monitor your score.
+:::
+
+------------------------------------------------------------------------
+
+## Class 10 and Class 11: September 29, 2026 Update
+
+**Five new sections, 10 questions per section, 50 questions total.** Every question has one numerical answer. The normal sections separately cover standard normal Z and general normal X. The exponential section includes four questions connecting waiting times and Poisson counts.
+
+| Class | Section | Questions |
+|---|---|---:|
+| 10 | Standard normal probabilities | 10 |
+| 10 | Normal probabilities | 10 |
+| 10 | Standard normal percentiles and quantiles | 10 |
+| 10 | Normal percentiles and quantiles | 10 |
+| 11 | Exponential probabilities and the Poisson connection | 10 |
+
+## Class 10: Normal Distribution
+
+### Section 1: Standard Normal Probability Calculations
+
+- **Format:** Randomized numerical short-answer questions
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Left-tail and right-tail probabilities
+  - Intervals below, above, and across zero
+  - Symmetric central areas and two-tail probabilities
+- **Goal:** Translate the event into a standard normal CDF calculation.
+
+[👉 Launch Standard Normal Probability Calculations](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class10/class10_standard_normal_probabilities.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Section 2: Normal Probability Calculations
+
+- **Format:** Randomized numerical short-answer questions
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Scenario-based probabilities for a normally distributed measurement
+  - Standardization using the stated mean and standard deviation
+  - Tail, interval, and outside-specification probabilities
+- **Goal:** Use Z = (X − μ)/σ and choose the correct tail or interval.
+
+[👉 Launch Normal Probability Calculations](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class10/class10_normal_probabilities.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Section 3: Standard Normal Percentiles and Quantiles
+
+- **Format:** Randomized numerical short-answer questions
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - A z cutoff from a left-tail cumulative probability
+  - Conversion of a right-tail area to a left-tail area
+  - Positive boundaries for symmetric central and two-tail areas
+- **Goal:** Translate an area into the correct input for the inverse standard normal CDF.
+
+[👉 Launch Standard Normal Percentiles and Quantiles](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class10/class10_standard_normal_quantiles.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Section 4: Normal Percentiles and Quantiles
+
+- **Format:** Randomized numerical short-answer questions
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Percentiles and upper-tail cutoffs in the units of X
+  - Lower and upper boundaries of central intervals
+  - The positive half-width of a symmetric interval around the mean
+- **Goal:** Convert a standard normal quantile to the original scale using x = μ + σz.
+
+[👉 Launch Normal Percentiles and Quantiles](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class10/class10_normal_quantiles.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+## Class 11: Exponential Distribution
+
+### Section 1: Exponential Probabilities and the Poisson Connection
+
+- **Format:** Randomized numerical short-answer questions
+- **Number of Questions:** 10
+- **Topics Covered:**
+  - Six exponential waiting-time probability questions: lower tails, upper tails, intervals, a unit conversion, and a conditional wait
+  - Four Poisson-process connection questions: rate to waiting time, zero counts, an exact count, and at least one event
+  - The relationships λ = 1/β and N(t) ~ Poisson(λt), with consistent time units
+- **Goal:** Distinguish a continuous waiting time from a discrete event count and select the appropriate calculation.
+
+[👉 Launch Exponential Probabilities and the Poisson Connection](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class11/class11_exponential_probabilities.html){.btn .btn-outline-primary .btn-sm role="button"}
+
+### Student Instructions for the New Sections
+
+1. **Identify the task.** A probability asks for an area; a percentile or quantile asks for a value on the horizontal axis.
+2. **Use four decimal places.** Keep full precision in intermediate steps and round only the final answer.
+3. **Enter the correct type of answer.** Probabilities accept decimals, fractions, percentages, and scientific notation. Quantiles require a signed numerical value without units or a percent sign.
+4. **Read the normal parameters carefully.** The scenarios state the mean and standard deviation explicitly. In N(μ, σ²), the second parameter is the variance.
+5. **Convert tail areas.** The inverse normal function uses a left-tail area. A right-tail area a gives left-tail area 1 − a; a symmetric central area c gives upper-boundary left-tail area (1 + c)/2.
+6. **Match units.** For the exponential model, β is a mean waiting time and λ = 1/β is a rate. For a Poisson count over time t, use mean λt. Express β and t in the same time units.
+7. **Use a calculator.** The new sections ask for numerical answers and do not require R code. TI-83/84 expressions appear in normal and Poisson worked solutions when helpful.
+8. **Review the feedback.** Each question permits one scored attempt. Invalid or blank input does not use an attempt. Show Solution reveals the answer without awarding a point.
+9. **Repeat a section.** Complete all 10 questions, review your score, and restart for a new random order.
+
+### Instructor Notes on Slide Alignment
+
+The normal questions follow the lecture examples for left tails, right tails, central areas, inverse probabilities, and scenario-based normal quantiles. New contexts and numerical values are used rather than copying the slide examples.
+
+For the exponential model, the quiz consistently uses
+
+$$
+f_T(t)=\frac{1}{\beta}e^{-t/\beta},\qquad
+P(T>t)=e^{-t/\beta},\qquad
+\lambda=\frac{1}{\beta},\quad t\geq 0.
+$$
+
+For a homogeneous Poisson process,
+
+$$
+N(t)\sim\operatorname{Poisson}(\lambda t),\qquad
+P\{N(t)=k\}=e^{-\lambda t}\frac{(\lambda t)^k}{k!}.
+$$
+
+The rate for an arrival process comes from **interarrival times**, not service durations. The generated scenarios state a homogeneous Poisson process explicitly when connecting waiting times with counts. This avoids the service-time/arrival-time ambiguity and formula inconsistencies in parts of the Class 11 slides.
+
+### Repository Placement
+
+```text
+Class10/
+  class10_standard_normal_probabilities.html
+  class10_normal_probabilities.html
+  class10_standard_normal_quantiles.html
+  class10_normal_quantiles.html
+Class11/
+  class11_exponential_probabilities.html
+README.md
+README_Class10_Class11_Updated.qmd
+```
+
+The HTML files contain their own styles, scripts, questions, and answers. They work offline with JavaScript enabled. Retain the folder structure so cross-section navigation works. The launch links in this guide point to the expected GitHub Pages locations and become available after the files are added to the repository and GitHub Pages is updated.
+
+------------------------------------------------------------------------
+
+## How the Practice Activities Work
+
+1. Open a section using its corresponding button.
+2. Main problems are randomly ordered at the beginning of each round.
+3. Only one problem or subquestion is displayed at a time.
+4. In linked activities, complete the subquestions in order so that the setup feeds directly into the final calculation.
+5. Enter your response and select **Check Answer** to receive immediate feedback.
+6. For numerical probabilities, you may enter an equivalent fraction, decimal, percentage, or scientific notation.
+7. Use **Show Solution** when you need to review the expected answer and reasoning.
+8. Continue until every problem in the section has appeared once.
+9. At the end of the round, review your score and restart for a newly randomized order.
+
+## Instructions for Students
+
+1. **Self-Paced Practice:** These activities are intended for self-study and concept review. You may attempt each section as many times as you like.
+2. **Identify the Event First:** Translate words such as *or*, *and*, *given that*, and *not* into the appropriate event operation before calculating.
+3. **Show Your Own Work:** The quiz records only the final answer, so write the relevant formula and intermediate calculations separately.
+4. **Use Sufficient Precision:** When entering a decimal approximation, use at least four decimal places for nonterminating values.
+5. **Interpret Bounds Carefully:** For a discrete random variable, distinguish among “less than,” “at most,” “more than,” and “at least” before choosing a CDF or complement.
+6. **Match the Function to the Task:** For a discrete count, use a PMF function for one exact count and a CDF for a cumulative probability. For a continuous measurement, use a CDF difference or an integral for an interval; a PDF value is a density, not a point probability.
+7. **Scale a Poisson Mean First:** When the interval changes, calculate the new expected count with \(\mu=\lambda T\) before evaluating a probability.
+8. **Interpret the Condition Carefully:** In a conditional probability, the event after “given that” determines the restricted denominator.
+9. **Follow the Bayes Scaffold:** For Class 7, calculate the numerator with the multiplication rule, calculate the denominator with total probability, and then divide.
+10. **Questions & Feedback:** If you encounter an unexpected result or need further clarification, bring your question to class or office hours.

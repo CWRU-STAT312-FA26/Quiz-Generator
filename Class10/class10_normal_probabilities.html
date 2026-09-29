@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STAT 312: Normal Probabilities</title><style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+
+    .section-links { display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.88rem; }
+    .section-links a { color:#fff;text-decoration:underline;text-underline-offset:3px; }
+    .section-links a[aria-current="page"] { font-weight:750; }
+    .question-card { min-height:110px; }
+    .scenario-card p { font-size:1.04rem; }
+    .feedback { overflow-wrap:anywhere; }
+    .feedback code { white-space:normal; }
+    .answer-note { font-size:.9rem; }
+</style></head>
+<body><div class="page">
+<header class="hero"><p class="eyebrow">STAT 312 · Class 10 · Section 2 · 10 Questions</p><h1>Normal Probabilities</h1><p class="subtitle">Translate a scenario into a probability and standardize using the given mean and standard deviation.</p><nav class="section-links" aria-label="Practice sections"><a href="../Class10/class10_standard_normal_probabilities.html">Z probabilities</a><a href="../Class10/class10_normal_probabilities.html" aria-current="page">X probabilities</a><a href="../Class10/class10_standard_normal_quantiles.html">Z quantiles</a><a href="../Class10/class10_normal_quantiles.html">X quantiles</a><a href="../Class11/class11_exponential_probabilities.html">Exponential / Poisson</a></nav></header>
+<main>
+<section id="quiz" class="quiz">
+<div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay" aria-live="polite"></span></div>
+<div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+<article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle"></h2><div id="scenarioText"></div></article>
+<article class="question-card"><h3>Question</h3><div id="questionText"></div></article>
+<div class="answer-area"><label id="answerLabel" for="answerInput"></label><input id="answerInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"><p id="answerNote" class="note answer-note"></p></div>
+<div class="actions"><button id="checkButton" class="primary" type="button">Check Answer</button><button id="showButton" class="secondary" type="button">Show Solution</button><button id="nextButton" class="secondary" type="button" disabled>Next Problem</button></div>
+<div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+<p class="note">All 10 questions appear once in a random order each round. Each question allows one scored attempt; Show Solution earns no point. Restart to practice again.</p>
+</section>
+<section id="completion" class="completion" aria-live="polite"><h2>Practice Round Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Start a New Randomized Round</button></section>
+<noscript><p>This quiz requires JavaScript. Enable JavaScript in your browser and reopen this file.</p></noscript>
+</main></div>
+<script>
+const problems = [
+  {
+    "id": "C10-S2-Q01",
+    "title": "Commute Time",
+    "scenario": "A student’s commute time X, in minutes, is approximately normal.<p><strong>Model:</strong> X is normal with mean μ = 28 and standard deviation σ = 6.</p>",
+    "prompt": "Calculate <strong>P(X ≤ 22)</strong>.",
+    "answer": 0.15865525393145707,
+    "displayAnswer": "0.1587",
+    "method": "Normal CDF",
+    "solution": "Use Z = (X − 28)/6. The finite bound(s) become -1. P(X ≤ 22) = Φ(-1) = <strong>0.1587</strong>. On a TI-83/84, use <code>normalcdf(-1E99, 22, 28, 6)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q02",
+    "title": "Bottle Fill Volume",
+    "scenario": "The volume X in a filled bottle, in milliliters, is approximately normal.<p><strong>Model:</strong> X is normal with mean μ = 500 and standard deviation σ = 8.</p>",
+    "prompt": "Calculate <strong>P(X > 514)</strong>.",
+    "answer": 0.040059156863817114,
+    "displayAnswer": "0.0401",
+    "method": "Upper-tail probability",
+    "solution": "Use Z = (X − 500)/8. The finite bound(s) become 1.75. P(X > 514) = 1 − Φ(1.75) = <strong>0.0401</strong>. On a TI-83/84, use <code>normalcdf(514, 1E99, 500, 8)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q03",
+    "title": "Battery Operating Time",
+    "scenario": "The operating time X of a battery, in hours, is approximately normal.<p><strong>Model:</strong> X is normal with mean μ = 12 and standard deviation σ = 1.5.</p>",
+    "prompt": "Calculate <strong>P(10.5 < X < 14.25)</strong>.",
+    "answer": 0.7745375447996848,
+    "displayAnswer": "0.7745",
+    "method": "Difference of normal CDFs",
+    "solution": "Use Z = (X − 12)/1.5. The finite bound(s) become -1, 1.5. P(10.5 < X < 14.25) = Φ(1.5) − Φ(-1) = <strong>0.7745</strong>. On a TI-83/84, use <code>normalcdf(10.5, 14.25, 12, 1.5)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q04",
+    "title": "Machined Rod Length",
+    "scenario": "The length X of a machined rod, in centimeters, is approximately normal.<p><strong>Model:</strong> X is normal with mean μ = 30 and standard deviation σ = 0.12.</p>",
+    "prompt": "Calculate <strong>P(X ≤ 29.82)</strong>.",
+    "answer": 0.06680720126885835,
+    "displayAnswer": "0.0668",
+    "method": "Normal CDF",
+    "solution": "Use Z = (X − 30)/0.12. The finite bound(s) become -1.5. P(X ≤ 29.82) = Φ(-1.5) = <strong>0.0668</strong>. On a TI-83/84, use <code>normalcdf(-1E99, 29.82, 30, 0.12)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q05",
+    "title": "Laboratory Temperature",
+    "scenario": "The temperature X in a laboratory, in degrees Fahrenheit, is approximately normal.<p><strong>Model:</strong> X is normal with mean μ = 72 and standard deviation σ = 3.</p>",
+    "prompt": "Calculate <strong>P(X > 68.4)</strong>.",
+    "answer": 0.8849303297782913,
+    "displayAnswer": "0.8849",
+    "method": "Upper-tail probability",
+    "solution": "Use Z = (X − 72)/3. The finite bound(s) become -1.2. P(X > 68.4) = 1 − Φ(-1.2) = <strong>0.8849</strong>. On a TI-83/84, use <code>normalcdf(68.4, 1E99, 72, 3)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q06",
+    "title": "Reaction Time",
+    "scenario": "The reaction time X in an experiment, in milliseconds, is approximately normal.<p><strong>Model:</strong> X is normal with mean μ = 250 and standard deviation σ = 35.</p>",
+    "prompt": "Calculate <strong>P(200 < X < 280)</strong>.",
+    "answer": 0.7277533053363892,
+    "displayAnswer": "0.7278",
+    "method": "Difference of normal CDFs",
+    "solution": "Use Z = (X − 250)/35. The finite bound(s) become -1.42857, 0.857143. P(200 < X < 280) = Φ(0.857143) − Φ(-1.42857) = <strong>0.7278</strong>. On a TI-83/84, use <code>normalcdf(200, 280, 250, 35)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q07",
+    "title": "Package Mass",
+    "scenario": "The mass X of a package, in grams, is approximately normal.<p><strong>Model:</strong> X is normal with mean μ = 1000 and standard deviation σ = 15.</p>",
+    "prompt": "Calculate <strong>P(985 < X < 1015)</strong>.",
+    "answer": 0.6826894921370859,
+    "displayAnswer": "0.6827",
+    "method": "Difference of normal CDFs",
+    "solution": "Use Z = (X − 1000)/15. The finite bound(s) become -1, 1. P(985 < X < 1015) = Φ(1) − Φ(-1) = <strong>0.6827</strong>. On a TI-83/84, use <code>normalcdf(985, 1015, 1000, 15)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q08",
+    "title": "Out-of-Specification Fill Volume",
+    "scenario": "The fill volume X of a container, in liters, is approximately normal. A container is outside specification if its volume is below 1.95 L or above 2.05 L.<p><strong>Model:</strong> X is normal with mean μ = 2 and standard deviation σ = 0.025.</p>",
+    "prompt": "Calculate <strong>P(X < 1.95 or X > 2.05)</strong>.",
+    "answer": 0.04550026389635875,
+    "displayAnswer": "0.0455",
+    "method": "Complement of a central area",
+    "solution": "Use Z = (X − 2)/0.025. The finite bound(s) become -2, 2. P(X < 1.95 or X > 2.05) = 1 − [Φ(2) − Φ(-2)] = <strong>0.0455</strong>. On a TI-83/84, use <code>1 - normalcdf(1.95, 2.05, 2, 0.025)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q09",
+    "title": "Large Measurement Error",
+    "scenario": "The measurement error X of an instrument, in millimeters, is normally distributed. Positive and negative errors are possible.<p><strong>Model:</strong> X is normal with mean μ = 0 and standard deviation σ = 0.4.</p>",
+    "prompt": "Calculate <strong>P(|X| > 0.75)</strong>.",
+    "answer": 0.060792723530522785,
+    "displayAnswer": "0.0608",
+    "method": "Complement of a central area",
+    "solution": "Use Z = (X − 0)/0.4. The finite bound(s) become -1.875, 1.875. P(|X| > 0.75) = 1 − [Φ(1.875) − Φ(-1.875)] = <strong>0.0608</strong>. On a TI-83/84, use <code>1 - normalcdf(-0.75, 0.75, 0, 0.4)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C10-S2-Q10",
+    "title": "Electrical Resistance",
+    "scenario": "The resistance X of a manufactured component, in ohms, is approximately normal.<p><strong>Model:</strong> X is normal with mean μ = 120 and standard deviation σ = 4.</p>",
+    "prompt": "Calculate <strong>P(114 < X < 126)</strong>.",
+    "answer": 0.8663855974622838,
+    "displayAnswer": "0.8664",
+    "method": "Difference of normal CDFs",
+    "solution": "Use Z = (X − 120)/4. The finite bound(s) become -1.5, 1.5. P(114 < X < 126) = Φ(1.5) − Φ(-1.5) = <strong>0.8664</strong>. On a TI-83/84, use <code>normalcdf(114, 126, 120, 4)</code>. Φ is the standard normal CDF. For a continuous distribution, including an endpoint does not change its probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Normal distribution",
+    "tolerance": 5.1e-05
+  }
+];
+
+let order = [], position = 0, score = 0, locked = false;
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+function currentProblem() { return problems[order[position]]; }
+function parseNumber(raw, allowPercent = true) {
+  const text = raw.trim().replace(/[−–]/g, '-');
+  const number = /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i;
+  if (text.endsWith('%')) {
+    const part = text.slice(0, -1).trim();
+    return allowPercent && number.test(part) ? Number(part) / 100 : NaN;
+  }
+  const parts = text.split('/');
+  if (parts.length === 2) {
+    const a = parts[0].trim(), b = parts[1].trim();
+    return number.test(a) && number.test(b) && Number(b) !== 0 ? Number(a) / Number(b) : NaN;
+  }
+  return number.test(text) ? Number(text) : NaN;
+}
+function isCorrect(q, raw) {
+  const value = parseNumber(raw, q.kind === 'probability');
+  if (!Number.isFinite(value)) return false;
+  if (q.kind === 'probability' && (value < 0 || value > 1)) return false;
+  return Math.abs(value - q.answer) <= q.tolerance;
+}
+function renderQuestion() {
+  const q = currentProblem(); locked = false;
+  document.getElementById('problemNumber').textContent = 'Problem ' + (position + 1) + ' of ' + problems.length;
+  document.getElementById('scoreDisplay').textContent = 'Score: ' + score + ' / ' + problems.length;
+  document.getElementById('progressBar').style.width = (100 * position / problems.length) + '%';
+  document.getElementById('sourceTag').textContent = q.tag;
+  document.getElementById('scenarioTitle').textContent = q.title;
+  document.getElementById('scenarioText').innerHTML = q.scenario;
+  document.getElementById('questionText').innerHTML = '<p>' + q.prompt + '</p>';
+  document.getElementById('answerLabel').textContent = q.inputLabel;
+  const input = document.getElementById('answerInput');
+  input.value = ''; input.disabled = false; input.className = '';
+  input.placeholder = q.kind === 'probability' ? 'Probability, e.g. 0.1234' : 'Numerical value, including its sign';
+  document.getElementById('answerNote').textContent = q.kind === 'probability'
+    ? 'Round to four decimal places. An equivalent percentage, fraction, or scientific notation is also accepted. A calculator is allowed; R is not required.'
+    : 'Round to four decimal places. Enter only the numerical value, including a negative sign when needed; omit units and %. Keep full precision until the final step.';
+  const feedback = document.getElementById('feedback'); feedback.className = 'feedback'; feedback.innerHTML = '';
+  document.getElementById('checkButton').disabled = false;
+  document.getElementById('showButton').disabled = false;
+  document.getElementById('nextButton').disabled = true;
+  document.getElementById('nextButton').textContent = position === problems.length - 1 ? 'Finish Round' : 'Next Problem';
+  input.focus();
+}
+function finishAttempt(showOnly = false) {
+  if (locked) return;
+  const q = currentProblem(), input = document.getElementById('answerInput');
+  const feedback = document.getElementById('feedback');
+  if (!showOnly) {
+    const value = parseNumber(input.value, q.kind === 'probability');
+    if (!Number.isFinite(value) || (q.kind === 'probability' && (value < 0 || value > 1))) {
+      feedback.className = 'feedback show incorrect';
+      feedback.textContent = q.kind === 'probability' ? 'Enter a valid probability between 0 and 1, or an equivalent percentage or fraction.' : 'Enter a valid numerical value without units or a percent sign.';
+      input.focus(); return;
+    }
+  }
+  const correct = !showOnly && isCorrect(q, input.value);
+  if (correct) score++;
+  locked = true; input.disabled = true;
+  input.className = showOnly ? '' : correct ? 'correct' : 'incorrect';
+  document.getElementById('scoreDisplay').textContent = 'Score: ' + score + ' / ' + problems.length;
+  document.getElementById('progressBar').style.width = (100 * (position + 1) / problems.length) + '%';
+  document.getElementById('checkButton').disabled = true;
+  document.getElementById('showButton').disabled = true;
+  document.getElementById('nextButton').disabled = false;
+  feedback.className = 'feedback show ' + (showOnly ? 'solution' : correct ? 'correct' : 'incorrect');
+  const heading = showOnly ? 'Answer: ' + q.displayAnswer : correct ? 'Correct.' : 'Not quite. The answer is ' + q.displayAnswer + '.';
+  feedback.innerHTML = '<h3>' + heading + '</h3><p><span class="method">Method: ' + q.method + '.</span> ' + q.solution + '</p>';
+  document.getElementById('nextButton').focus();
+}
+function nextQuestion() {
+  if (!locked) return;
+  if (position < problems.length - 1) { position++; renderQuestion(); return; }
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('completion').classList.add('show');
+  document.getElementById('finalScore').textContent = 'Your score is ' + score + ' out of ' + problems.length + '.';
+  document.getElementById('restartButton').focus();
+}
+function startRound() {
+  order = shuffle(problems.map((_, i) => i)); position = 0; score = 0; locked = false;
+  document.getElementById('quiz').classList.remove('hidden');
+  document.getElementById('completion').classList.remove('show');
+  renderQuestion();
+}
+document.getElementById('checkButton').addEventListener('click', () => finishAttempt(false));
+document.getElementById('showButton').addEventListener('click', () => finishAttempt(true));
+document.getElementById('nextButton').addEventListener('click', nextQuestion);
+document.getElementById('restartButton').addEventListener('click', startRound);
+document.getElementById('answerInput').addEventListener('keydown', event => { if (event.key === 'Enter' && !locked) { event.preventDefault(); finishAttempt(false); } });
+startRound();
+
+</script>
+</body></html>

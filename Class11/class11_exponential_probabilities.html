@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STAT 312: Exponential Probabilities and the Poisson Connection</title><style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+
+    .section-links { display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.88rem; }
+    .section-links a { color:#fff;text-decoration:underline;text-underline-offset:3px; }
+    .section-links a[aria-current="page"] { font-weight:750; }
+    .question-card { min-height:110px; }
+    .scenario-card p { font-size:1.04rem; }
+    .feedback { overflow-wrap:anywhere; }
+    .feedback code { white-space:normal; }
+    .answer-note { font-size:.9rem; }
+</style></head>
+<body><div class="page">
+<header class="hero"><p class="eyebrow">STAT 312 · Class 11 · Section 1 · 10 Questions</p><h1>Exponential Probabilities and the Poisson Connection</h1><p class="subtitle">Calculate waiting-time probabilities and connect exponential interarrival times with Poisson counts.</p><nav class="section-links" aria-label="Practice sections"><a href="../Class10/class10_standard_normal_probabilities.html">Z probabilities</a><a href="../Class10/class10_normal_probabilities.html">X probabilities</a><a href="../Class10/class10_standard_normal_quantiles.html">Z quantiles</a><a href="../Class10/class10_normal_quantiles.html">X quantiles</a><a href="../Class11/class11_exponential_probabilities.html" aria-current="page">Exponential / Poisson</a></nav></header>
+<main>
+<section id="quiz" class="quiz">
+<div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay" aria-live="polite"></span></div>
+<div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+<article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle"></h2><div id="scenarioText"></div></article>
+<article class="question-card"><h3>Question</h3><div id="questionText"></div></article>
+<div class="answer-area"><label id="answerLabel" for="answerInput"></label><input id="answerInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"><p id="answerNote" class="note answer-note"></p></div>
+<div class="actions"><button id="checkButton" class="primary" type="button">Check Answer</button><button id="showButton" class="secondary" type="button">Show Solution</button><button id="nextButton" class="secondary" type="button" disabled>Next Problem</button></div>
+<div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+<p class="note">All 10 questions appear once in a random order each round. Each question allows one scored attempt; Show Solution earns no point. Restart to practice again.</p>
+</section>
+<section id="completion" class="completion" aria-live="polite"><h2>Practice Round Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Start a New Randomized Round</button></section>
+<noscript><p>This quiz requires JavaScript. Enable JavaScript in your browser and reopen this file.</p></noscript>
+</main></div>
+<script>
+const problems = [
+  {
+    "id": "C11-S1-Q01",
+    "title": "Equipment Lifetime",
+    "scenario": "The lifetime T of a small electronic component, in months, is modeled by an exponential distribution.<p><strong>Model:</strong> T is exponential with mean β = 18 months. Its rate is λ = 1/β per month.</p>",
+    "prompt": "Find the probability that the component fails <strong>within 12 months</strong>.",
+    "answer": 0.486582880967408,
+    "displayAnswer": "0.4866",
+    "method": "Exponential CDF",
+    "solution": "For t ≥ 0, P(T > t) = e<sup>−t/β</sup> and P(T ≤ t) = 1 − e<sup>−t/β</sup>. Here, 1 − e<sup>−12/18</sup> = <strong>0.4866</strong>.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Exponential distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q02",
+    "title": "Processing Time",
+    "scenario": "The time T required to finish a processing job, in minutes, is exponentially distributed.<p><strong>Model:</strong> T is exponential with mean β = 7 minutes. Its rate is λ = 1/β per minute.</p>",
+    "prompt": "Find the probability that a job takes <strong>more than 10 minutes</strong>.",
+    "answer": 0.2396510364417758,
+    "displayAnswer": "0.2397",
+    "method": "Exponential survival function",
+    "solution": "For t ≥ 0, P(T > t) = e<sup>−t/β</sup> and P(T ≤ t) = 1 − e<sup>−t/β</sup>. Here, e<sup>−10/7</sup> = <strong>0.2397</strong>.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Exponential distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q03",
+    "title": "Download Completion Time",
+    "scenario": "The completion time T for a short download, in seconds, is exponentially distributed.<p><strong>Model:</strong> T is exponential with mean β = 2.5 seconds. Its rate is λ = 1/β per second.</p>",
+    "prompt": "Find the probability that the download finishes <strong>between 1 and 4 seconds</strong>.",
+    "answer": 0.46842352804098397,
+    "displayAnswer": "0.4684",
+    "method": "Difference of exponential CDFs",
+    "solution": "For t ≥ 0, P(T > t) = e<sup>−t/β</sup> and P(T ≤ t) = 1 − e<sup>−t/β</sup>. Here, e<sup>−1/2.5</sup> − e<sup>−4/2.5</sup> = <strong>0.4684</strong>.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Exponential distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q04",
+    "title": "A Sensor Lasting Two Mean Lifetimes",
+    "scenario": "The lifetime T of a sensor, in months, is exponentially distributed.<p><strong>Model:</strong> T is exponential with mean β = 9 months. Its rate is λ = 1/β per month.</p>",
+    "prompt": "Find the probability that the sensor lasts <strong>longer than 18 months</strong>.",
+    "answer": 0.1353352832366127,
+    "displayAnswer": "0.1353",
+    "method": "Exponential survival function",
+    "solution": "For t ≥ 0, P(T > t) = e<sup>−t/β</sup> and P(T ≤ t) = 1 − e<sup>−t/β</sup>. Here, e<sup>−18/9</sup> = <strong>0.1353</strong>.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Exponential distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q05",
+    "title": "Laboratory Response in One Minute",
+    "scenario": "The response time T of a laboratory system, in seconds, is exponentially distributed.<p><strong>Model:</strong> T is exponential with mean β = 45 seconds. Its rate is λ = 1/β per second.</p>",
+    "prompt": "Find the probability that the system responds <strong>within 1 minute</strong>.",
+    "answer": 0.7364028618842733,
+    "displayAnswer": "0.7364",
+    "method": "Exponential CDF",
+    "solution": "Convert 1 minute to 60 seconds before calculating. For t ≥ 0, P(T > t) = e<sup>−t/β</sup> and P(T ≤ t) = 1 − e<sup>−t/β</sup>. Here, 1 − e<sup>−60/45</sup> = <strong>0.7364</strong>.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Exponential distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q06",
+    "title": "An Additional Wait",
+    "scenario": "The waiting time T for a callback, in minutes, is exponentially distributed. A caller has already waited 5 minutes without a callback.<p><strong>Model:</strong> T is exponential with mean β = 8 minutes. Its rate is λ = 1/β per minute.</p>",
+    "prompt": "Find <strong>P(T > 13 | T > 5)</strong>, the probability that the caller must wait more than 8 additional minutes.",
+    "answer": 0.36787944117144233,
+    "displayAnswer": "0.3679",
+    "method": "Conditional waiting-time probability",
+    "solution": "For t ≥ 0, P(T > t) = e<sup>−t/β</sup> and P(T ≤ t) = 1 − e<sup>−t/β</sup>. Here, P(T > 13)/P(T > 5) = e<sup>−13/8</sup>/e<sup>−5/8</sup> = e<sup>−8/8</sup> = <strong>0.3679</strong>. The conditional probability equals the probability of waiting more than 8 additional minutes; this illustrates the memoryless property.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Exponential distribution",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q07",
+    "title": "Help-Desk Arrivals",
+    "scenario": "Requests arrive at a help desk according to a homogeneous Poisson process at an average rate of 12 requests per hour. Let T be the waiting time, in minutes, from now until the next request.",
+    "prompt": "Find the probability that the next request arrives <strong>within 4 minutes</strong>.",
+    "answer": 0.5506710358827784,
+    "displayAnswer": "0.5507",
+    "method": "Poisson rate to exponential waiting time",
+    "solution": "Convert the rate: λ = 12/60 = 0.2 requests per minute, so β = 1/λ = 5 minutes. P(T ≤ 4) = 1 − e<sup>−0.2(4)</sup> = <strong>0.5507</strong>. Equivalently, N(4) is Poisson with mean 0.8, and P(N(4) ≥ 1) = 1 − P(N(4) = 0).",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Poisson–exponential connection",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q08",
+    "title": "No Parking-Lot Entries",
+    "scenario": "Vehicles enter a parking lot according to a homogeneous Poisson process with an average of 3 entries per 10 minutes. Let N(6) be the number of entries in the next 6 minutes, and let T be the waiting time from now to the next entry.",
+    "prompt": "Find <strong>P(N(6) = 0)</strong>, equivalently <strong>P(T > 6)</strong>.",
+    "answer": 0.16529888822158656,
+    "displayAnswer": "0.1653",
+    "method": "Zero Poisson counts and exponential survival",
+    "solution": "The rate is λ = 3/10 = 0.3 entries per minute. The Poisson mean over 6 minutes is λt = 0.3(6) = 1.8. P(N(6) = 0) = e<sup>−1.8</sup>(1.8)<sup>0</sup>/0! = e<sup>−1.8</sup> = <strong>0.1653</strong>. Also, β = 1/0.3 minutes, and P(T > 6) gives the same answer.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Poisson–exponential connection",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q09",
+    "title": "Interarrival Times to an Exact Count",
+    "scenario": "Online support requests follow a homogeneous Poisson process. The time between consecutive requests is exponentially distributed with mean 5 minutes. Let N(15) be the number of requests during the next 15 minutes.",
+    "prompt": "Find the probability of <strong>exactly 2 requests</strong> in the next 15 minutes.",
+    "answer": 0.22404180765538775,
+    "displayAnswer": "0.2240",
+    "method": "Mean interarrival time to a Poisson count",
+    "solution": "The mean interarrival time is β = 5 minutes, so λ = 1/5 requests per minute. Thus N(15) ~ Poisson(λt = 15/5 = 3). P(N(15) = 2) = e<sup>−3</sup>3<sup>2</sup>/2! = <strong>0.2240</strong>. On a TI-83/84, use <code>poissonpdf(3, 2)</code>. This question asks for an event count, so use a Poisson probability.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Poisson–exponential connection",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C11-S1-Q10",
+    "title": "At Least One Alarm in 90 Minutes",
+    "scenario": "Alarms occur according to a homogeneous Poisson process. The time between alarms is exponentially distributed with mean 2.5 hours. Let N be the number of alarms during the next 90 minutes.",
+    "prompt": "Find the probability of <strong>at least one alarm</strong> during the next 90 minutes.",
+    "answer": 0.45118836390597356,
+    "displayAnswer": "0.4512",
+    "method": "Exponential mean to a Poisson complement",
+    "solution": "Convert 90 minutes to 1.5 hours. The rate is λ = 1/2.5 = 0.4 alarms per hour, so the Poisson mean is λt = 0.4(1.5) = 0.6. P(N ≥ 1) = 1 − P(N = 0) = 1 − e<sup>−0.6</sup> = <strong>0.4512</strong>. This also equals the probability that the exponential waiting time to the next alarm is at most 1.5 hours.",
+    "inputLabel": "Your probability",
+    "kind": "probability",
+    "tag": "Poisson–exponential connection",
+    "tolerance": 5.1e-05
+  }
+];
+
+let order = [], position = 0, score = 0, locked = false;
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+function currentProblem() { return problems[order[position]]; }
+function parseNumber(raw, allowPercent = true) {
+  const text = raw.trim().replace(/[−–]/g, '-');
+  const number = /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i;
+  if (text.endsWith('%')) {
+    const part = text.slice(0, -1).trim();
+    return allowPercent && number.test(part) ? Number(part) / 100 : NaN;
+  }
+  const parts = text.split('/');
+  if (parts.length === 2) {
+    const a = parts[0].trim(), b = parts[1].trim();
+    return number.test(a) && number.test(b) && Number(b) !== 0 ? Number(a) / Number(b) : NaN;
+  }
+  return number.test(text) ? Number(text) : NaN;
+}
+function isCorrect(q, raw) {
+  const value = parseNumber(raw, q.kind === 'probability');
+  if (!Number.isFinite(value)) return false;
+  if (q.kind === 'probability' && (value < 0 || value > 1)) return false;
+  return Math.abs(value - q.answer) <= q.tolerance;
+}
+function renderQuestion() {
+  const q = currentProblem(); locked = false;
+  document.getElementById('problemNumber').textContent = 'Problem ' + (position + 1) + ' of ' + problems.length;
+  document.getElementById('scoreDisplay').textContent = 'Score: ' + score + ' / ' + problems.length;
+  document.getElementById('progressBar').style.width = (100 * position / problems.length) + '%';
+  document.getElementById('sourceTag').textContent = q.tag;
+  document.getElementById('scenarioTitle').textContent = q.title;
+  document.getElementById('scenarioText').innerHTML = q.scenario;
+  document.getElementById('questionText').innerHTML = '<p>' + q.prompt + '</p>';
+  document.getElementById('answerLabel').textContent = q.inputLabel;
+  const input = document.getElementById('answerInput');
+  input.value = ''; input.disabled = false; input.className = '';
+  input.placeholder = q.kind === 'probability' ? 'Probability, e.g. 0.1234' : 'Numerical value, including its sign';
+  document.getElementById('answerNote').textContent = q.kind === 'probability'
+    ? 'Round to four decimal places. An equivalent percentage, fraction, or scientific notation is also accepted. A calculator is allowed; R is not required.'
+    : 'Round to four decimal places. Enter only the numerical value, including a negative sign when needed; omit units and %. Keep full precision until the final step.';
+  const feedback = document.getElementById('feedback'); feedback.className = 'feedback'; feedback.innerHTML = '';
+  document.getElementById('checkButton').disabled = false;
+  document.getElementById('showButton').disabled = false;
+  document.getElementById('nextButton').disabled = true;
+  document.getElementById('nextButton').textContent = position === problems.length - 1 ? 'Finish Round' : 'Next Problem';
+  input.focus();
+}
+function finishAttempt(showOnly = false) {
+  if (locked) return;
+  const q = currentProblem(), input = document.getElementById('answerInput');
+  const feedback = document.getElementById('feedback');
+  if (!showOnly) {
+    const value = parseNumber(input.value, q.kind === 'probability');
+    if (!Number.isFinite(value) || (q.kind === 'probability' && (value < 0 || value > 1))) {
+      feedback.className = 'feedback show incorrect';
+      feedback.textContent = q.kind === 'probability' ? 'Enter a valid probability between 0 and 1, or an equivalent percentage or fraction.' : 'Enter a valid numerical value without units or a percent sign.';
+      input.focus(); return;
+    }
+  }
+  const correct = !showOnly && isCorrect(q, input.value);
+  if (correct) score++;
+  locked = true; input.disabled = true;
+  input.className = showOnly ? '' : correct ? 'correct' : 'incorrect';
+  document.getElementById('scoreDisplay').textContent = 'Score: ' + score + ' / ' + problems.length;
+  document.getElementById('progressBar').style.width = (100 * (position + 1) / problems.length) + '%';
+  document.getElementById('checkButton').disabled = true;
+  document.getElementById('showButton').disabled = true;
+  document.getElementById('nextButton').disabled = false;
+  feedback.className = 'feedback show ' + (showOnly ? 'solution' : correct ? 'correct' : 'incorrect');
+  const heading = showOnly ? 'Answer: ' + q.displayAnswer : correct ? 'Correct.' : 'Not quite. The answer is ' + q.displayAnswer + '.';
+  feedback.innerHTML = '<h3>' + heading + '</h3><p><span class="method">Method: ' + q.method + '.</span> ' + q.solution + '</p>';
+  document.getElementById('nextButton').focus();
+}
+function nextQuestion() {
+  if (!locked) return;
+  if (position < problems.length - 1) { position++; renderQuestion(); return; }
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('completion').classList.add('show');
+  document.getElementById('finalScore').textContent = 'Your score is ' + score + ' out of ' + problems.length + '.';
+  document.getElementById('restartButton').focus();
+}
+function startRound() {
+  order = shuffle(problems.map((_, i) => i)); position = 0; score = 0; locked = false;
+  document.getElementById('quiz').classList.remove('hidden');
+  document.getElementById('completion').classList.remove('show');
+  renderQuestion();
+}
+document.getElementById('checkButton').addEventListener('click', () => finishAttempt(false));
+document.getElementById('showButton').addEventListener('click', () => finishAttempt(true));
+document.getElementById('nextButton').addEventListener('click', nextQuestion);
+document.getElementById('restartButton').addEventListener('click', startRound);
+document.getElementById('answerInput').addEventListener('keydown', event => { if (event.key === 'Enter' && !locked) { event.preventDefault(); finishAttempt(false); } });
+startRound();
+
+</script>
+</body></html>
