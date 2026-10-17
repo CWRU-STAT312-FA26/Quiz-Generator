@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STAT 312: Class 12 - Statistical Independence</title>
+<style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+
+    .section-links { display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.88rem; }
+    .section-links a { color:#fff;text-decoration:underline;text-underline-offset:3px; }
+    .section-links a[aria-current="page"] { font-weight:750; }
+    .question-card { min-height:110px; }
+    .scenario-card p { font-size:1.04rem; }
+    .feedback { overflow-wrap:anywhere; }
+    .feedback code { white-space:normal; }
+    .answer-note { font-size:.9rem; }
+
+    .model { padding:12px 14px; background:white; border:1px solid #c8d6e5; border-radius:8px; font-family:Cambria,Georgia,serif; font-size:1.1rem!important; overflow-wrap:anywhere; }
+    .math { font-family:Cambria,Georgia,serif; }
+    .equation { overflow-x:auto; margin:12px 0; padding:4px 2px; }
+    math { font-family:"Cambria Math","STIX Two Math",serif; font-size:1.1rem; }
+    .equation math { min-width:max-content; text-align:left; }
+    caption { color:var(--muted); text-align:left; font-size:.88rem; padding-bottom:6px; }
+    .concept-note { margin:0 0 20px; padding:12px 14px; border-left:3px solid #9fb2c8; color:#42546b; background:#f5f8fc; font-size:.91rem; }
+    .step-row { margin:0 0 12px; }
+    .question-card:focus { outline:none; }
+    .feedback p { margin:9px 0; }
+    [hidden] { display:none!important; }
+    .completion { overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { .progress-bar { transition:none; } }
+    @media (max-width:620px) { .section-links { gap:8px 14px; } .model { font-size:1rem!important; } .equation math { font-size:1rem; } }
+</style></head><body><div class="page">
+<header class="hero"><p class="eyebrow">STAT 312 · Class 12 · Chapter 4 · 9 Subquestions</p><h1>Statistical Independence</h1><p class="subtitle">Judge statements about factorization, conditional probabilities, and support.</p><nav class="section-links" aria-label="Class 12 chapters"><a href="class12_joint_probabilities.html">Joint Probability</a><a href="class12_marginal_probabilities.html">Marginal Probability</a><a href="class12_conditional_probabilities.html">Conditional Probability</a><a href="class12_statistical_independence.html" aria-current="page">Statistical Independence</a></nav></header>
+<main><section id="quiz" class="quiz">
+<p class="concept-note">A rectangular support does not by itself establish statistical independence. Use the joint PMF/PDF and the marginal distributions to check independence.</p>
+<div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay" aria-live="polite"></span></div>
+<div id="progressTrack" class="progress-track" role="progressbar" aria-label="Completed subquestions" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div>
+<div class="step-row"><span id="stepDisplay"></span></div>
+<article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle" tabindex="-1"></h2><div id="scenarioText"></div></article>
+<article id="questionCard" class="question-card" tabindex="-1" aria-labelledby="questionHeading"><h3 id="questionHeading"></h3><div id="questionText"></div></article>
+<div class="answer-area"><label id="answerLabel" for="answerInput"></label><input id="answerInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"><select id="answerSelect" aria-describedby="answerNote" hidden><option value="">Choose an answer</option><option value="true">True</option><option value="false">False</option></select><p id="answerNote" class="note answer-note"></p></div>
+<div class="actions"><button id="checkButton" class="primary" type="button">Check Answer</button><button id="showButton" class="secondary" type="button">Show Solution</button><button id="nextButton" class="secondary" type="button" disabled>Next Subquestion</button></div>
+<div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+<p class="note">All 3 main problems appear once in a random order each round; their subquestions stay in order. Each subquestion allows one scored attempt. Blank or invalid input does not use an attempt. Show Solution earns no point. Restart to practice again.</p>
+</section><section id="completion" class="completion" aria-live="polite"><h2>Practice Round Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Start a New Randomized Round</button></section>
+<noscript><p>This quiz requires JavaScript. Enable JavaScript in your browser and reopen this file.</p></noscript>
+</main></div><script>
+const problems = [
+  {
+    "id": "C12-I-A",
+    "title": "Discrete Scores: Independence from a PMF Table",
+    "tag": "Discrete · Joint PMF table",
+    "scenario": "<p>A study records two discrete scores X and Y with the joint PMF below. Decide whether each statement is true or false.<\/p><div class=\"table-wrap\"><table><caption>Joint PMF: each cell is P(X = x, Y = y).<\/caption><thead><tr><th scope=\"col\">X \\ Y<\/th><th scope=\"col\">Y = 0<\/th><th scope=\"col\">Y = 1<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">X = 0<\/th><td>0.08<\/td><td>0.12<\/td><\/tr><tr><th scope=\"row\">X = 1<\/th><td>0.12<\/td><td>0.18<\/td><\/tr><tr><th scope=\"row\">X = 2<\/th><td>0.20<\/td><td>0.30<\/td><\/tr><\/tbody><\/table><\/div>",
+    "questions": [
+      {
+        "prompt": "X and Y are statistically independent.",
+        "answer": true,
+        "displayAnswer": "True",
+        "exactAnswer": null,
+        "method": "Compare every joint mass with the product of the marginals",
+        "solution": "The row totals are f<sub>X<\/sub>(0) = 0.20, f<sub>X<\/sub>(1) = 0.30, f<sub>X<\/sub>(2) = 0.50; the column totals are f<sub>Y<\/sub>(0) = 0.40 and f<sub>Y<\/sub>(1) = 0.60. Every cell equals its row total times its column total: 0.20·(0.40, 0.60) = (0.08, 0.12), 0.30·(0.40, 0.60) = (0.12, 0.18), and 0.50·(0.40, 0.60) = (0.20, 0.30). Thus the statement is <strong>True<\/strong>.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      },
+      {
+        "prompt": "P(Y = 1 | X = 2) = P(Y = 1) = 0.60.",
+        "answer": true,
+        "displayAnswer": "True",
+        "exactAnswer": null,
+        "method": "Relate independence to conditional probabilities",
+        "solution": "P(Y = 1 | X = 2) = 0.30/(0.20 + 0.30) = 0.60. Also P(Y = 1) = 0.12 + 0.18 + 0.30 = 0.60. The statement is <strong>True<\/strong>.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      },
+      {
+        "prompt": "P(X = 2 | Y = 1) = 0.30.",
+        "answer": false,
+        "displayAnswer": "False",
+        "exactAnswer": null,
+        "method": "Distinguish joint mass from conditional probability",
+        "solution": "The joint probability P(X = 2, Y = 1) is 0.30. The conditional probability is 0.30/0.60 = 0.50, which also equals P(X = 2). The statement is <strong>False<\/strong>.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      }
+    ]
+  },
+  {
+    "id": "C12-I-B",
+    "title": "Rectangular Support: Is It Enough?",
+    "tag": "Continuous · Rectangular support",
+    "scenario": "<p>Let X and Y be two continuous measurements from a production process. Their joint PDF is<\/p><p class=\"model\">f(x, y) = (x + y)/3, &nbsp; 0 &lt; x &lt; 1, 0 &lt; y &lt; 2;<br>f(x, y) = 0 otherwise.<\/p><p>The support is a rectangle: the allowed range of one variable does not depend on the other.<\/p><p>For a continuous variable, conditioning on a specified value uses the conditional density f<sub>X|Y<\/sub>(x|y) = f(x,y)/f<sub>Y<\/sub>(y), where f<sub>Y<\/sub>(y) &gt; 0 (and similarly for Y|X).<\/p>",
+    "questions": [
+      {
+        "prompt": "X and Y are statistically independent because the support is a rectangle.",
+        "answer": false,
+        "displayAnswer": "False",
+        "exactAnswer": null,
+        "method": "Check factorization as well as support",
+        "solution": "A rectangular support permits independence, but does not establish it. Here f<sub>X<\/sub>(x) = (2x + 2)/3 and f<sub>Y<\/sub>(y) = (y + 1/2)/3. Their product is not (x + y)/3. For example, at (1/4,1/2), the joint density is 1/4, whereas the product of the marginals is (5/6)(1/3) = 5/18. The densities are continuous and differ on a region around this point, so X and Y are dependent. The statement is <strong>False<\/strong>.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      },
+      {
+        "prompt": "P(X ≤ 1/2 | Y = 1/2) = 3/8.",
+        "answer": true,
+        "displayAnswer": "True",
+        "exactAnswer": null,
+        "method": "Calculate a conditional probability from the PDF",
+        "solution": "At y = 1/2, f<sub>X|Y<\/sub>(x|1/2) = x + 1/2 for 0 &lt; x &lt; 1. Its integral from 0 to 1/2 is 1/8 + 1/4 = 3/8. The statement is <strong>True<\/strong>.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      },
+      {
+        "prompt": "P(X ≤ 1/2 | Y = 1/2) = P(X ≤ 1/2).",
+        "answer": false,
+        "displayAnswer": "False",
+        "exactAnswer": null,
+        "method": "Compare conditional and marginal probabilities",
+        "solution": "The conditional probability is 3/8 = 0.3750. The marginal probability is ∫ from 0 to 1/2 of (2x + 2)/3 dx = 5/12 = 0.4167. They differ, so the statement is <strong>False<\/strong>.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      }
+    ]
+  },
+  {
+    "id": "C12-I-C",
+    "title": "Triangular Support: Conditional Ranges",
+    "tag": "Continuous · Dependent support bounds",
+    "scenario": "<p>In a blend, X and Y are the proportions of two ingredients. Their joint PDF is<\/p><p class=\"model\">f(x, y) = 6x, &nbsp; 0 &lt; x &lt; 1, 0 &lt; y &lt; 1 − x;<br>f(x, y) = 0 otherwise.<\/p><p>The support is triangular: x + y &lt; 1. This is the support structure used in Class 12 Practice Example 1.<\/p><p>For a continuous variable, conditioning on a specified value uses the conditional density f<sub>X|Y<\/sub>(x|y) = f(x,y)/f<sub>Y<\/sub>(y), where f<sub>Y<\/sub>(y) &gt; 0 (and similarly for Y|X).<\/p>",
+    "questions": [
+      {
+        "prompt": "X and Y are statistically independent because f(x, y) = 6x contains no y in its formula on the support.",
+        "answer": false,
+        "displayAnswer": "False",
+        "exactAnswer": null,
+        "method": "Include the support in the joint density",
+        "solution": "The range 0 &lt; y &lt; 1 − x depends on x. The full density includes this restriction. For example, the joint density is 0 at x = y = 3/4, while f<sub>X<\/sub>(3/4)f<sub>Y<\/sub>(3/4) = (9/8)(3/16) = 27/128 &gt; 0. This mismatch occurs on a region outside the triangle with positive area. The statement is <strong>False<\/strong>.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      },
+      {
+        "prompt": "Given X = 3/4, P(Y &lt; 1/2 | X = 3/4) = 1.",
+        "answer": true,
+        "displayAnswer": "True",
+        "exactAnswer": null,
+        "method": "Restrict the conditional support first",
+        "solution": "When x = 3/4, the conditional support is 0 &lt; y &lt; 1/4. Every such y is less than 1/2. Equivalently, the conditional density 4 integrates to 1 over (0,1/4). The statement is <strong>True<\/strong>.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      },
+      {
+        "prompt": "For 0 &lt; x &lt; 1, f<sub>Y|X<\/sub>(y|x) = 1/(1 − x) on 0 &lt; y &lt; 1 − x (and 0 elsewhere); therefore the conditional distribution of Y changes with x.",
+        "answer": true,
+        "displayAnswer": "True",
+        "exactAnswer": null,
+        "method": "Examine the conditional PDF and its support",
+        "solution": "Dividing 6x by f<sub>X<\/sub>(x) = 6x(1 − x) gives 1/(1 − x). Both its height and the upper end of its support vary with x. The statement is <strong>True<\/strong>; this also confirms dependence.",
+        "kind": "tf",
+        "tolerance": 5.1e-05
+      }
+    ]
+  }
+];
+
+const totalQuestions = problems.reduce((n, p) => n + p.questions.length, 0);
+let order = [], position = 0, subPosition = 0, score = 0, answered = 0, locked = false;
+const $ = id => document.getElementById(id);
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+function currentProblem() { return problems[order[position]]; }
+function currentQuestion() { return currentProblem().questions[subPosition]; }
+function parseNumber(raw, allowPercent = true) {
+  const text = raw.trim().replace(/[−–]/g, '-');
+  const number = /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i;
+  if (text.endsWith('%')) {
+    const part = text.slice(0, -1).trim();
+    return allowPercent && number.test(part) ? Number(part) / 100 : NaN;
+  }
+  const parts = text.split('/');
+  if (parts.length === 2) {
+    const a = parts[0].trim(), b = parts[1].trim();
+    return number.test(a) && number.test(b) && Number(b) !== 0 ? Number(a) / Number(b) : NaN;
+  }
+  return number.test(text) ? Number(text) : NaN;
+}
+function answerControl() { return currentQuestion().kind === 'tf' ? $('answerSelect') : $('answerInput'); }
+function validAnswer(q, raw) {
+  if (q.kind === 'tf') return raw === 'true' || raw === 'false';
+  const v = parseNumber(raw);
+  return Number.isFinite(v) && v >= 0 && v <= 1;
+}
+function isCorrect(q, raw) {
+  if (q.kind === 'tf') return validAnswer(q,raw) && (raw === 'true') === q.answer;
+  const v = parseNumber(raw);
+  return validAnswer(q,raw) && Math.abs(v - q.answer) <= q.tolerance;
+}
+function updateProgress() {
+  $('scoreDisplay').textContent = 'Score: ' + score + ' / ' + totalQuestions;
+  $('progressBar').style.width = (100 * answered / totalQuestions) + '%';
+  $('progressTrack').setAttribute('aria-valuenow', answered);
+  $('progressTrack').setAttribute('aria-valuetext', answered + ' of ' + totalQuestions + ' subquestions completed');
+}
+function renderQuestion(focusScenario = false) {
+  const p = currentProblem(), q = currentQuestion(); locked = false;
+  $('problemNumber').textContent = 'Main Problem ' + (position + 1) + ' of ' + problems.length;
+  $('stepDisplay').textContent = 'Subquestion ' + (subPosition + 1) + ' of ' + p.questions.length + ' · ' + (answered + 1) + ' of ' + totalQuestions + ' overall';
+  updateProgress();
+  $('sourceTag').textContent = p.tag;
+  $('scenarioTitle').textContent = p.title;
+  $('scenarioText').innerHTML = p.scenario;
+  $('questionHeading').textContent = 'Question (' + String.fromCharCode(97 + subPosition) + ')';
+  $('questionText').innerHTML = '<p>' + q.prompt + '</p>';
+  const tf = q.kind === 'tf';
+  $('answerInput').hidden = tf; $('answerSelect').hidden = !tf;
+  for (const el of [$('answerInput'), $('answerSelect')]) { el.value = ''; el.disabled = false; el.className = ''; el.setAttribute('aria-invalid', 'false'); }
+  $('answerLabel').htmlFor = tf ? 'answerSelect' : 'answerInput';
+  $('answerLabel').textContent = tf ? 'Your answer' : 'Your probability';
+  $('answerInput').placeholder = 'Probability, e.g. 0.1234 or 1/3';
+  $('answerNote').textContent = tf
+    ? 'Choose True or False. Review the explanation after answering.'
+    : 'Enter only the final probability. Round to four decimal places; equivalent fractions, percentages, or scientific notation are accepted. Write formulas and calculations separately.';
+  $('feedback').className = 'feedback'; $('feedback').innerHTML = '';
+  $('checkButton').disabled = false; $('showButton').disabled = false; $('nextButton').disabled = true;
+  $('nextButton').textContent = subPosition < p.questions.length - 1 ? 'Next Subquestion' : position < problems.length - 1 ? 'Next Main Problem' : 'Finish Round';
+  if (focusScenario) $('scenarioTitle').focus(); else $('questionCard').focus();
+}
+function finishAttempt(showOnly = false) {
+  if (locked) return;
+  const q = currentQuestion(), input = answerControl(), feedback = $('feedback');
+  if (!showOnly && !validAnswer(q,input.value)) {
+    feedback.className = 'feedback show incorrect';
+    feedback.textContent = q.kind === 'tf' ? 'Choose True or False before checking your answer.' : 'Enter a valid probability between 0 and 1, or an equivalent percentage or fraction.';
+    input.setAttribute('aria-invalid','true'); input.focus(); return;
+  }
+  const correct = !showOnly && isCorrect(q,input.value);
+  if (correct) score++;
+  answered++; locked = true; input.disabled = true;
+  input.className = showOnly ? '' : correct ? 'correct' : 'incorrect';
+  input.setAttribute('aria-invalid','false');
+  updateProgress();
+  $('checkButton').disabled = true; $('showButton').disabled = true; $('nextButton').disabled = false;
+  feedback.className = 'feedback show ' + (showOnly ? 'solution' : correct ? 'correct' : 'incorrect');
+  const heading = showOnly ? 'Answer: ' + q.displayAnswer : correct ? 'Correct.' : 'Not quite. The answer is ' + q.displayAnswer + '.';
+  feedback.innerHTML = '<h3>' + heading + '</h3><p class="method">Method: ' + q.method + '.</p>' + q.solution;
+}
+function nextQuestion() {
+  if (!locked) return;
+  if (subPosition < currentProblem().questions.length - 1) { subPosition++; renderQuestion(); return; }
+  if (position < problems.length - 1) { position++; subPosition = 0; renderQuestion(true); return; }
+  $('quiz').classList.add('hidden'); $('completion').classList.add('show');
+  $('finalScore').textContent = 'Your score is ' + score + ' out of ' + totalQuestions + ' (' + (100*score/totalQuestions).toFixed(1) + '%).';
+  $('restartButton').focus();
+}
+function startRound() {
+  order = shuffle(problems.map((_, i) => i)); position = 0; subPosition = 0; score = 0; answered = 0; locked = false;
+  $('quiz').classList.remove('hidden'); $('completion').classList.remove('show'); renderQuestion(true);
+}
+$('checkButton').addEventListener('click', () => finishAttempt(false));
+$('showButton').addEventListener('click', () => finishAttempt(true));
+$('nextButton').addEventListener('click', nextQuestion);
+$('restartButton').addEventListener('click', startRound);
+$('answerInput').addEventListener('keydown', event => { if (event.key === 'Enter' && !locked) { event.preventDefault(); finishAttempt(false); } });
+$('answerSelect').addEventListener('keydown', event => { if (event.key === 'Enter' && !locked) { event.preventDefault(); finishAttempt(false); } });
+startRound();
+
+</script></body></html>

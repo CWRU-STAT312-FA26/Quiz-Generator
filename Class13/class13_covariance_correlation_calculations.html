@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STAT 312: Class 13 - Covariance & Correlation: Calculations</title><style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+
+    .section-links { display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.88rem; }
+    .section-links a { color:#fff;text-decoration:underline;text-underline-offset:3px; }
+    .section-links a[aria-current="page"] { font-weight:750; }
+    .question-card { min-height:110px; }
+    .scenario-card p { font-size:1.04rem; }
+    .feedback { overflow-wrap:anywhere; }
+    .feedback code { white-space:normal; }
+    .answer-note { font-size:.9rem; }
+
+    .model,.worked { padding:12px 14px; background:white; border:1px solid #c8d6e5; border-radius:8px; font-family:Cambria,Georgia,serif; overflow-wrap:anywhere; }
+    .model { font-size:1.1rem!important; }
+    .worked { font-size:1rem; }
+    .equation { overflow-x:auto; margin:12px 0; padding:4px 2px; }
+    math { font-family:"Cambria Math","STIX Two Math",serif; font-size:1.08rem; min-width:max-content; text-align:left; }
+    caption { color:var(--muted); text-align:left; font-size:.88rem; padding-bottom:6px; }
+    .concept-note { margin:0 0 20px; padding:12px 14px; border-left:3px solid #9fb2c8; color:#42546b; background:#f5f8fc; font-size:.91rem; }
+    .rubric { margin-top:14px!important; font-size:.9rem!important; color:#42546b; }
+    .step-row { margin:0 0 12px; }
+    .question-card:focus { outline:none; }
+    #questionText > div { font-size:1.07rem; }
+    .feedback p { margin:9px 0; }
+    .choices { border:0; padding:0; margin:0; min-width:0; }
+    .choices legend { margin-bottom:8px; color:var(--navy); font-weight:750; }
+    .answer-area label.choice { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; margin:8px 0; border:1px solid #b8c6d6; border-radius:8px; font-weight:400; color:var(--ink); cursor:pointer; }
+    .answer-area .choice input { width:18px; min-height:18px; height:18px; flex:0 0 18px; padding:0; margin:4px 0 0; accent-color:var(--navy); }
+    .choice:has(input:checked) { background:var(--pale-blue); border-color:var(--blue)!important; }
+    .choice:has(input:focus-visible) { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    [hidden] { display:none!important; }
+    @media (prefers-reduced-motion:reduce) { .progress-bar { transition:none; } }
+    @media (max-width:620px) { .section-links { gap:8px 14px; } .model { font-size:1rem!important; } math { font-size:1rem; } .answer-area label.choice { padding:10px; } }
+</style></head>
+<body><div class="page"><header class="hero"><p class="eyebrow">STAT 312 · Class 13 · 66 Subquestions</p><h1>Covariance & Correlation: Calculations</h1><p class="subtitle">Six joint distributions, each with eleven linked steps from moments to interpretation.</p><nav class="section-links" aria-label="Class 13 chapters"><a href="class13_covariance_correlation_concepts.html">Concepts: True / False</a><a href="class13_covariance_correlation_calculations.html" aria-current="page">Calculations & Interpretation</a></nav></header><main>
+<section id="quiz" class="quiz"><p class="concept-note">Derive marginal PMFs/PDFs on paper, then enter the requested numerical values. Keep exact fractions or full precision for later steps. Interpretation questions have four choices. The rectangular-support cases use fixed integration bounds; rectangular support alone does not imply independence.</p><div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay" aria-live="polite"></span></div><div id="progressTrack" class="progress-track" role="progressbar" aria-label="Completed questions" aria-valuemin="0" aria-valuemax="66" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div><div class="step-row"><span id="stepDisplay"></span></div>
+<article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle" tabindex="-1"></h2><div id="scenarioText"></div></article><article id="questionCard" class="question-card" tabindex="-1" aria-labelledby="questionHeading"><h3 id="questionHeading"></h3><div id="questionText"></div></article>
+<div class="answer-area"><label id="answerLabel" for="answerInput"></label><input id="answerInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"><select id="answerSelect" aria-describedby="answerNote" hidden><option value="">Choose an answer</option><option value="true">True</option><option value="false">False</option></select><fieldset id="choiceFieldset" class="choices" aria-describedby="answerNote" hidden><legend>Choose one interpretation</legend><label class="choice"><input id="choice0" type="radio" name="interpretation" value="0"><span id="choiceText0"></span></label><label class="choice"><input id="choice1" type="radio" name="interpretation" value="1"><span id="choiceText1"></span></label><label class="choice"><input id="choice2" type="radio" name="interpretation" value="2"><span id="choiceText2"></span></label><label class="choice"><input id="choice3" type="radio" name="interpretation" value="3"><span id="choiceText3"></span></label></fieldset><p id="answerNote" class="note answer-note"></p></div>
+<div class="actions"><button id="checkButton" class="primary" type="button">Check Answer</button><button id="showButton" class="secondary" type="button">Show Solution</button><button id="nextButton" class="secondary" type="button" disabled>Next Question</button></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div><p class="note">Main problems always follow A1 → A2 → B1 → B2 → C1 → C2. Complete the 11 subquestions of each problem in order. Restart begins again at A1. Each question allows one scored attempt. Blank or invalid input does not use an attempt. Show Solution earns no point. Answers and progress reset when the page is reloaded.</p></section>
+<section id="completion" class="completion" aria-live="polite"><h2>Practice Round Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Restart from Problem A1</button></section><noscript><p>This quiz requires JavaScript. Enable JavaScript in your browser and reopen this file.</p></noscript>
+</main></div><script>
+const chapterKind="calculations";
+const problems=[
+  {
+    "id": "C13-CALC-A1",
+    "title": "Two Short Assessments",
+    "tag": "Case A1 · Joint PMF table",
+    "scenario": "<p>X and Y are the numbers of correct responses on two different two-item assessments. Their joint PMF is shown below.<\/p><div class=\"table-wrap\"><table><caption>Joint PMF: each cell is P(X = x, Y = y).<\/caption><thead><tr><th scope=\"col\">X \\ Y<\/th><th scope=\"col\">Y = 0<\/th><th scope=\"col\">Y = 1<\/th><th scope=\"col\">Y = 2<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">X = 0<\/th><td>0.20<\/td><td>0.05<\/td><td>0.00<\/td><\/tr><tr><th scope=\"row\">X = 1<\/th><td>0.05<\/td><td>0.30<\/td><td>0.05<\/td><\/tr><tr><th scope=\"row\">X = 2<\/th><td>0.00<\/td><td>0.05<\/td><td>0.30<\/td><\/tr><\/tbody><\/table><\/div>",
+    "questions": [
+      {
+        "prompt": "Calculate E(XY) directly from the joint PMF.",
+        "answer": 1.7,
+        "exactAnswer": "17/10",
+        "displayAnswer": "1.7000",
+        "kind": "number",
+        "method": "Weight xy by the joint PMF",
+        "solution": "<p>E(XY) = Σ<sub>x<\/sub>Σ<sub>y<\/sub> xy f(x,y). The nonzero contributions give<\/p><p class=\"worked\">(1)(1)(3/10) + (1)(2)(1/20) + (2)(1)(1/20) + (2)(2)(3/10) = <strong>17/10 = 1.7000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Product moment"
+      },
+      {
+        "prompt": "Derive the marginal PMF f<sub>X<\/sub>(x) on paper, including its support. Use it to calculate E(X).",
+        "answer": 1.1,
+        "exactAnswer": "11/10",
+        "displayAnswer": "1.1000",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>X<\/sub>(x) = 1/4 at x = 0, 2/5 at x = 1, 7/20 at x = 2, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(X) = (0)(1/4) + (1)(2/5) + (2)(7/20) = <strong>11/10 = 1.1000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of X"
+      },
+      {
+        "prompt": "Derive the marginal PMF f<sub>Y<\/sub>(y) on paper, including its support. Use it to calculate E(Y).",
+        "answer": 1.1,
+        "exactAnswer": "11/10",
+        "displayAnswer": "1.1000",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>Y<\/sub>(y) = 1/4 at y = 0, 2/5 at y = 1, 7/20 at y = 2, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(Y) = (0)(1/4) + (1)(2/5) + (2)(7/20) = <strong>11/10 = 1.1000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of Y"
+      },
+      {
+        "prompt": "Calculate Cov(X,Y) using E(XY), E(X), and E(Y). Keep exact fractions or full precision.",
+        "answer": 0.49,
+        "exactAnswer": "49/100",
+        "displayAnswer": "0.4900",
+        "kind": "number",
+        "method": "Cov(X,Y) = E(XY) − E(X)E(Y)",
+        "solution": "<p>Cov(X,Y) = 17/10 − (11/10)(11/10) = <strong>49/100 = 0.4900<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the covariance for this joint distribution?",
+        "answer": 0,
+        "displayAnswer": "The association has a positive direction; covariance alone gives no standardized strength.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "The association has a positive direction; covariance alone gives no standardized strength.",
+            "feedback": "The covariance is positive. Its raw magnitude depends on the scales of X and Y."
+          },
+          {
+            "text": "The association has a negative direction; covariance alone gives no standardized strength.",
+            "feedback": "The computed covariance is positive, so this reverses its direction."
+          },
+          {
+            "text": "The covariance magnitude by itself establishes the strength of the linear association.",
+            "feedback": "Raw covariance has units and changes under rescaling; its magnitude is not a standardized strength measure."
+          },
+          {
+            "text": "The positive covariance establishes that changing X causes Y to change.",
+            "feedback": "Covariance describes association and does not by itself establish causation."
+          }
+        ],
+        "method": "Interpret the sign and limitations of covariance",
+        "solution": "<p>Cov(X,Y) = 49/100 = 0.4900. This is positive, so X and Y tend to deviate from their respective means in the same direction. Its magnitude is not a standardized measure of strength, and it does not establish causation.<\/p>",
+        "stage": "Covariance · Interpretation"
+      },
+      {
+        "prompt": "Use the marginal PMF f<sub>X<\/sub>(x) to calculate E(X²).",
+        "answer": 1.8,
+        "exactAnswer": "9/5",
+        "displayAnswer": "1.8000",
+        "kind": "number",
+        "method": "Weight x² by its marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>X<\/sub>(x) = 1/4 at x = 0, 2/5 at x = 1, 7/20 at x = 2, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(X²) = (0)²(1/4) + (1)²(2/5) + (2)²(7/20) = <strong>9/5 = 1.8000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of X"
+      },
+      {
+        "prompt": "Use the marginal PMF f<sub>Y<\/sub>(y) to calculate E(Y²).",
+        "answer": 1.8,
+        "exactAnswer": "9/5",
+        "displayAnswer": "1.8000",
+        "kind": "number",
+        "method": "Weight y² by its marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>Y<\/sub>(y) = 1/4 at y = 0, 2/5 at y = 1, 7/20 at y = 2, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(Y²) = (0)²(1/4) + (1)²(2/5) + (2)²(7/20) = <strong>9/5 = 1.8000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of Y"
+      },
+      {
+        "prompt": "Calculate Var(X).",
+        "answer": 0.59,
+        "exactAnswer": "59/100",
+        "displayAnswer": "0.5900",
+        "kind": "number",
+        "method": "Var(X) = E(X²) − [E(X)]²",
+        "solution": "<p>Var(X) = 9/5 − (11/10)² = <strong>59/100 = 0.5900<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of X"
+      },
+      {
+        "prompt": "Calculate Var(Y).",
+        "answer": 0.59,
+        "exactAnswer": "59/100",
+        "displayAnswer": "0.5900",
+        "kind": "number",
+        "method": "Var(Y) = E(Y²) − [E(Y)]²",
+        "solution": "<p>Var(Y) = 9/5 − (11/10)² = <strong>59/100 = 0.5900<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of Y"
+      },
+      {
+        "prompt": "Calculate Cor(X,Y) = ρ. Use the standard deviations, and keep full precision until the final answer.",
+        "answer": 0.8305084745762712,
+        "exactAnswer": null,
+        "displayAnswer": "0.8305",
+        "kind": "correlation",
+        "method": "ρ = Cov(X,Y) / √[Var(X)Var(Y)]",
+        "solution": "<p>ρ = (49/100) / √[(59/100)(59/100)] = <strong>0.8305<\/strong>. Divide by the product of standard deviations, not by the product of variances.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the Pearson correlation for this model?<p class=\"rubric\">Use the lecture’s rule of thumb for |ρ|: 0.9–1 very strong; 0.7–&lt;0.9 strong; 0.4–&lt;0.7 moderate; 0.2–&lt;0.4 weak; 0–&lt;0.2 very weak (excluding 0). At ρ = 0, report no linear association. These labels are descriptive guidelines, not universal cutoffs.<\/p>",
+        "answer": 0,
+        "displayAnswer": "A strong positive linear association; the coefficient does not establish causation.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "A strong positive linear association; the coefficient does not establish causation.",
+            "feedback": "Its sign is positive; |ρ| = 0.8305 is in the lecture’s strong category."
+          },
+          {
+            "text": "A strong negative linear association; the coefficient does not establish causation.",
+            "feedback": "The strength label matches, but the computed coefficient is positive."
+          },
+          {
+            "text": "A weak positive linear association; the coefficient does not establish causation.",
+            "feedback": "The sign matches, but |ρ| = 0.8305 is in the strong category under the stated rule."
+          },
+          {
+            "text": "A strong positive linear association that proves X has a causal effect on Y.",
+            "feedback": "Even a large correlation cannot by itself establish a causal effect."
+          }
+        ],
+        "method": "Interpret direction and strength of linear association",
+        "solution": "<p>ρ = 0.8305, so the linear association is strong and positive under the stated rule of thumb. The magnitude concerns a linear relationship; it does not establish causation.<\/p>",
+        "stage": "Correlation · Interpretation"
+      }
+    ]
+  },
+  {
+    "id": "C13-CALC-A2",
+    "title": "Position Code and Sensor Flag",
+    "tag": "Case A2 · Joint PMF table",
+    "scenario": "<p>A sensor records a centered position code X and an indicator Y. Their joint PMF is shown below.<\/p><div class=\"table-wrap\"><table><caption>Joint PMF: each cell is P(X = x, Y = y).<\/caption><thead><tr><th scope=\"col\">X \\ Y<\/th><th scope=\"col\">Y = 0<\/th><th scope=\"col\">Y = 1<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">X = -1<\/th><td>0.00<\/td><td>0.25<\/td><\/tr><tr><th scope=\"row\">X = 0<\/th><td>0.50<\/td><td>0.00<\/td><\/tr><tr><th scope=\"row\">X = 1<\/th><td>0.00<\/td><td>0.25<\/td><\/tr><\/tbody><\/table><\/div>",
+    "questions": [
+      {
+        "prompt": "Calculate E(XY) directly from the joint PMF.",
+        "answer": 0.0,
+        "exactAnswer": "0",
+        "displayAnswer": "0.0000",
+        "kind": "number",
+        "method": "Weight xy by the joint PMF",
+        "solution": "<p>E(XY) = Σ<sub>x<\/sub>Σ<sub>y<\/sub> xy f(x,y). The nonzero contributions give<\/p><p class=\"worked\">(-1)(1)(1/4) + (1)(1)(1/4) = <strong>0 = 0.0000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Product moment"
+      },
+      {
+        "prompt": "Derive the marginal PMF f<sub>X<\/sub>(x) on paper, including its support. Use it to calculate E(X).",
+        "answer": 0.0,
+        "exactAnswer": "0",
+        "displayAnswer": "0.0000",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>X<\/sub>(x) = 1/4 at x = -1, 1/2 at x = 0, 1/4 at x = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(X) = (-1)(1/4) + (0)(1/2) + (1)(1/4) = <strong>0 = 0.0000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of X"
+      },
+      {
+        "prompt": "Derive the marginal PMF f<sub>Y<\/sub>(y) on paper, including its support. Use it to calculate E(Y).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>Y<\/sub>(y) = 1/2 at y = 0, 1/2 at y = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(Y) = (0)(1/2) + (1)(1/2) = <strong>1/2 = 0.5000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of Y"
+      },
+      {
+        "prompt": "Calculate Cov(X,Y) using E(XY), E(X), and E(Y). Keep exact fractions or full precision.",
+        "answer": 0.0,
+        "exactAnswer": "0",
+        "displayAnswer": "0.0000",
+        "kind": "number",
+        "method": "Cov(X,Y) = E(XY) − E(X)E(Y)",
+        "solution": "<p>Cov(X,Y) = 0 − (0)(1/2) = <strong>0 = 0.0000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the covariance for this joint distribution?",
+        "answer": 0,
+        "displayAnswer": "The variables are uncorrelated but statistically dependent.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "The variables are uncorrelated but statistically dependent.",
+            "feedback": "The table shows Y = X², so Y depends on X. For example, P(X = 0,Y = 1) = 0 differs from P(X = 0)P(Y = 1) = 1/4."
+          },
+          {
+            "text": "Zero covariance by itself proves that the variables are statistically independent.",
+            "feedback": "Independence implies zero covariance, but the converse does not hold in general."
+          },
+          {
+            "text": "Zero covariance establishes a perfect positive linear relationship.",
+            "feedback": "A perfect positive linear relationship with positive variances has correlation +1 and positive covariance."
+          },
+          {
+            "text": "Zero covariance establishes a perfect negative linear relationship.",
+            "feedback": "A perfect negative linear relationship with positive variances has correlation −1 and negative covariance."
+          }
+        ],
+        "method": "Interpret the sign and limitations of covariance",
+        "solution": "<p>Cov(X,Y) = 0, so the variables are uncorrelated. The table shows Y = X², so Y depends on X. For example, P(X = 0,Y = 1) = 0 differs from P(X = 0)P(Y = 1) = 1/4. The conclusion about dependence or independence uses the model, not just the zero covariance.<\/p>",
+        "stage": "Covariance · Interpretation"
+      },
+      {
+        "prompt": "Use the marginal PMF f<sub>X<\/sub>(x) to calculate E(X²).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Weight x² by its marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>X<\/sub>(x) = 1/4 at x = -1, 1/2 at x = 0, 1/4 at x = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(X²) = (-1)²(1/4) + (0)²(1/2) + (1)²(1/4) = <strong>1/2 = 0.5000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of X"
+      },
+      {
+        "prompt": "Use the marginal PMF f<sub>Y<\/sub>(y) to calculate E(Y²).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Weight y² by its marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>Y<\/sub>(y) = 1/2 at y = 0, 1/2 at y = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(Y²) = (0)²(1/2) + (1)²(1/2) = <strong>1/2 = 0.5000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of Y"
+      },
+      {
+        "prompt": "Calculate Var(X).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Var(X) = E(X²) − [E(X)]²",
+        "solution": "<p>Var(X) = 1/2 − (0)² = <strong>1/2 = 0.5000<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of X"
+      },
+      {
+        "prompt": "Calculate Var(Y).",
+        "answer": 0.25,
+        "exactAnswer": "1/4",
+        "displayAnswer": "0.2500",
+        "kind": "number",
+        "method": "Var(Y) = E(Y²) − [E(Y)]²",
+        "solution": "<p>Var(Y) = 1/2 − (1/2)² = <strong>1/4 = 0.2500<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of Y"
+      },
+      {
+        "prompt": "Calculate Cor(X,Y) = ρ. Use the standard deviations, and keep full precision until the final answer.",
+        "answer": 0.0,
+        "exactAnswer": null,
+        "displayAnswer": "0.0000",
+        "kind": "correlation",
+        "method": "ρ = Cov(X,Y) / √[Var(X)Var(Y)]",
+        "solution": "<p>ρ = (0) / √[(1/2)(1/4)] = <strong>0.0000<\/strong>. Divide by the product of standard deviations, not by the product of variances.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the Pearson correlation for this model?<p class=\"rubric\">Use the lecture’s rule of thumb for |ρ|: 0.9–1 very strong; 0.7–&lt;0.9 strong; 0.4–&lt;0.7 moderate; 0.2–&lt;0.4 weak; 0–&lt;0.2 very weak (excluding 0). At ρ = 0, report no linear association. These labels are descriptive guidelines, not universal cutoffs.<\/p>",
+        "answer": 0,
+        "displayAnswer": "There is no linear association, although the table contains the nonlinear relation Y = X².",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "There is no linear association, although the table contains the nonlinear relation Y = X².",
+            "feedback": "The coefficient is 0 while Y = X² is a nonconstant function of X, so a nonlinear dependence remains."
+          },
+          {
+            "text": "There is no linear association, so a zero correlation alone proves independence.",
+            "feedback": "A zero Pearson correlation does not generally imply statistical independence."
+          },
+          {
+            "text": "There is a perfect positive linear association because the correlation is zero.",
+            "feedback": "A perfect positive linear relationship requires correlation +1, not 0."
+          },
+          {
+            "text": "The correlation is undefined because the covariance is zero.",
+            "feedback": "A zero numerator gives correlation 0 when both variances are positive, as they are here."
+          }
+        ],
+        "method": "Interpret direction and strength of linear association",
+        "solution": "<p>Both variances are positive, so the coefficient is defined and equals 0. The coefficient is 0 while Y = X² is a nonconstant function of X, so a nonlinear dependence remains. Zero correlation does not rule out nonlinear dependence in general.<\/p>",
+        "stage": "Correlation · Interpretation"
+      }
+    ]
+  },
+  {
+    "id": "C13-CALC-B1",
+    "title": "Two Binary Indicators",
+    "tag": "Case B1 · Joint PMF formula",
+    "scenario": "<p>Two binary indicators X and Y have joint PMF<\/p><p class=\"model\">f(x,y) = [5 − 4(2x − 1)(2y − 1)]/20,<br>x ∈ {0,1}, y ∈ {0,1}; f(x,y) = 0 otherwise.<\/p>",
+    "questions": [
+      {
+        "prompt": "Calculate E(XY) directly from the joint PMF.",
+        "answer": 0.05,
+        "exactAnswer": "1/20",
+        "displayAnswer": "0.0500",
+        "kind": "number",
+        "method": "Weight xy by the joint PMF",
+        "solution": "<p>E(XY) = Σ<sub>x<\/sub>Σ<sub>y<\/sub> xy f(x,y). The nonzero contributions give<\/p><p class=\"worked\">(1)(1)(1/20) = <strong>1/20 = 0.0500<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Product moment"
+      },
+      {
+        "prompt": "Derive the marginal PMF f<sub>X<\/sub>(x) on paper, including its support. Use it to calculate E(X).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>X<\/sub>(x) = 1/2 at x = 0, 1/2 at x = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(X) = (0)(1/2) + (1)(1/2) = <strong>1/2 = 0.5000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of X"
+      },
+      {
+        "prompt": "Derive the marginal PMF f<sub>Y<\/sub>(y) on paper, including its support. Use it to calculate E(Y).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>Y<\/sub>(y) = 1/2 at y = 0, 1/2 at y = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(Y) = (0)(1/2) + (1)(1/2) = <strong>1/2 = 0.5000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of Y"
+      },
+      {
+        "prompt": "Calculate Cov(X,Y) using E(XY), E(X), and E(Y). Keep exact fractions or full precision.",
+        "answer": -0.2,
+        "exactAnswer": "-1/5",
+        "displayAnswer": "-0.2000",
+        "kind": "number",
+        "method": "Cov(X,Y) = E(XY) − E(X)E(Y)",
+        "solution": "<p>Cov(X,Y) = 1/20 − (1/2)(1/2) = <strong>-1/5 = -0.2000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the covariance for this joint distribution?",
+        "answer": 0,
+        "displayAnswer": "The association has a negative direction; covariance alone gives no standardized strength.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "The association has a negative direction; covariance alone gives no standardized strength.",
+            "feedback": "The covariance is negative. Its raw magnitude depends on the scales of X and Y."
+          },
+          {
+            "text": "The association has a positive direction; covariance alone gives no standardized strength.",
+            "feedback": "The computed covariance is negative, so this reverses its direction."
+          },
+          {
+            "text": "The covariance magnitude by itself establishes the strength of the linear association.",
+            "feedback": "Raw covariance has units and changes under rescaling; its magnitude is not a standardized strength measure."
+          },
+          {
+            "text": "The negative covariance establishes that changing X causes Y to change.",
+            "feedback": "Covariance describes association and does not by itself establish causation."
+          }
+        ],
+        "method": "Interpret the sign and limitations of covariance",
+        "solution": "<p>Cov(X,Y) = -1/5 = -0.2000. This is negative, so X and Y tend to deviate from their respective means in opposite directions. Its magnitude is not a standardized measure of strength, and it does not establish causation.<\/p>",
+        "stage": "Covariance · Interpretation"
+      },
+      {
+        "prompt": "Use the marginal PMF f<sub>X<\/sub>(x) to calculate E(X²).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Weight x² by its marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>X<\/sub>(x) = 1/2 at x = 0, 1/2 at x = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(X²) = (0)²(1/2) + (1)²(1/2) = <strong>1/2 = 0.5000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of X"
+      },
+      {
+        "prompt": "Use the marginal PMF f<sub>Y<\/sub>(y) to calculate E(Y²).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Weight y² by its marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>Y<\/sub>(y) = 1/2 at y = 0, 1/2 at y = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(Y²) = (0)²(1/2) + (1)²(1/2) = <strong>1/2 = 0.5000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of Y"
+      },
+      {
+        "prompt": "Calculate Var(X).",
+        "answer": 0.25,
+        "exactAnswer": "1/4",
+        "displayAnswer": "0.2500",
+        "kind": "number",
+        "method": "Var(X) = E(X²) − [E(X)]²",
+        "solution": "<p>Var(X) = 1/2 − (1/2)² = <strong>1/4 = 0.2500<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of X"
+      },
+      {
+        "prompt": "Calculate Var(Y).",
+        "answer": 0.25,
+        "exactAnswer": "1/4",
+        "displayAnswer": "0.2500",
+        "kind": "number",
+        "method": "Var(Y) = E(Y²) − [E(Y)]²",
+        "solution": "<p>Var(Y) = 1/2 − (1/2)² = <strong>1/4 = 0.2500<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of Y"
+      },
+      {
+        "prompt": "Calculate Cor(X,Y) = ρ. Use the standard deviations, and keep full precision until the final answer.",
+        "answer": -0.8,
+        "exactAnswer": null,
+        "displayAnswer": "-0.8000",
+        "kind": "correlation",
+        "method": "ρ = Cov(X,Y) / √[Var(X)Var(Y)]",
+        "solution": "<p>ρ = (-1/5) / √[(1/4)(1/4)] = <strong>-0.8000<\/strong>. Divide by the product of standard deviations, not by the product of variances.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the Pearson correlation for this model?<p class=\"rubric\">Use the lecture’s rule of thumb for |ρ|: 0.9–1 very strong; 0.7–&lt;0.9 strong; 0.4–&lt;0.7 moderate; 0.2–&lt;0.4 weak; 0–&lt;0.2 very weak (excluding 0). At ρ = 0, report no linear association. These labels are descriptive guidelines, not universal cutoffs.<\/p>",
+        "answer": 0,
+        "displayAnswer": "A strong negative linear association; the coefficient does not establish causation.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "A strong negative linear association; the coefficient does not establish causation.",
+            "feedback": "Its sign is negative; |ρ| = 0.8000 is in the lecture’s strong category."
+          },
+          {
+            "text": "A strong positive linear association; the coefficient does not establish causation.",
+            "feedback": "The strength label matches, but the computed coefficient is negative."
+          },
+          {
+            "text": "A weak negative linear association; the coefficient does not establish causation.",
+            "feedback": "The sign matches, but |ρ| = 0.8000 is in the strong category under the stated rule."
+          },
+          {
+            "text": "A strong negative linear association that proves X has a causal effect on Y.",
+            "feedback": "Even a large correlation cannot by itself establish a causal effect."
+          }
+        ],
+        "method": "Interpret direction and strength of linear association",
+        "solution": "<p>ρ = -0.8000, so the linear association is strong and negative under the stated rule of thumb. The magnitude concerns a linear relationship; it does not establish causation.<\/p>",
+        "stage": "Correlation · Interpretation"
+      }
+    ]
+  },
+  {
+    "id": "C13-CALC-B2",
+    "title": "Centered Ratings",
+    "tag": "Case B2 · Joint PMF formula",
+    "scenario": "<p>Two centered ratings X and Y have joint PMF<\/p><p class=\"model\">f(x,y) = (1 + xy)/9,<br>x ∈ {−1,0,1}, y ∈ {−1,0,1}; f(x,y) = 0 otherwise.<\/p>",
+    "questions": [
+      {
+        "prompt": "Calculate E(XY) directly from the joint PMF.",
+        "answer": 0.4444444444444444,
+        "exactAnswer": "4/9",
+        "displayAnswer": "0.4444",
+        "kind": "number",
+        "method": "Weight xy by the joint PMF",
+        "solution": "<p>E(XY) = Σ<sub>x<\/sub>Σ<sub>y<\/sub> xy f(x,y). The nonzero contributions give<\/p><p class=\"worked\">(-1)(-1)(2/9) + (1)(1)(2/9) = <strong>4/9 = 0.4444<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Product moment"
+      },
+      {
+        "prompt": "Derive the marginal PMF f<sub>X<\/sub>(x) on paper, including its support. Use it to calculate E(X).",
+        "answer": 0.0,
+        "exactAnswer": "0",
+        "displayAnswer": "0.0000",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>X<\/sub>(x) = 1/3 at x = -1, 1/3 at x = 0, 1/3 at x = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(X) = (-1)(1/3) + (0)(1/3) + (1)(1/3) = <strong>0 = 0.0000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of X"
+      },
+      {
+        "prompt": "Derive the marginal PMF f<sub>Y<\/sub>(y) on paper, including its support. Use it to calculate E(Y).",
+        "answer": 0.0,
+        "exactAnswer": "0",
+        "displayAnswer": "0.0000",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>Y<\/sub>(y) = 1/3 at y = -1, 1/3 at y = 0, 1/3 at y = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(Y) = (-1)(1/3) + (0)(1/3) + (1)(1/3) = <strong>0 = 0.0000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of Y"
+      },
+      {
+        "prompt": "Calculate Cov(X,Y) using E(XY), E(X), and E(Y). Keep exact fractions or full precision.",
+        "answer": 0.4444444444444444,
+        "exactAnswer": "4/9",
+        "displayAnswer": "0.4444",
+        "kind": "number",
+        "method": "Cov(X,Y) = E(XY) − E(X)E(Y)",
+        "solution": "<p>Cov(X,Y) = 4/9 − (0)(0) = <strong>4/9 = 0.4444<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the covariance for this joint distribution?",
+        "answer": 0,
+        "displayAnswer": "The association has a positive direction; covariance alone gives no standardized strength.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "The association has a positive direction; covariance alone gives no standardized strength.",
+            "feedback": "The covariance is positive. Its raw magnitude depends on the scales of X and Y."
+          },
+          {
+            "text": "The association has a negative direction; covariance alone gives no standardized strength.",
+            "feedback": "The computed covariance is positive, so this reverses its direction."
+          },
+          {
+            "text": "The covariance magnitude by itself establishes the strength of the linear association.",
+            "feedback": "Raw covariance has units and changes under rescaling; its magnitude is not a standardized strength measure."
+          },
+          {
+            "text": "The positive covariance establishes that changing X causes Y to change.",
+            "feedback": "Covariance describes association and does not by itself establish causation."
+          }
+        ],
+        "method": "Interpret the sign and limitations of covariance",
+        "solution": "<p>Cov(X,Y) = 4/9 = 0.4444. This is positive, so X and Y tend to deviate from their respective means in the same direction. Its magnitude is not a standardized measure of strength, and it does not establish causation.<\/p>",
+        "stage": "Covariance · Interpretation"
+      },
+      {
+        "prompt": "Use the marginal PMF f<sub>X<\/sub>(x) to calculate E(X²).",
+        "answer": 0.6666666666666666,
+        "exactAnswer": "2/3",
+        "displayAnswer": "0.6667",
+        "kind": "number",
+        "method": "Weight x² by its marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>X<\/sub>(x) = 1/3 at x = -1, 1/3 at x = 0, 1/3 at x = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(X²) = (-1)²(1/3) + (0)²(1/3) + (1)²(1/3) = <strong>2/3 = 0.6667<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of X"
+      },
+      {
+        "prompt": "Use the marginal PMF f<sub>Y<\/sub>(y) to calculate E(Y²).",
+        "answer": 0.6666666666666666,
+        "exactAnswer": "2/3",
+        "displayAnswer": "0.6667",
+        "kind": "number",
+        "method": "Weight y² by its marginal PMF",
+        "solution": "<p>The marginal PMF is f<sub>Y<\/sub>(y) = 1/3 at y = -1, 1/3 at y = 0, 1/3 at y = 1, and 0 elsewhere. The probabilities sum to 1.<\/p><p>E(Y²) = (-1)²(1/3) + (0)²(1/3) + (1)²(1/3) = <strong>2/3 = 0.6667<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of Y"
+      },
+      {
+        "prompt": "Calculate Var(X).",
+        "answer": 0.6666666666666666,
+        "exactAnswer": "2/3",
+        "displayAnswer": "0.6667",
+        "kind": "number",
+        "method": "Var(X) = E(X²) − [E(X)]²",
+        "solution": "<p>Var(X) = 2/3 − (0)² = <strong>2/3 = 0.6667<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of X"
+      },
+      {
+        "prompt": "Calculate Var(Y).",
+        "answer": 0.6666666666666666,
+        "exactAnswer": "2/3",
+        "displayAnswer": "0.6667",
+        "kind": "number",
+        "method": "Var(Y) = E(Y²) − [E(Y)]²",
+        "solution": "<p>Var(Y) = 2/3 − (0)² = <strong>2/3 = 0.6667<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of Y"
+      },
+      {
+        "prompt": "Calculate Cor(X,Y) = ρ. Use the standard deviations, and keep full precision until the final answer.",
+        "answer": 0.6666666666666666,
+        "exactAnswer": null,
+        "displayAnswer": "0.6667",
+        "kind": "correlation",
+        "method": "ρ = Cov(X,Y) / √[Var(X)Var(Y)]",
+        "solution": "<p>ρ = (4/9) / √[(2/3)(2/3)] = <strong>0.6667<\/strong>. Divide by the product of standard deviations, not by the product of variances.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the Pearson correlation for this model?<p class=\"rubric\">Use the lecture’s rule of thumb for |ρ|: 0.9–1 very strong; 0.7–&lt;0.9 strong; 0.4–&lt;0.7 moderate; 0.2–&lt;0.4 weak; 0–&lt;0.2 very weak (excluding 0). At ρ = 0, report no linear association. These labels are descriptive guidelines, not universal cutoffs.<\/p>",
+        "answer": 0,
+        "displayAnswer": "A moderate positive linear association; the coefficient does not establish causation.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "A moderate positive linear association; the coefficient does not establish causation.",
+            "feedback": "Its sign is positive; |ρ| = 0.6667 is in the lecture’s moderate category."
+          },
+          {
+            "text": "A moderate negative linear association; the coefficient does not establish causation.",
+            "feedback": "The strength label matches, but the computed coefficient is positive."
+          },
+          {
+            "text": "A weak positive linear association; the coefficient does not establish causation.",
+            "feedback": "The sign matches, but |ρ| = 0.6667 is in the moderate category under the stated rule."
+          },
+          {
+            "text": "A moderate positive linear association that proves X has a causal effect on Y.",
+            "feedback": "Even a large correlation cannot by itself establish a causal effect."
+          }
+        ],
+        "method": "Interpret direction and strength of linear association",
+        "solution": "<p>ρ = 0.6667, so the linear association is moderate and positive under the stated rule of thumb. The magnitude concerns a linear relationship; it does not establish causation.<\/p>",
+        "stage": "Correlation · Interpretation"
+      }
+    ]
+  },
+  {
+    "id": "C13-CALC-C1",
+    "title": "Lecture Model: Two Continuous Measurements",
+    "tag": "Case C1 · Joint PDF on a rectangle",
+    "scenario": "<p>Use the continuous example from the Class 13 lecture and extend it to correlation. The joint PDF is<\/p><p class=\"model\">f(x,y) = (2/7)(x + 2y), &nbsp; 0 &lt; x &lt; 1, 1 &lt; y &lt; 2;<br>f(x,y) = 0 otherwise.<\/p><p>The support is rectangular. This specifies fixed integration bounds; statistical independence must still be checked separately.<\/p>",
+    "questions": [
+      {
+        "prompt": "Calculate E(XY) directly from the joint PDF.",
+        "answer": 0.8095238095238095,
+        "exactAnswer": "17/21",
+        "displayAnswer": "0.8095",
+        "kind": "number",
+        "method": "Weight xy by the joint PDF",
+        "solution": "<p>Multiply the joint PDF by xy, then integrate over the full support.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(XY) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mrow><msubsup><mo>∫<\/mo><mtext>1<\/mtext><mtext>2<\/mtext><\/msubsup><mtext>(2/7)xy(x + 2y)<\/mtext><mtext> dy<\/mtext><\/mrow><mtext> dx<\/mtext><\/mrow><mtext> = 17/21 = 0.8095<\/mtext><\/math><\/div><p>The inner integral is (2/7)(3x²/2 + 14x/3). Integrating this expression over 0 &lt; x &lt; 1 gives 17/21.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Product moment"
+      },
+      {
+        "prompt": "Derive the marginal PDF f<sub>X<\/sub>(x) on paper, including its support. Use it to calculate E(X).",
+        "answer": 0.5238095238095238,
+        "exactAnswer": "11/21",
+        "displayAnswer": "0.5238",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PDF",
+        "solution": "<p>Integrate out y: f<sub>X<\/sub>(x) = (2/7)(x + 3) for 0 &lt; x &lt; 1, and 0 elsewhere. Its integral is 1.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(X) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mtext>(2/7)x(x + 3)<\/mtext><mtext> dx<\/mtext><\/mrow><mtext> = 11/21 = 0.5238<\/mtext><\/math><\/div>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of X"
+      },
+      {
+        "prompt": "Derive the marginal PDF f<sub>Y<\/sub>(y) on paper, including its support. Use it to calculate E(Y).",
+        "answer": 1.5476190476190477,
+        "exactAnswer": "65/42",
+        "displayAnswer": "1.5476",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PDF",
+        "solution": "<p>Integrate out x: f<sub>Y<\/sub>(y) = (1 + 4y)/7 for 1 &lt; y &lt; 2, and 0 elsewhere. Its integral is 1.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(Y) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>1<\/mtext><mtext>2<\/mtext><\/msubsup><mtext>y(1 + 4y)/7<\/mtext><mtext> dy<\/mtext><\/mrow><mtext> = 65/42 = 1.5476<\/mtext><\/math><\/div>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of Y"
+      },
+      {
+        "prompt": "Calculate Cov(X,Y) using E(XY), E(X), and E(Y). Keep exact fractions or full precision.",
+        "answer": -0.0011337868480725624,
+        "exactAnswer": "-1/882",
+        "displayAnswer": "-0.0011",
+        "kind": "number",
+        "method": "Cov(X,Y) = E(XY) − E(X)E(Y)",
+        "solution": "<p>Cov(X,Y) = 17/21 − (11/21)(65/42) = <strong>-1/882 = -0.0011<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the covariance for this joint distribution?",
+        "answer": 0,
+        "displayAnswer": "The association has a negative direction; covariance alone gives no standardized strength.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "The association has a negative direction; covariance alone gives no standardized strength.",
+            "feedback": "The covariance is negative. Its raw magnitude depends on the scales of X and Y."
+          },
+          {
+            "text": "The association has a positive direction; covariance alone gives no standardized strength.",
+            "feedback": "The computed covariance is negative, so this reverses its direction."
+          },
+          {
+            "text": "The covariance magnitude by itself establishes the strength of the linear association.",
+            "feedback": "Raw covariance has units and changes under rescaling; its magnitude is not a standardized strength measure."
+          },
+          {
+            "text": "The negative covariance establishes that changing X causes Y to change.",
+            "feedback": "Covariance describes association and does not by itself establish causation."
+          }
+        ],
+        "method": "Interpret the sign and limitations of covariance",
+        "solution": "<p>Cov(X,Y) = -1/882 = -0.0011. This is negative, so X and Y tend to deviate from their respective means in opposite directions. Its magnitude is not a standardized measure of strength, and it does not establish causation.<\/p>",
+        "stage": "Covariance · Interpretation"
+      },
+      {
+        "prompt": "Use the marginal PDF f<sub>X<\/sub>(x) to calculate E(X²).",
+        "answer": 0.35714285714285715,
+        "exactAnswer": "5/14",
+        "displayAnswer": "0.3571",
+        "kind": "number",
+        "method": "Weight x² by its marginal PDF",
+        "solution": "<p>Integrate out y: f<sub>X<\/sub>(x) = (2/7)(x + 3) for 0 &lt; x &lt; 1, and 0 elsewhere. Its integral is 1.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(X²) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mtext>(2/7)x²(x + 3)<\/mtext><mtext> dx<\/mtext><\/mrow><mtext> = 5/14 = 0.3571<\/mtext><\/math><\/div>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of X"
+      },
+      {
+        "prompt": "Use the marginal PDF f<sub>Y<\/sub>(y) to calculate E(Y²).",
+        "answer": 2.4761904761904763,
+        "exactAnswer": "52/21",
+        "displayAnswer": "2.4762",
+        "kind": "number",
+        "method": "Weight y² by its marginal PDF",
+        "solution": "<p>Integrate out x: f<sub>Y<\/sub>(y) = (1 + 4y)/7 for 1 &lt; y &lt; 2, and 0 elsewhere. Its integral is 1.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(Y²) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>1<\/mtext><mtext>2<\/mtext><\/msubsup><mtext>y²(1 + 4y)/7<\/mtext><mtext> dy<\/mtext><\/mrow><mtext> = 52/21 = 2.4762<\/mtext><\/math><\/div>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of Y"
+      },
+      {
+        "prompt": "Calculate Var(X).",
+        "answer": 0.08276643990929705,
+        "exactAnswer": "73/882",
+        "displayAnswer": "0.0828",
+        "kind": "number",
+        "method": "Var(X) = E(X²) − [E(X)]²",
+        "solution": "<p>Var(X) = 5/14 − (11/21)² = <strong>73/882 = 0.0828<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of X"
+      },
+      {
+        "prompt": "Calculate Var(Y).",
+        "answer": 0.0810657596371882,
+        "exactAnswer": "143/1764",
+        "displayAnswer": "0.0811",
+        "kind": "number",
+        "method": "Var(Y) = E(Y²) − [E(Y)]²",
+        "solution": "<p>Var(Y) = 52/21 − (65/42)² = <strong>143/1764 = 0.0811<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of Y"
+      },
+      {
+        "prompt": "Calculate Cor(X,Y) = ρ. Use the standard deviations, and keep full precision until the final answer.",
+        "answer": -0.013841576235570972,
+        "exactAnswer": null,
+        "displayAnswer": "-0.0138",
+        "kind": "correlation",
+        "method": "ρ = Cov(X,Y) / √[Var(X)Var(Y)]",
+        "solution": "<p>ρ = (-1/882) / √[(73/882)(143/1764)] = <strong>-0.0138<\/strong>. Divide by the product of standard deviations, not by the product of variances.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the Pearson correlation for this model?<p class=\"rubric\">Use the lecture’s rule of thumb for |ρ|: 0.9–1 very strong; 0.7–&lt;0.9 strong; 0.4–&lt;0.7 moderate; 0.2–&lt;0.4 weak; 0–&lt;0.2 very weak (excluding 0). At ρ = 0, report no linear association. These labels are descriptive guidelines, not universal cutoffs.<\/p>",
+        "answer": 0,
+        "displayAnswer": "A very weak negative linear association; the coefficient does not establish causation.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "A very weak negative linear association; the coefficient does not establish causation.",
+            "feedback": "Its sign is negative; |ρ| = 0.0138 is in the lecture’s very weak category."
+          },
+          {
+            "text": "A very weak positive linear association; the coefficient does not establish causation.",
+            "feedback": "The strength label matches, but the computed coefficient is negative."
+          },
+          {
+            "text": "A strong negative linear association; the coefficient does not establish causation.",
+            "feedback": "The sign matches, but |ρ| = 0.0138 is in the very weak category under the stated rule."
+          },
+          {
+            "text": "A very weak negative linear association that proves X has a causal effect on Y.",
+            "feedback": "Even a large correlation cannot by itself establish a causal effect."
+          }
+        ],
+        "method": "Interpret direction and strength of linear association",
+        "solution": "<p>ρ = -0.0138, so the linear association is very weak and negative under the stated rule of thumb. The magnitude concerns a linear relationship; it does not establish causation.<\/p>",
+        "stage": "Correlation · Interpretation"
+      }
+    ]
+  },
+  {
+    "id": "C13-CALC-C2",
+    "title": "Two Continuous Indices",
+    "tag": "Case C2 · Joint PDF on a rectangle",
+    "scenario": "<p>Two continuous indices X and Y have joint PDF<\/p><p class=\"model\">f(x,y) = 6xy², &nbsp; 0 &lt; x &lt; 1, 0 &lt; y &lt; 1;<br>f(x,y) = 0 otherwise.<\/p><p>The support is rectangular. Use the marginal PDFs when calculating first and second moments.<\/p>",
+    "questions": [
+      {
+        "prompt": "Calculate E(XY) directly from the joint PDF.",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Weight xy by the joint PDF",
+        "solution": "<div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(XY) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mtext>6x²y³<\/mtext><mtext> dy<\/mtext><\/mrow><mtext> dx<\/mtext><\/mrow><mtext> = 1/2 = 0.5000<\/mtext><\/math><\/div><p>Integrating with respect to y gives (3/2)x²; its integral from 0 to 1 is 1/2.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Product moment"
+      },
+      {
+        "prompt": "Derive the marginal PDF f<sub>X<\/sub>(x) on paper, including its support. Use it to calculate E(X).",
+        "answer": 0.6666666666666666,
+        "exactAnswer": "2/3",
+        "displayAnswer": "0.6667",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PDF",
+        "solution": "<p>Integrate out y: f<sub>X<\/sub>(x) = 2x for 0 &lt; x &lt; 1, and 0 elsewhere. Its integral is 1.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(X) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mtext>2x²<\/mtext><mtext> dx<\/mtext><\/mrow><mtext> = 2/3 = 0.6667<\/mtext><\/math><\/div>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of X"
+      },
+      {
+        "prompt": "Derive the marginal PDF f<sub>Y<\/sub>(y) on paper, including its support. Use it to calculate E(Y).",
+        "answer": 0.75,
+        "exactAnswer": "3/4",
+        "displayAnswer": "0.7500",
+        "kind": "number",
+        "method": "Calculate the mean from the marginal PDF",
+        "solution": "<p>Integrate out x: f<sub>Y<\/sub>(y) = 3y² for 0 &lt; y &lt; 1, and 0 elsewhere. Its integral is 1.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(Y) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mtext>3y³<\/mtext><mtext> dy<\/mtext><\/mrow><mtext> = 3/4 = 0.7500<\/mtext><\/math><\/div>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Mean of Y"
+      },
+      {
+        "prompt": "Calculate Cov(X,Y) using E(XY), E(X), and E(Y). Keep exact fractions or full precision.",
+        "answer": 0.0,
+        "exactAnswer": "0",
+        "displayAnswer": "0.0000",
+        "kind": "number",
+        "method": "Cov(X,Y) = E(XY) − E(X)E(Y)",
+        "solution": "<p>Cov(X,Y) = 1/2 − (2/3)(3/4) = <strong>0 = 0.0000<\/strong>.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Covariance · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the covariance for this joint distribution?",
+        "answer": 0,
+        "displayAnswer": "The variables are uncorrelated; this model also factorizes into independent marginals.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "The variables are uncorrelated; this model also factorizes into independent marginals.",
+            "feedback": "The marginals are 2x and 3y² on (0,1). Their product is 6xy² on the rectangular support, proving independence."
+          },
+          {
+            "text": "Zero covariance by itself proves that the variables are statistically independent.",
+            "feedback": "Independence implies zero covariance, but the converse does not hold in general."
+          },
+          {
+            "text": "Zero covariance establishes a perfect positive linear relationship.",
+            "feedback": "A perfect positive linear relationship with positive variances has correlation +1 and positive covariance."
+          },
+          {
+            "text": "Zero covariance establishes a perfect negative linear relationship.",
+            "feedback": "A perfect negative linear relationship with positive variances has correlation −1 and negative covariance."
+          }
+        ],
+        "method": "Interpret the sign and limitations of covariance",
+        "solution": "<p>Cov(X,Y) = 0, so the variables are uncorrelated. The marginals are 2x and 3y² on (0,1). Their product is 6xy² on the rectangular support, proving independence. The conclusion about dependence or independence uses the model, not just the zero covariance.<\/p>",
+        "stage": "Covariance · Interpretation"
+      },
+      {
+        "prompt": "Use the marginal PDF f<sub>X<\/sub>(x) to calculate E(X²).",
+        "answer": 0.5,
+        "exactAnswer": "1/2",
+        "displayAnswer": "0.5000",
+        "kind": "number",
+        "method": "Weight x² by its marginal PDF",
+        "solution": "<p>Integrate out y: f<sub>X<\/sub>(x) = 2x for 0 &lt; x &lt; 1, and 0 elsewhere. Its integral is 1.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(X²) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mtext>2x³<\/mtext><mtext> dx<\/mtext><\/mrow><mtext> = 1/2 = 0.5000<\/mtext><\/math><\/div>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of X"
+      },
+      {
+        "prompt": "Use the marginal PDF f<sub>Y<\/sub>(y) to calculate E(Y²).",
+        "answer": 0.6,
+        "exactAnswer": "3/5",
+        "displayAnswer": "0.6000",
+        "kind": "number",
+        "method": "Weight y² by its marginal PDF",
+        "solution": "<p>Integrate out x: f<sub>Y<\/sub>(y) = 3y² for 0 &lt; y &lt; 1, and 0 elsewhere. Its integral is 1.<\/p><div class=\"equation\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mtext>E(Y²) = <\/mtext><mrow><msubsup><mo>∫<\/mo><mtext>0<\/mtext><mtext>1<\/mtext><\/msubsup><mtext>3y⁴<\/mtext><mtext> dy<\/mtext><\/mrow><mtext> = 3/5 = 0.6000<\/mtext><\/math><\/div>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Second moment of Y"
+      },
+      {
+        "prompt": "Calculate Var(X).",
+        "answer": 0.05555555555555555,
+        "exactAnswer": "1/18",
+        "displayAnswer": "0.0556",
+        "kind": "number",
+        "method": "Var(X) = E(X²) − [E(X)]²",
+        "solution": "<p>Var(X) = 1/2 − (2/3)² = <strong>1/18 = 0.0556<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of X"
+      },
+      {
+        "prompt": "Calculate Var(Y).",
+        "answer": 0.0375,
+        "exactAnswer": "3/80",
+        "displayAnswer": "0.0375",
+        "kind": "number",
+        "method": "Var(Y) = E(Y²) − [E(Y)]²",
+        "solution": "<p>Var(Y) = 3/5 − (3/4)² = <strong>3/80 = 0.0375<\/strong>. The standard deviation is the square root of this variance.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Variance of Y"
+      },
+      {
+        "prompt": "Calculate Cor(X,Y) = ρ. Use the standard deviations, and keep full precision until the final answer.",
+        "answer": 0.0,
+        "exactAnswer": null,
+        "displayAnswer": "0.0000",
+        "kind": "correlation",
+        "method": "ρ = Cov(X,Y) / √[Var(X)Var(Y)]",
+        "solution": "<p>ρ = (0) / √[(1/18)(3/80)] = <strong>0.0000<\/strong>. Divide by the product of standard deviations, not by the product of variances.<\/p>",
+        "tolerance": 5.1e-05,
+        "stage": "Correlation · Calculation"
+      },
+      {
+        "prompt": "Which statement best interprets the Pearson correlation for this model?<p class=\"rubric\">Use the lecture’s rule of thumb for |ρ|: 0.9–1 very strong; 0.7–&lt;0.9 strong; 0.4–&lt;0.7 moderate; 0.2–&lt;0.4 weak; 0–&lt;0.2 very weak (excluding 0). At ρ = 0, report no linear association. These labels are descriptive guidelines, not universal cutoffs.<\/p>",
+        "answer": 0,
+        "displayAnswer": "There is no linear association; factorization separately shows independence in this model.",
+        "kind": "mc",
+        "options": [
+          {
+            "text": "There is no linear association; factorization separately shows independence in this model.",
+            "feedback": "The coefficient is 0, and independence follows from the factorized PDF on the rectangular support."
+          },
+          {
+            "text": "There is no linear association, so a zero correlation alone proves independence.",
+            "feedback": "A zero Pearson correlation does not generally imply statistical independence."
+          },
+          {
+            "text": "There is a perfect positive linear association because the correlation is zero.",
+            "feedback": "A perfect positive linear relationship requires correlation +1, not 0."
+          },
+          {
+            "text": "The correlation is undefined because the covariance is zero.",
+            "feedback": "A zero numerator gives correlation 0 when both variances are positive, as they are here."
+          }
+        ],
+        "method": "Interpret direction and strength of linear association",
+        "solution": "<p>Both variances are positive, so the coefficient is defined and equals 0. The coefficient is 0, and independence follows from the factorized PDF on the rectangular support. Zero correlation does not rule out nonlinear dependence in general.<\/p>",
+        "stage": "Correlation · Interpretation"
+      }
+    ]
+  }
+];
+
+const totalQuestions = problems.reduce((n,p)=>n+p.questions.length,0);
+let order=[], position=0, subPosition=0, score=0, answered=0, locked=false, choiceOrder=[];
+const $=id=>document.getElementById(id);
+function currentProblem(){return problems[order[position]];}
+function currentQuestion(){return currentProblem().questions[subPosition];}
+function parseNumber(raw){
+  const text=raw.trim().replace(/[−–]/g,'-');
+  const number=/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i;
+  if(text.includes('%'))return NaN;
+  const parts=text.split('/');
+  if(parts.length===2){const a=parts[0].trim(),b=parts[1].trim();return number.test(a)&&number.test(b)&&Number(b)!==0?Number(a)/Number(b):NaN;}
+  return number.test(text)?Number(text):NaN;
+}
+function validAnswer(q,raw){
+  if(q.kind==='tf')return raw==='true'||raw==='false';
+  if(q.kind==='mc')return /^[0-3]$/.test(raw);
+  const n=parseNumber(raw);
+  return Number.isFinite(n)&&(q.kind!=='correlation'||(n>=-1&&n<=1));
+}
+function isCorrect(q,raw){
+  if(!validAnswer(q,raw))return false;
+  if(q.kind==='tf')return (raw==='true')===q.answer;
+  if(q.kind==='mc')return Number(raw)===q.answer;
+  return Math.abs(parseNumber(raw)-q.answer)<=q.tolerance;
+}
+function rawAnswer(){const q=currentQuestion();if(q.kind==='tf')return $('answerSelect').value;if(q.kind==='mc'){for(let i=0;i<4;i++)if($('choice'+i).checked)return $('choice'+i).value;return '';}return $('answerInput').value;}
+function controls(){return [$('answerInput'),$('answerSelect'),...Array.from({length:4},(_,i)=>$('choice'+i))];}
+function focusAnswer(){const k=currentQuestion().kind;$(k==='tf'?'answerSelect':k==='mc'?'choice0':'answerInput').focus();}
+function updateProgress(){
+  $('scoreDisplay').textContent='Score: '+score+' / '+totalQuestions;
+  $('progressBar').style.width=(100*answered/totalQuestions)+'%';
+  $('progressTrack').setAttribute('aria-valuenow',answered);
+  $('progressTrack').setAttribute('aria-valuetext',answered+' of '+totalQuestions+' questions completed');
+}
+function renderQuestion(newMain=false){
+  const p=currentProblem(),q=currentQuestion();locked=false;
+  $('problemNumber').textContent=(chapterKind==='concepts'?'Question ':'Main Problem ')+(position+1)+' of '+problems.length;
+  $('stepDisplay').textContent=p.questions.length===1?q.stage:'Step '+(subPosition+1)+' of '+p.questions.length+' · '+q.stage;
+  updateProgress();
+  $('sourceTag').textContent=p.tag;$('scenarioTitle').textContent=p.title;$('scenarioText').innerHTML=p.scenario;
+  $('questionHeading').textContent=p.questions.length===1?'Statement':'Question ('+String.fromCharCode(97+subPosition)+')';
+  $('questionText').innerHTML='<div>'+q.prompt+'</div>';
+  const mc=q.kind==='mc',tf=q.kind==='tf';
+  $('answerInput').hidden=mc||tf;$('answerSelect').hidden=!tf;$('choiceFieldset').hidden=!mc;$('answerLabel').hidden=mc;
+  for(const el of controls()){el.value='';el.disabled=false;el.checked=false;el.className='';el.setAttribute('aria-invalid','false');}
+  $('answerLabel').htmlFor=tf?'answerSelect':'answerInput';$('answerLabel').textContent=tf?'Your answer':'Your numerical answer';
+  if(mc){const correctPosition=(2*position+(subPosition===4?0:1))%4;choiceOrder=[0,1,2,3].map((_,i)=>(i-correctPosition+4)%4);for(let i=0;i<4;i++){const k=choiceOrder[i];$('choice'+i).value=String(k);$('choiceText'+i).textContent=String.fromCharCode(65+i)+'. '+q.options[k].text;}}
+  $('answerInput').placeholder=q.kind==='correlation'?'Signed correlation, e.g. −0.1234':'Numerical value, e.g. 1.2345 or −1/5';
+  $('answerNote').textContent=mc?'Choose exactly one interpretation. Option order is fixed for this question.':tf?'Choose True or False.':q.kind==='correlation'?'Enter a number from −1 to 1. Round to four decimal places. Use full-precision moments and variances; omit % and units.':'Round to four decimal places, or enter an exact fraction. Signed values and scientific notation are accepted. Omit units and %. Keep full precision for later steps.';
+  $('feedback').className='feedback';$('feedback').innerHTML='';
+  $('checkButton').disabled=false;$('showButton').disabled=false;$('nextButton').disabled=true;
+  $('nextButton').textContent=subPosition<p.questions.length-1?'Next Subquestion':position<problems.length-1?(chapterKind==='concepts'?'Next Question':'Next Main Problem'):'Finish Round';
+  $(newMain?'scenarioTitle':'questionCard').focus();
+}
+function finishAttempt(showOnly=false){
+  if(locked)return;
+  const q=currentQuestion(),raw=rawAnswer(),feedback=$('feedback');
+  if(!showOnly&&!validAnswer(q,raw)){
+    feedback.className='feedback show incorrect';feedback.textContent=q.kind==='mc'?'Choose one interpretation before checking.':q.kind==='tf'?'Choose True or False before checking.':q.kind==='correlation'?'Enter a valid correlation between −1 and 1 without % or units.':'Enter a valid signed number or fraction without % or units.';
+    focusAnswer();return;
+  }
+  const correct=!showOnly&&isCorrect(q,raw);if(correct)score++;answered++;locked=true;
+  for(const el of controls())el.disabled=true;
+  updateProgress();$('checkButton').disabled=true;$('showButton').disabled=true;$('nextButton').disabled=false;
+  let display=q.displayAnswer;
+  if(q.kind==='mc')display=String.fromCharCode(65+choiceOrder.indexOf(q.answer))+'. '+q.options[q.answer].text;
+  const heading=showOnly?'Answer: '+display:correct?'Correct.':'Not quite. The answer is '+display+'.';
+  feedback.className='feedback show '+(showOnly?'solution':correct?'correct':'incorrect');
+  // display is course-authored content; numerical and choice values never inject user input.
+  feedback.innerHTML='<h3>'+heading+'</h3><p class="method">Method: '+q.method+'.</p>'+(q.kind==='mc'&&!showOnly?'<p>'+q.options[Number(raw)].feedback+'</p>':'')+q.solution;
+}
+function nextQuestion(){
+  if(!locked)return;
+  if(subPosition<currentProblem().questions.length-1){subPosition++;renderQuestion();return;}
+  if(position<problems.length-1){position++;subPosition=0;renderQuestion(true);return;}
+  $('quiz').classList.add('hidden');$('completion').classList.add('show');$('finalScore').textContent='Your score is '+score+' out of '+totalQuestions+' ('+(100*score/totalQuestions).toFixed(1)+'%).';$('restartButton').focus();
+}
+function startRound(){order=problems.map((_,i)=>i);position=0;subPosition=0;score=0;answered=0;locked=false;$('quiz').classList.remove('hidden');$('completion').classList.remove('show');renderQuestion(true);}
+$('checkButton').addEventListener('click',()=>finishAttempt(false));$('showButton').addEventListener('click',()=>finishAttempt(true));$('nextButton').addEventListener('click',nextQuestion);$('restartButton').addEventListener('click',startRound);
+$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked){e.preventDefault();finishAttempt(false);}});
+$('answerSelect').addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked){e.preventDefault();finishAttempt(false);}});
+startRound();
+
+</script></body></html>

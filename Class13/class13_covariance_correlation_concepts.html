@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STAT 312: Class 13 - Covariance & Correlation: Concepts</title><style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+
+    .section-links { display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.88rem; }
+    .section-links a { color:#fff;text-decoration:underline;text-underline-offset:3px; }
+    .section-links a[aria-current="page"] { font-weight:750; }
+    .question-card { min-height:110px; }
+    .scenario-card p { font-size:1.04rem; }
+    .feedback { overflow-wrap:anywhere; }
+    .feedback code { white-space:normal; }
+    .answer-note { font-size:.9rem; }
+
+    .model,.worked { padding:12px 14px; background:white; border:1px solid #c8d6e5; border-radius:8px; font-family:Cambria,Georgia,serif; overflow-wrap:anywhere; }
+    .model { font-size:1.1rem!important; }
+    .worked { font-size:1rem; }
+    .equation { overflow-x:auto; margin:12px 0; padding:4px 2px; }
+    math { font-family:"Cambria Math","STIX Two Math",serif; font-size:1.08rem; min-width:max-content; text-align:left; }
+    caption { color:var(--muted); text-align:left; font-size:.88rem; padding-bottom:6px; }
+    .concept-note { margin:0 0 20px; padding:12px 14px; border-left:3px solid #9fb2c8; color:#42546b; background:#f5f8fc; font-size:.91rem; }
+    .rubric { margin-top:14px!important; font-size:.9rem!important; color:#42546b; }
+    .step-row { margin:0 0 12px; }
+    .question-card:focus { outline:none; }
+    #questionText > div { font-size:1.07rem; }
+    .feedback p { margin:9px 0; }
+    .choices { border:0; padding:0; margin:0; min-width:0; }
+    .choices legend { margin-bottom:8px; color:var(--navy); font-weight:750; }
+    .answer-area label.choice { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; margin:8px 0; border:1px solid #b8c6d6; border-radius:8px; font-weight:400; color:var(--ink); cursor:pointer; }
+    .answer-area .choice input { width:18px; min-height:18px; height:18px; flex:0 0 18px; padding:0; margin:4px 0 0; accent-color:var(--navy); }
+    .choice:has(input:checked) { background:var(--pale-blue); border-color:var(--blue)!important; }
+    .choice:has(input:focus-visible) { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    [hidden] { display:none!important; }
+    @media (prefers-reduced-motion:reduce) { .progress-bar { transition:none; } }
+    @media (max-width:620px) { .section-links { gap:8px 14px; } .model { font-size:1rem!important; } math { font-size:1rem; } .answer-area label.choice { padding:10px; } }
+</style></head>
+<body><div class="page"><header class="hero"><p class="eyebrow">STAT 312 · Class 13 · 10 Questions</p><h1>Covariance & Correlation: Concepts</h1><p class="subtitle">Ten True/False statements about independence, linear association, and interpretation.</p><nav class="section-links" aria-label="Class 13 chapters"><a href="class13_covariance_correlation_concepts.html" aria-current="page">Concepts: True / False</a><a href="class13_covariance_correlation_calculations.html">Calculations & Interpretation</a></nav></header><main>
+<section id="quiz" class="quiz"><p class="concept-note">Assume finite second moments. Correlations refer to Pearson correlation and require positive variances. Covariance describes the direction of association; its magnitude is scale-dependent.</p><div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay" aria-live="polite"></span></div><div id="progressTrack" class="progress-track" role="progressbar" aria-label="Completed questions" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div><div class="step-row"><span id="stepDisplay"></span></div>
+<article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle" tabindex="-1"></h2><div id="scenarioText"></div></article><article id="questionCard" class="question-card" tabindex="-1" aria-labelledby="questionHeading"><h3 id="questionHeading"></h3><div id="questionText"></div></article>
+<div class="answer-area"><label id="answerLabel" for="answerInput"></label><input id="answerInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"><select id="answerSelect" aria-describedby="answerNote" hidden><option value="">Choose an answer</option><option value="true">True</option><option value="false">False</option></select><fieldset id="choiceFieldset" class="choices" aria-describedby="answerNote" hidden><legend>Choose one interpretation</legend><label class="choice"><input id="choice0" type="radio" name="interpretation" value="0"><span id="choiceText0"></span></label><label class="choice"><input id="choice1" type="radio" name="interpretation" value="1"><span id="choiceText1"></span></label><label class="choice"><input id="choice2" type="radio" name="interpretation" value="2"><span id="choiceText2"></span></label><label class="choice"><input id="choice3" type="radio" name="interpretation" value="3"><span id="choiceText3"></span></label></fieldset><p id="answerNote" class="note answer-note"></p></div>
+<div class="actions"><button id="checkButton" class="primary" type="button">Check Answer</button><button id="showButton" class="secondary" type="button">Show Solution</button><button id="nextButton" class="secondary" type="button" disabled>Next Question</button></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div><p class="note">All 10 statements appear once in a random order each round. Each question allows one scored attempt. Blank or invalid input does not use an attempt. Show Solution earns no point. Answers and progress reset when the page is reloaded.</p></section>
+<section id="completion" class="completion" aria-live="polite"><h2>Practice Round Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Start a New Randomized Round</button></section><noscript><p>This quiz requires JavaScript. Enable JavaScript in your browser and reopen this file.</p></noscript>
+</main></div><script>
+const chapterKind="concepts";
+const problems=[
+  {
+    "id": "C13-TF-01",
+    "title": "Independence and Covariance",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "If X and Y are statistically independent, then Cov(X,Y) = 0.",
+        "answer": true,
+        "displayAnswer": "True",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>Under independence, E(XY) = E(X)E(Y). Therefore Cov(X,Y) = E(XY) − E(X)E(Y) = 0. Finite second moments ensure these quantities exist.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-02",
+    "title": "The Converse of Independence",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "If Cov(X,Y) = 0, then X and Y must be statistically independent.",
+        "answer": false,
+        "displayAnswer": "False",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>Zero covariance does not establish independence. For example, let X take −1, 0, and 1 with equal probability and let Y = X². Symmetry gives E(X) = E(XY) = 0, so covariance is 0, even though Y is a nonconstant function of X. Both variances are positive, and their correlation is also 0.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-03",
+    "title": "Interpreting Negative Covariance",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "A negative covariance indicates that values of X above its mean tend to be associated with values of Y below its mean, and vice versa.",
+        "answer": true,
+        "displayAnswer": "True",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>Negative covariance describes a tendency for X and Y to deviate from their respective means in opposite directions. It does not require every observed pair to follow that pattern, and it does not establish causation.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-04",
+    "title": "Signs of Covariance and Correlation",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "When both standard deviations are positive, covariance and Pearson correlation always have the same sign.",
+        "answer": true,
+        "displayAnswer": "True",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>Cor(X,Y) = Cov(X,Y)/(σ<sub>X<\/sub>σ<sub>Y<\/sub>). The denominator is positive, so dividing by it preserves the sign. A positive, negative, or zero covariance therefore gives a positive, negative, or zero correlation, respectively.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-05",
+    "title": "Magnitude and Units",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "If one pair of variables has a larger absolute covariance than another pair, it must have a stronger linear relationship.",
+        "answer": false,
+        "displayAnswer": "False",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>Covariance depends on the units and scales of both variables and is not normalized. Its raw magnitude does not provide a universal scale for comparing the strength of different relationships. Pearson correlation standardizes covariance using the two standard deviations.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-06",
+    "title": "Range of the Correlation Coefficient",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "A Pearson correlation coefficient can be greater than 1 if the linear relationship is sufficiently strong.",
+        "answer": false,
+        "displayAnswer": "False",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>A Pearson correlation coefficient must lie between −1 and 1, inclusive. Values near either endpoint indicate a strong linear association; the coefficient cannot exceed these bounds.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-07",
+    "title": "Influential Outliers",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "A single extreme outlier cannot substantially change the Pearson correlation coefficient.",
+        "answer": false,
+        "displayAnswer": "False",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>A single influential outlier can substantially increase or decrease the correlation. This is one reason to inspect a scatterplot before interpreting the coefficient.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-08",
+    "title": "Linear versus Nonlinear Association",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "Even if Cor(X,Y) = 0, X and Y may have a strong nonlinear relationship.",
+        "answer": true,
+        "displayAnswer": "True",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>Pearson correlation summarizes linear association. For example, if X is uniform on (−1,1) and Y = X², symmetry gives E(X) = E(XY) = 0. Both variances are positive, so the correlation is 0, even though the pair lies exactly on a parabola.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-09",
+    "title": "Correlation and Causation",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "A correlation close to +1 establishes that increasing X causes Y to increase.",
+        "answer": false,
+        "displayAnswer": "False",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>A correlation close to +1 describes a strong positive linear association. It does not establish a causal effect. Confounding, selection, or a shared trend can produce an association without the asserted causal mechanism.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  },
+  {
+    "id": "C13-TF-10",
+    "title": "Visualize Before Summarizing",
+    "tag": "Covariance & Correlation · True / False",
+    "scenario": "<p>Assume that all random variables have finite second moments. When a correlation is used, both variables have positive variance. Correlation means the Pearson correlation coefficient.<\/p>",
+    "questions": [
+      {
+        "prompt": "Before interpreting a Pearson correlation computed from paired observations, inspect a scatterplot for curvature and influential outliers.",
+        "answer": true,
+        "displayAnswer": "True",
+        "kind": "tf",
+        "method": "Apply the stated property and its assumptions",
+        "solution": "<p>A scatterplot can reveal a strong nonlinear pattern that a near-zero Pearson correlation misses. It can also reveal an influential outlier that substantially changes the coefficient. Visualization helps assess whether a single linear summary is informative.<\/p>",
+        "stage": "Concept check"
+      }
+    ]
+  }
+];
+
+const totalQuestions = problems.reduce((n,p)=>n+p.questions.length,0);
+let order=[], position=0, subPosition=0, score=0, answered=0, locked=false, choiceOrder=[];
+const $=id=>document.getElementById(id);
+function shuffle(items) {const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function currentProblem(){return problems[order[position]];}
+function currentQuestion(){return currentProblem().questions[subPosition];}
+function parseNumber(raw){
+  const text=raw.trim().replace(/[−–]/g,'-');
+  const number=/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i;
+  if(text.includes('%'))return NaN;
+  const parts=text.split('/');
+  if(parts.length===2){const a=parts[0].trim(),b=parts[1].trim();return number.test(a)&&number.test(b)&&Number(b)!==0?Number(a)/Number(b):NaN;}
+  return number.test(text)?Number(text):NaN;
+}
+function validAnswer(q,raw){
+  if(q.kind==='tf')return raw==='true'||raw==='false';
+  if(q.kind==='mc')return /^[0-3]$/.test(raw);
+  const n=parseNumber(raw);
+  return Number.isFinite(n)&&(q.kind!=='correlation'||(n>=-1&&n<=1));
+}
+function isCorrect(q,raw){
+  if(!validAnswer(q,raw))return false;
+  if(q.kind==='tf')return (raw==='true')===q.answer;
+  if(q.kind==='mc')return Number(raw)===q.answer;
+  return Math.abs(parseNumber(raw)-q.answer)<=q.tolerance;
+}
+function rawAnswer(){const q=currentQuestion();if(q.kind==='tf')return $('answerSelect').value;if(q.kind==='mc'){for(let i=0;i<4;i++)if($('choice'+i).checked)return $('choice'+i).value;return '';}return $('answerInput').value;}
+function controls(){return [$('answerInput'),$('answerSelect'),...Array.from({length:4},(_,i)=>$('choice'+i))];}
+function focusAnswer(){const k=currentQuestion().kind;$(k==='tf'?'answerSelect':k==='mc'?'choice0':'answerInput').focus();}
+function updateProgress(){
+  $('scoreDisplay').textContent='Score: '+score+' / '+totalQuestions;
+  $('progressBar').style.width=(100*answered/totalQuestions)+'%';
+  $('progressTrack').setAttribute('aria-valuenow',answered);
+  $('progressTrack').setAttribute('aria-valuetext',answered+' of '+totalQuestions+' questions completed');
+}
+function renderQuestion(newMain=false){
+  const p=currentProblem(),q=currentQuestion();locked=false;
+  $('problemNumber').textContent=(chapterKind==='concepts'?'Question ':'Main Problem ')+(position+1)+' of '+problems.length;
+  $('stepDisplay').textContent=p.questions.length===1?q.stage:'Step '+(subPosition+1)+' of '+p.questions.length+' · '+q.stage;
+  updateProgress();
+  $('sourceTag').textContent=p.tag;$('scenarioTitle').textContent=p.title;$('scenarioText').innerHTML=p.scenario;
+  $('questionHeading').textContent=p.questions.length===1?'Statement':'Question ('+String.fromCharCode(97+subPosition)+')';
+  $('questionText').innerHTML='<div>'+q.prompt+'</div>';
+  const mc=q.kind==='mc',tf=q.kind==='tf';
+  $('answerInput').hidden=mc||tf;$('answerSelect').hidden=!tf;$('choiceFieldset').hidden=!mc;$('answerLabel').hidden=mc;
+  for(const el of controls()){el.value='';el.disabled=false;el.checked=false;el.className='';el.setAttribute('aria-invalid','false');}
+  $('answerLabel').htmlFor=tf?'answerSelect':'answerInput';$('answerLabel').textContent=tf?'Your answer':'Your numerical answer';
+  if(mc){choiceOrder=shuffle([0,1,2,3]);for(let i=0;i<4;i++){const k=choiceOrder[i];$('choice'+i).value=String(k);$('choiceText'+i).textContent=String.fromCharCode(65+i)+'. '+q.options[k].text;}}
+  $('answerInput').placeholder=q.kind==='correlation'?'Signed correlation, e.g. −0.1234':'Numerical value, e.g. 1.2345 or −1/5';
+  $('answerNote').textContent=mc?'Choose exactly one interpretation. Option order changes each time this question is presented.':tf?'Choose True or False.':q.kind==='correlation'?'Enter a number from −1 to 1. Round to four decimal places. Use full-precision moments and variances; omit % and units.':'Round to four decimal places, or enter an exact fraction. Signed values and scientific notation are accepted. Omit units and %. Keep full precision for later steps.';
+  $('feedback').className='feedback';$('feedback').innerHTML='';
+  $('checkButton').disabled=false;$('showButton').disabled=false;$('nextButton').disabled=true;
+  $('nextButton').textContent=subPosition<p.questions.length-1?'Next Subquestion':position<problems.length-1?(chapterKind==='concepts'?'Next Question':'Next Main Problem'):'Finish Round';
+  $(newMain?'scenarioTitle':'questionCard').focus();
+}
+function finishAttempt(showOnly=false){
+  if(locked)return;
+  const q=currentQuestion(),raw=rawAnswer(),feedback=$('feedback');
+  if(!showOnly&&!validAnswer(q,raw)){
+    feedback.className='feedback show incorrect';feedback.textContent=q.kind==='mc'?'Choose one interpretation before checking.':q.kind==='tf'?'Choose True or False before checking.':q.kind==='correlation'?'Enter a valid correlation between −1 and 1 without % or units.':'Enter a valid signed number or fraction without % or units.';
+    focusAnswer();return;
+  }
+  const correct=!showOnly&&isCorrect(q,raw);if(correct)score++;answered++;locked=true;
+  for(const el of controls())el.disabled=true;
+  updateProgress();$('checkButton').disabled=true;$('showButton').disabled=true;$('nextButton').disabled=false;
+  let display=q.displayAnswer;
+  if(q.kind==='mc')display=String.fromCharCode(65+choiceOrder.indexOf(q.answer))+'. '+q.options[q.answer].text;
+  const heading=showOnly?'Answer: '+display:correct?'Correct.':'Not quite. The answer is '+display+'.';
+  feedback.className='feedback show '+(showOnly?'solution':correct?'correct':'incorrect');
+  // display is course-authored content; numerical and choice values never inject user input.
+  feedback.innerHTML='<h3>'+heading+'</h3><p class="method">Method: '+q.method+'.</p>'+(q.kind==='mc'&&!showOnly?'<p>'+q.options[Number(raw)].feedback+'</p>':'')+q.solution;
+}
+function nextQuestion(){
+  if(!locked)return;
+  if(subPosition<currentProblem().questions.length-1){subPosition++;renderQuestion();return;}
+  if(position<problems.length-1){position++;subPosition=0;renderQuestion(true);return;}
+  $('quiz').classList.add('hidden');$('completion').classList.add('show');$('finalScore').textContent='Your score is '+score+' out of '+totalQuestions+' ('+(100*score/totalQuestions).toFixed(1)+'%).';$('restartButton').focus();
+}
+function startRound(){order=shuffle(problems.map((_,i)=>i));position=0;subPosition=0;score=0;answered=0;locked=false;$('quiz').classList.remove('hidden');$('completion').classList.remove('show');renderQuestion(true);}
+$('checkButton').addEventListener('click',()=>finishAttempt(false));$('showButton').addEventListener('click',()=>finishAttempt(true));$('nextButton').addEventListener('click',nextQuestion);$('restartButton').addEventListener('click',startRound);
+$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked){e.preventDefault();finishAttempt(false);}});
+$('answerSelect').addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked){e.preventDefault();finishAttempt(false);}});
+startRound();
+
+</script></body></html>
