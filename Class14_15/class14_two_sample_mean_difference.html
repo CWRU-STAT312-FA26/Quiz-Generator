@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STAT 312: Class 14 - Sampling Distribution of Two-Sample Mean Difference</title><style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+
+    .section-links { display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.88rem; }
+    .section-links a { color:#fff;text-decoration:underline;text-underline-offset:3px; }
+    .section-links a[aria-current="page"] { font-weight:750; }
+    .question-card { min-height:110px; }
+    .scenario-card p { font-size:1.04rem; }
+    .feedback { overflow-wrap:anywhere; }
+    .feedback code { white-space:normal; }
+    .answer-note { font-size:.9rem; }
+
+ .concept-note { margin:0 0 20px; padding:12px 14px; border-left:3px solid #9fb2c8; color:#42546b; background:#f5f8fc; font-size:.91rem; }
+ .feedback p { margin:9px 0; }
+ caption { padding-bottom:6px; font-size:.88rem; color:var(--muted); text-align:left; }
+ .feedback code { display:inline; overflow-wrap:anywhere; }
+ .scenario-card h2:focus { outline:none; }
+ @media (prefers-reduced-motion:reduce) { .progress-bar { transition:none; } }
+</style></head><body><div class="page">
+<header class="hero"><p class="eyebrow">STAT 312 · Class 14 · Chapter 3 · 10 Questions</p><h1>Sampling Distribution of Two-Sample Mean Difference</h1><p class="subtitle">Five exact normal cases and five large-sample CLT cases.</p><nav class="section-links" aria-label="Class 14 chapters"><a href="class14_expectation_variance_theorems.html">Expectation & Variance</a><a href="class14_sample_mean_sampling_distribution.html">Sample Mean</a><a href="class14_two_sample_mean_difference.html" aria-current="page">Two-Sample Mean Difference</a></nav></header><main><section id="quiz" class="quiz"><p class="concept-note">The two random samples are independent. Use D = X̄₁ − X̄₂ with mean μ₁ − μ₂ and standard error √(σ₁²/n₁ + σ₂²/n₂). Use the given population standard deviations.</p><div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay" aria-live="polite"></span></div><div id="progressTrack" class="progress-track" role="progressbar" aria-label="Completed questions" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div>
+<article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle" tabindex="-1"></h2><div id="scenarioText"></div></article><article class="question-card"><h3>Question</h3><div id="questionText"></div></article>
+<div class="answer-area"><label id="answerLabel" for="answerInput"></label><input id="answerInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"><p id="answerNote" class="note answer-note"></p></div><div class="actions"><button id="checkButton" class="primary" type="button">Check Answer</button><button id="showButton" class="secondary" type="button">Show Solution</button><button id="nextButton" class="secondary" type="button" disabled>Next Question</button></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div><p class="note">The 10 questions appear in a fixed order. Each question allows one scored attempt; blank or invalid input does not use an attempt. Show Solution earns no point. Restart begins again at Question 1. Reloading the page resets progress.</p></section>
+<section id="completion" class="completion" aria-live="polite"><h2>Chapter Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Restart from Question 1</button></section><noscript><p>This quiz requires JavaScript. Enable JavaScript in your browser and reopen this file.</p></noscript></main></div><script>
+const problems = [
+  {
+    "id": "C14-DIFF-A1",
+    "title": "A1 · Two Filling Machines",
+    "scenario": "<p>Compare fill weights from two machines, measured in grams.<\/p><p>Both population distributions are normal. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>500<\/td><td>10<\/td><td>16<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>495<\/td><td>12<\/td><td>25<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Find <strong>P(D &gt; 8)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.19333700837454293,
+    "displayAnswer": "0.1933",
+    "method": "Difference of two independent normal sample means",
+    "solution": "<p>Each sample mean is exactly normal because its population is normal. Their difference is exactly normal, even though both sample sizes are less than 30.<\/p><p>E(D) = μ₁ − μ₂ = 500 − (495) = <strong>5<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 10²/16 + 12²/25 = 12.01. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>3.46554469<\/strong>. D is exactly normal with mean 5 and variance 12.01.<\/p><p>z = (8 − (5)) / (sqrt(10^2/16+12^2/25)) = 0.865665; probability = 1 − Φ(z).<\/p><p>P(D &gt; 8) = <strong>0.1933<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(8, 1E99, 5, sqrt(10^2/16+12^2/25))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "A · Normal populations · Exact",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-A2",
+    "title": "A2 · Two Response Systems",
+    "scenario": "<p>Compare response times from two systems, measured in minutes.<\/p><p>Both population distributions are normal. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>15<\/td><td>4<\/td><td>9<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>17<\/td><td>3<\/td><td>16<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Find <strong>P(D &lt; -3)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.25665846301568007,
+    "displayAnswer": "0.2567",
+    "method": "Difference of two independent normal sample means",
+    "solution": "<p>Each sample mean is exactly normal because its population is normal. Their difference is exactly normal, even though both sample sizes are less than 30.<\/p><p>E(D) = μ₁ − μ₂ = 15 − (17) = <strong>-2<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 4²/9 + 3²/16 = 2.340277778. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>1.529796646<\/strong>. D is exactly normal with mean -2 and variance 2.340277778.<\/p><p>z = (-3 − (-2)) / (sqrt(4^2/9+3^2/16)) = -0.653682; probability = Φ(z).<\/p><p>P(D &lt; -3) = <strong>0.2567<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(-1E99, -3, -2, sqrt(4^2/9+3^2/16))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "A · Normal populations · Exact",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-A3",
+    "title": "A3 · Two Material Types",
+    "scenario": "<p>Compare breaking strengths of two material types, in the same units.<\/p><p>Both population distributions are normal. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>80<\/td><td>8<\/td><td>16<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>75<\/td><td>6<\/td><td>9<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Find <strong>P(0 &lt; D &lt; 9)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.8828004606030865,
+    "displayAnswer": "0.8828",
+    "method": "Difference of two independent normal sample means",
+    "solution": "<p>Each sample mean is exactly normal because its population is normal. Their difference is exactly normal, even though both sample sizes are less than 30.<\/p><p>E(D) = μ₁ − μ₂ = 80 − (75) = <strong>5<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 8²/16 + 6²/9 = 8. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>2.828427125<\/strong>. D is exactly normal with mean 5 and variance 8.<\/p><p>The standardized bounds are z<sub>L<\/sub> = -1.767767 and z<sub>U<\/sub> = 1.414214. Subtract the CDF values: Φ(z<sub>U<\/sub>) − Φ(z<sub>L<\/sub>).<\/p><p>P(0 &lt; D &lt; 9) = <strong>0.8828<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(0, 9, 5, sqrt(8^2/16+6^2/9))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "A · Normal populations · Exact",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-A4",
+    "title": "A4 · Two Calibration Methods",
+    "scenario": "<p>Compare readings from two calibration methods, in the same units.<\/p><p>Both population distributions are normal. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>20<\/td><td>5<\/td><td>25<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>20<\/td><td>4<\/td><td>16<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Find <strong>P(D &lt; -2 or D &gt; 2)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.1572992070502852,
+    "displayAnswer": "0.1573",
+    "method": "Difference of two independent normal sample means",
+    "solution": "<p>Each sample mean is exactly normal because its population is normal. Their difference is exactly normal, even though both sample sizes are less than 30.<\/p><p>E(D) = μ₁ − μ₂ = 20 − (20) = <strong>0<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 5²/25 + 4²/16 = 2. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>1.414213562<\/strong>. D is exactly normal with mean 0 and variance 2.<\/p><p>The standardized bounds are z<sub>L<\/sub> = -1.414214 and z<sub>U<\/sub> = 1.414214. Add the two tails: Φ(z<sub>L<\/sub>) + 1 − Φ(z<sub>U<\/sub>).<\/p><p>P(D &lt; -2 or D &gt; 2) = <strong>0.1573<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(-1E99, -2, 0, sqrt(5^2/25+4^2/16)) + normalcdf(2, 1E99, 0, sqrt(5^2/25+4^2/16))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "A · Normal populations · Exact",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-A5",
+    "title": "A5 · Two Treatment Measurements",
+    "scenario": "<p>Compare a continuous measurement from two independent study groups.<\/p><p>Both population distributions are normal. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>60<\/td><td>6<\/td><td>9<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>57<\/td><td>8<\/td><td>16<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Find <strong>P(D &gt; 0)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.8555778168267576,
+    "displayAnswer": "0.8556",
+    "method": "Difference of two independent normal sample means",
+    "solution": "<p>Each sample mean is exactly normal because its population is normal. Their difference is exactly normal, even though both sample sizes are less than 30.<\/p><p>E(D) = μ₁ − μ₂ = 60 − (57) = <strong>3<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 6²/9 + 8²/16 = 8. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>2.828427125<\/strong>. D is exactly normal with mean 3 and variance 8.<\/p><p>z = (0 − (3)) / (sqrt(6^2/9+8^2/16)) = -1.060660; probability = 1 − Φ(z).<\/p><p>P(D &gt; 0) = <strong>0.8556<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(0, 1E99, 3, sqrt(6^2/9+8^2/16))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "A · Normal populations · Exact",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-B1",
+    "title": "B1 · Two Production Lines",
+    "scenario": "<p>Compare measurements from two production lines, in the same units.<\/p><p>The shapes of the two population distributions are not specified. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>100<\/td><td>20<\/td><td>100<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>96<\/td><td>15<\/td><td>64<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Use the normal approximation to find <strong>P(D &gt; 7)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.13691043983150697,
+    "displayAnswer": "0.1369",
+    "method": "Two-sample CLT",
+    "solution": "<p>Both sample sizes exceed 30. Apply the CLT to each sample mean and use their independence to approximate the distribution of their difference by a normal distribution.<\/p><p>E(D) = μ₁ − μ₂ = 100 − (96) = <strong>4<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 20²/100 + 15²/64 = 7.515625. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>2.741464025<\/strong>. D is approximately normal with mean 4 and variance 7.515625.<\/p><p>z = (7 − (4)) / (sqrt(20^2/100+15^2/64)) = 1.094306; probability = 1 − Φ(z).<\/p><p>P(D &gt; 7) = <strong>0.1369<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(7, 1E99, 4, sqrt(20^2/100+15^2/64))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "B · Unknown population shapes · CLT",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-B2",
+    "title": "B2 · Two Service Locations",
+    "scenario": "<p>Compare service durations at two locations, measured in minutes.<\/p><p>The shapes of the two population distributions are not specified. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>48<\/td><td>12<\/td><td>64<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>51<\/td><td>16<\/td><td>100<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Use the normal approximation to find <strong>P(D &lt; -5)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.18090501998840985,
+    "displayAnswer": "0.1809",
+    "method": "Two-sample CLT",
+    "solution": "<p>Both sample sizes exceed 30. Apply the CLT to each sample mean and use their independence to approximate the distribution of their difference by a normal distribution.<\/p><p>E(D) = μ₁ − μ₂ = 48 − (51) = <strong>-3<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 12²/64 + 16²/100 = 4.81. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>2.19317122<\/strong>. D is approximately normal with mean -3 and variance 4.81.<\/p><p>z = (-5 − (-3)) / (sqrt(12^2/64+16^2/100)) = -0.911922; probability = Φ(z).<\/p><p>P(D &lt; -5) = <strong>0.1809<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(-1E99, -5, -3, sqrt(12^2/64+16^2/100))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "B · Unknown population shapes · CLT",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-B3",
+    "title": "B3 · Two Supplier Populations",
+    "scenario": "<p>Compare a quality measurement from two supplier populations.<\/p><p>The shapes of the two population distributions are not specified. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>200<\/td><td>30<\/td><td>90<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>190<\/td><td>24<\/td><td>64<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Use the normal approximation to find <strong>P(5 &lt; D &lt; 15)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.7486508911897771,
+    "displayAnswer": "0.7487",
+    "method": "Two-sample CLT",
+    "solution": "<p>Both sample sizes exceed 30. Apply the CLT to each sample mean and use their independence to approximate the distribution of their difference by a normal distribution.<\/p><p>E(D) = μ₁ − μ₂ = 200 − (190) = <strong>10<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 30²/90 + 24²/64 = 19. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>4.358898944<\/strong>. D is approximately normal with mean 10 and variance 19.<\/p><p>The standardized bounds are z<sub>L<\/sub> = -1.147079 and z<sub>U<\/sub> = 1.147079. Subtract the CDF values: Φ(z<sub>U<\/sub>) − Φ(z<sub>L<\/sub>).<\/p><p>P(5 &lt; D &lt; 15) = <strong>0.7487<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(5, 15, 10, sqrt(30^2/90+24^2/64))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "B · Unknown population shapes · CLT",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-B4",
+    "title": "B4 · Two Measurement Processes",
+    "scenario": "<p>Compare outputs from two measurement processes with equal population means.<\/p><p>The shapes of the two population distributions are not specified. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>75<\/td><td>10<\/td><td>50<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>75<\/td><td>12<\/td><td>72<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Use the normal approximation to find <strong>P(-3 &lt; D &lt; 3)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.8663855974622838,
+    "displayAnswer": "0.8664",
+    "method": "Two-sample CLT",
+    "solution": "<p>Both sample sizes exceed 30. Apply the CLT to each sample mean and use their independence to approximate the distribution of their difference by a normal distribution.<\/p><p>E(D) = μ₁ − μ₂ = 75 − (75) = <strong>0<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 10²/50 + 12²/72 = 4. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>2<\/strong>. D is approximately normal with mean 0 and variance 4.<\/p><p>The standardized bounds are z<sub>L<\/sub> = -1.500000 and z<sub>U<\/sub> = 1.500000. Subtract the CDF values: Φ(z<sub>U<\/sub>) − Φ(z<sub>L<\/sub>).<\/p><p>P(-3 &lt; D &lt; 3) = <strong>0.8664<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(-3, 3, 0, sqrt(10^2/50+12^2/72))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "B · Unknown population shapes · CLT",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-DIFF-B5",
+    "title": "B5 · Two Completion-Time Populations",
+    "scenario": "<p>Compare completion times for two procedures, measured in minutes.<\/p><p>The shapes of the two population distributions are not specified. The following are <strong>population<\/strong> means and standard deviations.<\/p><div class=\"table-wrap\"><table><caption>Two independent random samples<\/caption><thead><tr><th scope=\"col\">Population<\/th><th scope=\"col\">Mean<\/th><th scope=\"col\">Standard deviation<\/th><th scope=\"col\">Sample size<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">1<\/th><td>8<\/td><td>3<\/td><td>36<\/td><\/tr><tr><th scope=\"row\">2<\/th><td>7<\/td><td>4<\/td><td>49<\/td><\/tr><\/tbody><\/table><\/div><p>Observations are independent within each random sample, and the two samples are independent of each other. Define D = X̄₁ − X̄₂.<\/p>",
+    "prompt": "Use the normal approximation to find <strong>P(D &lt; 0)<\/strong>. Use the stated order D = X̄₁ − X̄₂.",
+    "answer": 0.09391776774560451,
+    "displayAnswer": "0.0939",
+    "method": "Two-sample CLT",
+    "solution": "<p>Both sample sizes exceed 30. Apply the CLT to each sample mean and use their independence to approximate the distribution of their difference by a normal distribution.<\/p><p>E(D) = μ₁ − μ₂ = 8 − (7) = <strong>1<\/strong>.<\/p><p>Var(D) = σ₁²/n₁ + σ₂²/n₂ = 3²/36 + 4²/49 = 0.5765306122. Independence removes the covariance term. The variances <strong>add<\/strong> for a difference.<\/p><p>SE(D) = √(σ₁²/n₁ + σ₂²/n₂) = <strong>0.7592961295<\/strong>. D is approximately normal with mean 1 and variance 0.5765306122.<\/p><p>z = (0 − (1)) / (sqrt(3^2/36+4^2/49)) = -1.317009; probability = Φ(z).<\/p><p>P(D &lt; 0) = <strong>0.0939<\/strong>.<\/p><p><strong>TI-83/84:<\/strong> <code>normalcdf(-1E99, 0, 1, sqrt(3^2/36+4^2/49))<\/code>. Use the unrounded standard error.<\/p>",
+    "tag": "B · Unknown population shapes · CLT",
+    "kind": "probability",
+    "inputLabel": "Your probability",
+    "tolerance": 5.1e-05
+  }
+];
+
+let position=0,score=0,locked=false;
+const $=id=>document.getElementById(id);
+function currentProblem(){return problems[position];}
+function parseNumber(raw,allowPercent=true){
+ const text=raw.trim().replace(/[−–]/g,'-');
+ const number=/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i;
+ if(text.endsWith('%')){const part=text.slice(0,-1).trim();return allowPercent&&number.test(part)?Number(part)/100:NaN;}
+ const parts=text.split('/');
+ if(parts.length===2){const a=parts[0].trim(),b=parts[1].trim();return number.test(a)&&number.test(b)&&Number(b)!==0?Number(a)/Number(b):NaN;}
+ return number.test(text)?Number(text):NaN;
+}
+function validAnswer(q,raw){const x=parseNumber(raw,q.kind==='probability');return Number.isFinite(x)&&(q.kind!=='probability'||(x>=0&&x<=1));}
+function isCorrect(q,raw){return validAnswer(q,raw)&&Math.abs(parseNumber(raw,q.kind==='probability')-q.answer)<=q.tolerance;}
+function updateProgress(completed){$('scoreDisplay').textContent='Score: '+score+' / '+problems.length;$('progressBar').style.width=(100*completed/problems.length)+'%';$('progressTrack').setAttribute('aria-valuenow',completed);$('progressTrack').setAttribute('aria-valuetext',completed+' of '+problems.length+' questions completed');}
+function renderQuestion(){
+ const q=currentProblem();locked=false;
+ $('problemNumber').textContent='Question '+(position+1)+' of '+problems.length;updateProgress(position);
+ $('sourceTag').textContent=q.tag;$('scenarioTitle').textContent=q.title;$('scenarioText').innerHTML=q.scenario;$('questionText').innerHTML='<p>'+q.prompt+'</p>';
+ $('answerLabel').textContent=q.inputLabel;const input=$('answerInput');input.value='';input.disabled=false;input.className='';input.setAttribute('aria-invalid','false');
+ input.placeholder=q.kind==='probability'?'Probability, e.g. 0.1234 or 1/3':'Signed numerical value, e.g. −7 or 2.5';
+ $('answerNote').textContent=q.kind==='probability'?'Round to four decimal places. Equivalent fractions, percentages, and scientific notation are accepted. A calculator is allowed; R is not required.':'Enter only the requested numerical value, without units or %. Signed decimals, fractions, and scientific notation are accepted. Round nonterminating decimals to four decimal places.';
+ $('feedback').className='feedback';$('feedback').innerHTML='';$('checkButton').disabled=false;$('showButton').disabled=false;$('nextButton').disabled=true;$('nextButton').textContent=position===problems.length-1?'Finish Chapter':'Next Question';$('scenarioTitle').focus();
+}
+function finishAttempt(showOnly=false){
+ if(locked)return;const q=currentProblem(),input=$('answerInput'),feedback=$('feedback');
+ if(!showOnly&&!validAnswer(q,input.value)){feedback.className='feedback show incorrect';feedback.textContent=q.kind==='probability'?'Enter a valid probability between 0 and 1, or an equivalent percentage or fraction.':'Enter a valid signed number or fraction without units or a percent sign.';input.setAttribute('aria-invalid','true');input.focus();return;}
+ const correct=!showOnly&&isCorrect(q,input.value);if(correct)score++;locked=true;input.disabled=true;input.className=showOnly?'':correct?'correct':'incorrect';input.setAttribute('aria-invalid','false');updateProgress(position+1);
+ $('checkButton').disabled=true;$('showButton').disabled=true;$('nextButton').disabled=false;feedback.className='feedback show '+(showOnly?'solution':correct?'correct':'incorrect');
+ const heading=showOnly?'Answer: '+q.displayAnswer:correct?'Correct.':'Not quite. The answer is '+q.displayAnswer+'.';feedback.innerHTML='<h3>'+heading+'</h3><p class="method">Method: '+q.method+'.</p>'+q.solution;
+}
+function nextQuestion(){if(!locked)return;if(position<problems.length-1){position++;renderQuestion();return;}$('quiz').classList.add('hidden');$('completion').classList.add('show');$('finalScore').textContent='Your score is '+score+' out of '+problems.length+'.';$('restartButton').focus();}
+function startRound(){position=0;score=0;locked=false;$('quiz').classList.remove('hidden');$('completion').classList.remove('show');renderQuestion();}
+$('checkButton').addEventListener('click',()=>finishAttempt(false));$('showButton').addEventListener('click',()=>finishAttempt(true));$('nextButton').addEventListener('click',nextQuestion);$('restartButton').addEventListener('click',startRound);$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked){e.preventDefault();finishAttempt(false);}});startRound();
+
+</script></body></html>

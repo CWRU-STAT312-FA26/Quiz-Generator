@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STAT 312: Class 14 - Expectation & Variance Theorems</title><style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+
+    .section-links { display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.88rem; }
+    .section-links a { color:#fff;text-decoration:underline;text-underline-offset:3px; }
+    .section-links a[aria-current="page"] { font-weight:750; }
+    .question-card { min-height:110px; }
+    .scenario-card p { font-size:1.04rem; }
+    .feedback { overflow-wrap:anywhere; }
+    .feedback code { white-space:normal; }
+    .answer-note { font-size:.9rem; }
+
+ .concept-note { margin:0 0 20px; padding:12px 14px; border-left:3px solid #9fb2c8; color:#42546b; background:#f5f8fc; font-size:.91rem; }
+ .feedback p { margin:9px 0; }
+ caption { padding-bottom:6px; font-size:.88rem; color:var(--muted); text-align:left; }
+ .feedback code { display:inline; overflow-wrap:anywhere; }
+ .scenario-card h2:focus { outline:none; }
+ @media (prefers-reduced-motion:reduce) { .progress-bar { transition:none; } }
+</style></head><body><div class="page">
+<header class="hero"><p class="eyebrow">STAT 312 · Class 14 · Chapter 1 · 10 Questions</p><h1>Expectation & Variance Theorems</h1><p class="subtitle">Five expectation questions followed by five variance questions.</p><nav class="section-links" aria-label="Class 14 chapters"><a href="class14_expectation_variance_theorems.html" aria-current="page">Expectation & Variance</a><a href="class14_sample_mean_sampling_distribution.html">Sample Mean</a><a href="class14_two_sample_mean_difference.html">Two-Sample Mean Difference</a></nav></header><main><section id="quiz" class="quiz"><p class="concept-note">Apply the expectation and variance theorems from Class 14. For a linear combination, expectation does not require independence. For variance, use the stated independence or covariance information.</p><div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay" aria-live="polite"></span></div><div id="progressTrack" class="progress-track" role="progressbar" aria-label="Completed questions" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div>
+<article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle" tabindex="-1"></h2><div id="scenarioText"></div></article><article class="question-card"><h3>Question</h3><div id="questionText"></div></article>
+<div class="answer-area"><label id="answerLabel" for="answerInput"></label><input id="answerInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"><p id="answerNote" class="note answer-note"></p></div><div class="actions"><button id="checkButton" class="primary" type="button">Check Answer</button><button id="showButton" class="secondary" type="button">Show Solution</button><button id="nextButton" class="secondary" type="button" disabled>Next Question</button></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div><p class="note">The 10 questions appear in a fixed order. Each question allows one scored attempt; blank or invalid input does not use an attempt. Show Solution earns no point. Restart begins again at Question 1. Reloading the page resets progress.</p></section>
+<section id="completion" class="completion" aria-live="polite"><h2>Chapter Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Restart from Question 1</button></section><noscript><p>This quiz requires JavaScript. Enable JavaScript in your browser and reopen this file.</p></noscript></main></div><script>
+const problems = [
+  {
+    "id": "C14-EV-E1",
+    "title": "E1 · A Weighted Score",
+    "scenario": "<p>Let X and Y be two random variables with E(X) = 4 and E(Y) = 7. No independence assumption is made.<\/p>",
+    "prompt": "Calculate E(2X + 3Y + 5).",
+    "answer": 34.0,
+    "displayAnswer": "34.0000",
+    "method": "Linearity of expectation",
+    "solution": "<p>E(aX + bY + c) = aE(X) + bE(Y) + c. Independence is not required.<\/p><p>Here, (2)(4) + (3)(7) + (5) = <strong>34 = 34.0000<\/strong>.<\/p>",
+    "tag": "Expectation · E1",
+    "kind": "number",
+    "inputLabel": "Your expected value",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-E2",
+    "title": "E2 · A Difference of Measurements",
+    "scenario": "<p>Two statistically dependent variables have E(X) = 10 and E(Y) = 8.<\/p>",
+    "prompt": "Calculate E(3X − 2Y).",
+    "answer": 14.0,
+    "displayAnswer": "14.0000",
+    "method": "Linearity of expectation",
+    "solution": "<p>E(aX + bY + c) = aE(X) + bE(Y) + c. Independence is not required.<\/p><p>Here, (3)(10) + (-2)(8) + (0) = <strong>14 = 14.0000<\/strong>.<\/p>",
+    "tag": "Expectation · E2",
+    "kind": "number",
+    "inputLabel": "Your expected value",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-E3",
+    "title": "E3 · A Negative Coefficient",
+    "scenario": "<p>A random variable X has E(X) = 6.<\/p>",
+    "prompt": "Calculate E(−2X + 5).",
+    "answer": -7.0,
+    "displayAnswer": "-7.0000",
+    "method": "Linearity of expectation",
+    "solution": "<p>E(aX + c) = aE(X) + c. Here, (-2)(6) + (5) = <strong>-7 = -7.0000<\/strong>.<\/p>",
+    "tag": "Expectation · E3",
+    "kind": "number",
+    "inputLabel": "Your expected value",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-E4",
+    "title": "E4 · An Average of Two Assessments",
+    "scenario": "<p>For scores X and Y on two assessments, E(X) = 68 and E(Y) = 74. The scores need not be independent.<\/p>",
+    "prompt": "Calculate E((X + Y)/2).",
+    "answer": 71.0,
+    "displayAnswer": "71.0000",
+    "method": "Linearity of expectation",
+    "solution": "<p>E(aX + bY + c) = aE(X) + bE(Y) + c. Independence is not required.<\/p><p>Here, (1/2)(68) + (1/2)(74) + (0) = <strong>71 = 71.0000<\/strong>.<\/p>",
+    "tag": "Expectation · E4",
+    "kind": "number",
+    "inputLabel": "Your expected value",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-E5",
+    "title": "E5 · An Adjusted Index",
+    "scenario": "<p>Two random variables satisfy E(X) = 9 and E(Y) = 6.<\/p>",
+    "prompt": "Calculate E(4 − X + 0.5Y).",
+    "answer": -2.0,
+    "displayAnswer": "-2.0000",
+    "method": "Linearity of expectation",
+    "solution": "<p>E(aX + bY + c) = aE(X) + bE(Y) + c. Independence is not required.<\/p><p>Here, (-1)(9) + (1/2)(6) + (4) = <strong>-2 = -2.0000<\/strong>.<\/p>",
+    "tag": "Expectation · E5",
+    "kind": "number",
+    "inputLabel": "Your expected value",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-V1",
+    "title": "V1 · Squaring a Negative Coefficient",
+    "scenario": "<p>A random variable X has Var(X) = 9.<\/p>",
+    "prompt": "Calculate Var(−2X).",
+    "answer": 36.0,
+    "displayAnswer": "36.0000",
+    "method": "Variance of a linear combination",
+    "solution": "<p>Var(aX) = a²Var(X). The negative coefficient is squared, so Var(−2X) = (−2)²(9) = <strong>36 = 36.0000<\/strong>. Variance cannot become negative because of a negative multiplier.<\/p>",
+    "tag": "Variance · V1",
+    "kind": "number",
+    "inputLabel": "Your variance",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-V2",
+    "title": "V2 · Independent Variables: A Sum",
+    "scenario": "<p>X and Y are statistically independent, with Var(X) = 4 and Var(Y) = 9.<\/p>",
+    "prompt": "Calculate Var(2X + 3Y).",
+    "answer": 97.0,
+    "displayAnswer": "97.0000",
+    "method": "Variance of a linear combination",
+    "solution": "<p>Var(aX + bY + c) = a²Var(X) + b²Var(Y) + 2abCov(X,Y). Adding a constant does not change variance.<\/p><p>Independence implies Cov(X,Y) = 0, so the covariance term vanishes.<\/p><p>(2)²(4) + (3)²(9) + 2(2)(3)(0) = <strong>97 = 97.0000<\/strong>.<\/p>",
+    "tag": "Variance · V2",
+    "kind": "number",
+    "inputLabel": "Your variance",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-V3",
+    "title": "V3 · Independent Variables: A Difference",
+    "scenario": "<p>X and Y are statistically independent, with Var(X) = 25 and Var(Y) = 16.<\/p>",
+    "prompt": "Calculate Var(3X − 2Y + 8).",
+    "answer": 289.0,
+    "displayAnswer": "289.0000",
+    "method": "Variance of a linear combination",
+    "solution": "<p>Var(aX + bY + c) = a²Var(X) + b²Var(Y) + 2abCov(X,Y). Adding a constant does not change variance.<\/p><p>Independence implies Cov(X,Y) = 0, so the covariance term vanishes.<\/p><p>(3)²(25) + (-2)²(16) + 2(3)(-2)(0) = <strong>289 = 289.0000<\/strong>.<\/p>",
+    "tag": "Variance · V3",
+    "kind": "number",
+    "inputLabel": "Your variance",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-V4",
+    "title": "V4 · Dependent Variables: Positive Covariance",
+    "scenario": "<p>X and Y are statistically dependent. Var(X) = 9, Var(Y) = 16, and Cov(X,Y) = 3.<\/p>",
+    "prompt": "Calculate Var(2X + Y).",
+    "answer": 64.0,
+    "displayAnswer": "64.0000",
+    "method": "Variance of a linear combination",
+    "solution": "<p>Var(aX + bY + c) = a²Var(X) + b²Var(Y) + 2abCov(X,Y). Adding a constant does not change variance.<\/p><p>Use the supplied covariance; dependence alone would not specify its numerical value.<\/p><p>(2)²(9) + (1)²(16) + 2(2)(1)(3) = <strong>64 = 64.0000<\/strong>.<\/p>",
+    "tag": "Variance · V4",
+    "kind": "number",
+    "inputLabel": "Your variance",
+    "tolerance": 5.1e-05
+  },
+  {
+    "id": "C14-EV-V5",
+    "title": "V5 · Dependent Variables: Negative Covariance",
+    "scenario": "<p>X and Y are statistically dependent. Var(X) = 16, Var(Y) = 9, and Cov(X,Y) = −2.<\/p>",
+    "prompt": "Calculate Var(X − 3Y).",
+    "answer": 109.0,
+    "displayAnswer": "109.0000",
+    "method": "Variance of a linear combination",
+    "solution": "<p>Var(aX + bY + c) = a²Var(X) + b²Var(Y) + 2abCov(X,Y). Adding a constant does not change variance.<\/p><p>Use the supplied covariance; dependence alone would not specify its numerical value.<\/p><p>(1)²(16) + (-3)²(9) + 2(1)(-3)(-2) = <strong>109 = 109.0000<\/strong>.<\/p>",
+    "tag": "Variance · V5",
+    "kind": "number",
+    "inputLabel": "Your variance",
+    "tolerance": 5.1e-05
+  }
+];
+
+let position=0,score=0,locked=false;
+const $=id=>document.getElementById(id);
+function currentProblem(){return problems[position];}
+function parseNumber(raw,allowPercent=true){
+ const text=raw.trim().replace(/[−–]/g,'-');
+ const number=/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i;
+ if(text.endsWith('%')){const part=text.slice(0,-1).trim();return allowPercent&&number.test(part)?Number(part)/100:NaN;}
+ const parts=text.split('/');
+ if(parts.length===2){const a=parts[0].trim(),b=parts[1].trim();return number.test(a)&&number.test(b)&&Number(b)!==0?Number(a)/Number(b):NaN;}
+ return number.test(text)?Number(text):NaN;
+}
+function validAnswer(q,raw){const x=parseNumber(raw,q.kind==='probability');return Number.isFinite(x)&&(q.kind!=='probability'||(x>=0&&x<=1));}
+function isCorrect(q,raw){return validAnswer(q,raw)&&Math.abs(parseNumber(raw,q.kind==='probability')-q.answer)<=q.tolerance;}
+function updateProgress(completed){$('scoreDisplay').textContent='Score: '+score+' / '+problems.length;$('progressBar').style.width=(100*completed/problems.length)+'%';$('progressTrack').setAttribute('aria-valuenow',completed);$('progressTrack').setAttribute('aria-valuetext',completed+' of '+problems.length+' questions completed');}
+function renderQuestion(){
+ const q=currentProblem();locked=false;
+ $('problemNumber').textContent='Question '+(position+1)+' of '+problems.length;updateProgress(position);
+ $('sourceTag').textContent=q.tag;$('scenarioTitle').textContent=q.title;$('scenarioText').innerHTML=q.scenario;$('questionText').innerHTML='<p>'+q.prompt+'</p>';
+ $('answerLabel').textContent=q.inputLabel;const input=$('answerInput');input.value='';input.disabled=false;input.className='';input.setAttribute('aria-invalid','false');
+ input.placeholder=q.kind==='probability'?'Probability, e.g. 0.1234 or 1/3':'Signed numerical value, e.g. −7 or 2.5';
+ $('answerNote').textContent=q.kind==='probability'?'Round to four decimal places. Equivalent fractions, percentages, and scientific notation are accepted. A calculator is allowed; R is not required.':'Enter only the requested numerical value, without units or %. Signed decimals, fractions, and scientific notation are accepted. Round nonterminating decimals to four decimal places.';
+ $('feedback').className='feedback';$('feedback').innerHTML='';$('checkButton').disabled=false;$('showButton').disabled=false;$('nextButton').disabled=true;$('nextButton').textContent=position===problems.length-1?'Finish Chapter':'Next Question';$('scenarioTitle').focus();
+}
+function finishAttempt(showOnly=false){
+ if(locked)return;const q=currentProblem(),input=$('answerInput'),feedback=$('feedback');
+ if(!showOnly&&!validAnswer(q,input.value)){feedback.className='feedback show incorrect';feedback.textContent=q.kind==='probability'?'Enter a valid probability between 0 and 1, or an equivalent percentage or fraction.':'Enter a valid signed number or fraction without units or a percent sign.';input.setAttribute('aria-invalid','true');input.focus();return;}
+ const correct=!showOnly&&isCorrect(q,input.value);if(correct)score++;locked=true;input.disabled=true;input.className=showOnly?'':correct?'correct':'incorrect';input.setAttribute('aria-invalid','false');updateProgress(position+1);
+ $('checkButton').disabled=true;$('showButton').disabled=true;$('nextButton').disabled=false;feedback.className='feedback show '+(showOnly?'solution':correct?'correct':'incorrect');
+ const heading=showOnly?'Answer: '+q.displayAnswer:correct?'Correct.':'Not quite. The answer is '+q.displayAnswer+'.';feedback.innerHTML='<h3>'+heading+'</h3><p class="method">Method: '+q.method+'.</p>'+q.solution;
+}
+function nextQuestion(){if(!locked)return;if(position<problems.length-1){position++;renderQuestion();return;}$('quiz').classList.add('hidden');$('completion').classList.add('show');$('finalScore').textContent='Your score is '+score+' out of '+problems.length+'.';$('restartButton').focus();}
+function startRound(){position=0;score=0;locked=false;$('quiz').classList.remove('hidden');$('completion').classList.remove('show');renderQuestion();}
+$('checkButton').addEventListener('click',()=>finishAttempt(false));$('showButton').addEventListener('click',()=>finishAttempt(true));$('nextButton').addEventListener('click',nextQuestion);$('restartButton').addEventListener('click',startRound);$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked){e.preventDefault();finishAttempt(false);}});startRound();
+
+</script></body></html>
