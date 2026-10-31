@@ -86,67 +86,67 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 - [Sampling Distribution of a Sample Mean (10 questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class14_15/class14_sample_mean_sampling_distribution.html)
 - [Sampling Distribution of Two-Sample Mean Difference (10 questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class14_15/class15_two_sample_mean_difference.html)
 
-## Class 14 & 15 Update - October 24, 2026
 
-Added **three self-contained HTML chapters with 10 numerical questions each (30 total)**, using the Class 11 quiz interface. All Class 1-13 links and notes are retained, including the revised Class 13 conceptual coverage and the fixed sequence of the Class 13 calculation chapter.
+### Class 16: Confidence Intervals for a Population Mean
 
-| Chapter | Coverage | Questions |
-|---|---|---:|
-| Expectation and Variance Theorems | 5 expectation problems; 5 variance problems | 10 |
-| Sampling Distribution of a Sample Mean | 3 unknown-shape populations; 3 normal populations; 3 population PMFs; 1 Poisson count model | 10 |
-| Sampling Distribution of Two-Sample Mean Difference | 5 normal-population cases; 5 unknown-shape large-sample cases | 10 |
+- [Confidence Intervals for a Population Mean (16 main problems; 4 cases × 4 problems)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class16/class16_confidence_intervals_population_mean.html)
 
-### Chapter 1: Expectation and Variance Theorems
+## Class 16 Update - October 31, 2026
 
-Expectation problems use E(aX+bY+c) = aE(X)+bE(Y)+c, including subtraction, averaging, and negative coefficients. Independence is not required.
+Added **one self-contained HTML quiz with 16 main problems**, based on the examples in `Class16_STAT312_FA26.pdf` and the interface in `class11_exponential_probabilities.html`. Existing content and links are retained.
 
-Variance problems include Var(-2X), two independent-variable cases, and two dependent-variable cases with an explicitly supplied covariance. Use
+| Case | Population and information | Course method | Main problems |
+|---|---|---|---:|
+| A | Normal population; known population variance or standard deviation; both small and large samples | Exact Z interval using σ | 4 |
+| B | Discrete population PMF; n > 30 | Calculate population σ from the PMF, then use the CLT Z approximation | 4 |
+| C | Unknown population σ; supplied sample s; n > 30 | Large-sample Z approximation using s | 4 |
+| D | Normal population; unknown population σ; supplied sample s; n < 30 | Exact t interval using s, with df = n − 1 | 4 |
 
-Var(aX+bY+c) = a²Var(X)+b²Var(Y)+2abCov(X,Y).
+### Problem Format and Coverage
 
-Independence makes the covariance term zero. Negative coefficients are squared in the variance terms, and their signs must be retained in the covariance term. Constants do not affect variance.
+The problems follow the lecture examples: heights, air-filled tire weights, commute times, repair costs, and pin hardness, with additional engineering and science contexts. Confidence levels include 90%, 95%, 98%, and 99%. Two Case A problems provide **population variance**, so students must take its square root before calculating the standard error or using ZInterval. Small samples in Case A still use Z because the population is normal and σ is known.
 
-### Chapter 2: Sampling Distribution of a Sample Mean
+Each main problem has three linked steps:
 
-All questions ask for a final probability. Students first identify the population mean and variance and the sampling mean and standard error on paper. Worked solutions show the distribution, standardization, and TI-83/84 `normalcdf` entry.
+1. Select the correct interval method and justification (multiple choice).
+2. Calculate the lower and upper CI endpoints (two numerical short-answer fields).
+3. Interpret the interval for the population mean (multiple choice).
 
-- **Unknown population shape:** 3 questions with known population mean and standard deviation and n > 30; use a CLT normal approximation.
-- **Normal population:** 3 questions with n < 30; the sample mean is exactly normal because the population is normal.
-- **Population PMF:** 3 questions with n > 30; first compute μ = Σxf(x) and σ² = Σx²f(x)-μ², then use the lecture’s direct normal approximation.
-- **Poisson counts:** Exactly 1 question. A homogeneous Poisson process has rate λ = 9 calls/hour and interval length T = 40 minutes. Convert T to hours, calculate λT = 6, use μ = σ² = 6, and then apply the normal approximation to the mean of 60 independent interval counts.
+Case B adds a numerical step before the interval calculation: derive the population standard deviation from the PMF. This gives **52 scored guided steps**: 16 method selections, 4 PMF standard deviations, 16 endpoint pairs, and 16 interpretations. An endpoint pair earns one point only when both endpoints are correct. Each complete worked solution identifies the random variable, distinguishes the observed sample mean from the population mean, gives the sampling-distribution justification, computes the critical value, standard error and margin of error, and interprets the final interval.
 
-In every case, E(X̄) = μ, Var(X̄) = σ²/n, and SE(X̄) = σ/sqrt(n). Normal notation uses variance as its second parameter; `normalcdf` requires the standard deviation (standard error for the sample mean).
+**PMF construction:** The population PMF tables list values relative to an unknown location μ, for example μ − 2, μ − 1, μ, μ + 1, μ + 2. The stated probabilities have zero weighted deviation from μ. Students use σ² = Σ(x − μ)²P(X = x) and σ = sqrt(σ²). This supplies a known population variance while leaving the population mean unknown; a fully specified numerical population PMF would already determine its mean. These are population probabilities, not an observed frequency table.
 
-**Slide arithmetic correction:** For the lecture PMF on x = 1,2,3,4,5 with probabilities 0.37,0.21,0.19,0.15,0.08, the correct values are μ = 2.36, E(X²) = 7.32, and σ² = 7.32-2.36² = **1.7504**. The quiz uses this recalculated variance rather than the inconsistent 1.9904 appearing in part of the slide example. It uses a new probability cutoff.
+**Course convention:** n ≥ 30 is the lecture’s large-sample guideline. All Case B and C samples in this quiz have n > 30. Use x̄ ± z*σ/sqrt(n) in Case B and x̄ ± z*s/sqrt(n) in Case C. Both are explicitly labeled approximate intervals. In Case D, use x̄ ± t*s/sqrt(n) under the stated normal-population assumption. The interpretation refers to long-run coverage of the population mean, not the fraction of individual observations inside the interval or a post-data probability for the fixed mean.
 
-### Chapter 3: Two Independent Sample Means
+### TI-84 Calculator Instructions
 
-The difference is always defined in the stated order D = X̄₁-X̄₂. The two samples are independent, with independent observations within each random sample.
+Every interval solution includes problem-specific **Stats** entries:
 
-- **Normal populations:** 5 questions, with both n₁ and n₂ < 30. The difference is exactly normal.
-- **Unknown population shapes:** 5 questions, with both n₁ and n₂ > 30 and known population means and standard deviations. Use the two-sample CLT normal approximation.
+- **ZInterval:** `STAT` → `TESTS` → `7: ZInterval` → `Stats`. Enter `σ`, `x̄`, `n`, and `C-Level`; select `Calculate` and press `ENTER`.
+- **Known variance:** take the square root to obtain σ first. The σ field takes a standard deviation, not a variance or standard error.
+- **Population PMF:** calculate σ from the PMF and retain its unrounded value. Do not treat the PMF probabilities as raw sample observations or sample frequencies in the interval menu.
+- **Large-sample unknown σ:** following this course’s approximation, enter the supplied sample standard deviation s in the ZInterval field labeled σ.
+- **TInterval:** `STAT` → `TESTS` → `8: TInterval` → `Stats`. Enter `x̄`, `Sx = s`, `n`, and `C-Level`; select `Calculate` and press `ENTER`. The calculator automatically uses df = n − 1. No critical value or degrees of freedom is entered on this screen.
+- Enter the confidence level as a decimal, for example `.95`; do not enter α or the z critical value. Read the full menu name if a menu layout differs.
 
-Use E(D) = μ₁-μ₂, Var(D) = σ₁²/n₁+σ₂²/n₂, and SE(D) = sqrt(σ₁²/n₁+σ₂²/n₂). The variance contributions add for a difference of independent means. Questions include left tails, right tails, intervals, and two tails. All probabilities are unconditional unless a condition is explicitly stated; these questions introduce no unstated condition about which sample mean is larger.
+The student-facing label is **TI-84**, and the instructions use the standard text-based menus without CE-specific features. The official TI reference used to verify these menus is the [TI-84 Plus guidebook, Chapter 13, printed page 229 (PDF page 236)](https://education.ti.com/html/eguides/graphing/84Plus/PDFs/TI-84-Plus-guidebook_EN.pdf#page=236), which documents the basic monochrome model under its official TI-84 Plus name; a separate non-Plus hardware model was not assumed or verified.
 
 ### Student Instructions and Quiz Behavior
 
-1. All three chapters present questions in a **fixed order**, with 10 questions per chapter. Restart returns to Question 1 in the same order.
-2. Each question has one final numerical answer and a worked solution. Theorems require a signed numerical value without units or a percent sign. Probability questions accept decimals, fractions, percentages, and scientific notation.
-3. Round final decimal answers to **four decimal places**. Keep full precision in intermediate moments, standard errors, and z values.
-4. Use the normal approximation explicitly requested in CLT problems, following the lecture’s direct approach. For discrete populations, the worked solutions use this approximation without a continuity correction. Normality from a CLT argument is approximate; n > 30 is the course guideline, not a guarantee for every possible population.
-5. Use the stated population standard deviations. These questions do not require estimated standard errors or t distributions.
-6. Select **Check Answer** for one scored attempt. Blank or invalid input does not consume an attempt. **Show Solution** reveals the answer without awarding a point. After reviewing the solution, select **Next Question**.
-7. The score and progress bar track the ten responses in the chapter. Reloading resets progress; no responses are sent to a server.
+1. Problems and their linked steps appear in **fixed order**: A1–A4, B1–B4, C1–C4, D1–D4. Restart begins at A1 in the same order.
+2. Round the PMF population standard deviation to **four decimal places** and the CI endpoints to **two decimal places**. Keep full precision for all intermediate calculations, including critical values and square roots. Endpoint grading allows 0.0051 absolute error; SD grading allows 0.000051.
+3. Enter numbers without units, brackets, commas, or percent signs. Signed decimals, fractions, and scientific notation are accepted. Enter the lower endpoint before the upper endpoint.
+4. **Check Answer** permits one scored attempt per step. Blank, nonnumeric, or reversed endpoint input does not consume an attempt. **Show Solution** completes that step without awarding a point. **Next Step** and **Next Problem** keep the calculations in sequence.
+5. After the interpretation step, the complete worked solution for that main problem becomes available. A collapsible study guide summarizes the four methods.
+6. The score and progress bar track 52 guided steps across 16 main problems. Reloading resets progress. The HTML includes all styles, scripts and question data, works offline with JavaScript enabled, and sends no student responses to a server. Only the optional official-reference link requires internet access.
 
-### Repository Placement
+### Class 16 Repository Placement
 
 ```text
-Class14/
-  class14_expectation_variance_theorems.html
-  class14_sample_mean_sampling_distribution.html
-  class14_two_sample_mean_difference.html
+Class16/
+  class16_confidence_intervals_population_mean.html
 README.md
 ```
 
-Copy the `Class14_15` folder into the repository root and replace the root `README.md` with this updated version. Retain the existing Class 1-13 folders. Each HTML file includes its own styles, scripts, question bank, answers, and explanations and works offline with JavaScript enabled. Keep the three HTML files together for chapter navigation. New GitHub Pages links become active after the files are committed and the Pages deployment completes.
+Copy the `Class16` folder into the Quiz-Generator repository root and replace the root `README.md` with this version. Preserve the existing course folders. The new GitHub Pages link becomes active after the files are committed and the Pages deployment completes.
 

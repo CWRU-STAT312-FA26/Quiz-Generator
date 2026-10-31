@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STAT 312: Class 16 - Confidence Intervals for a Population Mean</title><style>
+    :root { --navy:#17365d; --blue:#2f6fb0; --pale-blue:#eef5fc; --ink:#1f2937; --muted:#5f6b7a; --success:#16794b; --success-bg:#ecf8f1; --error:#b42318; --error-bg:#fff1f0; --paper:#fff; --gold:#8a6400; --gold-bg:#fff8df; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(145deg,#eef4fa 0%,#f8fafc 52%,#edf3f8 100%); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
+    .page { width:min(940px,calc(100% - 32px)); margin:36px auto; }
+    .hero { padding:28px 30px; color:white; background:linear-gradient(125deg,var(--navy),#285d93); border-radius:18px 18px 0 0; box-shadow:0 16px 45px rgba(23,54,93,.16); }
+    .eyebrow { margin:0 0 6px; font-size:.78rem; font-weight:750; letter-spacing:.11em; text-transform:uppercase; opacity:.86; }
+    h1 { margin:0; font-size:clamp(1.6rem,4vw,2.25rem); line-height:1.2; }
+    .subtitle { margin:10px 0 0; opacity:.93; }
+    main { padding:28px 30px 32px; background:var(--paper); border-radius:0 0 18px 18px; box-shadow:0 16px 45px rgba(23,54,93,.12); }
+    .status-row,.step-row { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:.94rem; }
+    .status-row { margin-bottom:8px; }
+    .step-row { margin-bottom:14px; color:var(--navy); font-weight:750; }
+    .progress-track { height:8px; margin-bottom:24px; overflow:hidden; background:#e8eef4; border-radius:999px; }
+    .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#60a5d8); transition:width 220ms ease; }
+    .scenario-card { padding:22px 24px; background:#f8fafc; border:1px solid #d8e2ec; border-radius:12px 12px 0 0; }
+    .scenario-card h2 { margin:0 0 8px; color:var(--navy); font-size:1.2rem; }
+    .scenario-card p { margin:8px 0; }
+    .tag { display:inline-block; margin-bottom:9px; padding:3px 9px; color:var(--navy); background:#dbeafe; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .question-card { min-height:145px; padding:22px 24px; background:var(--pale-blue); border-left:5px solid var(--blue); border-radius:0 0 10px 10px; }
+    .question-card h3 { margin:0 0 8px; color:var(--navy); font-size:1.05rem; }
+    .question-card p { margin:0; font-size:1.07rem; }
+    .table-wrap { margin:14px 0; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; font-size:.98rem; }
+    th,td { padding:8px 11px; border:1px solid #b8c6d6; text-align:center; }
+    thead th { color:#fff; background:var(--navy); }
+    .answer-area { margin-top:22px; }
+    .answer-area label { display:block; margin-bottom:7px; color:var(--navy); font-weight:750; }
+    .answer-area input,.answer-area select { width:min(100%,560px); min-height:46px; padding:10px 13px; color:var(--ink); background:#fff; border:1.5px solid #b8c6d6; border-radius:8px; font:inherit; font-size:1rem; }
+    .answer-area input:focus,.answer-area select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(47,111,176,.14); }
+    .answer-area input.correct,.answer-area select.correct { border-color:var(--success); background:var(--success-bg); }
+    .answer-area input.incorrect,.answer-area select.incorrect { border-color:var(--error); background:var(--error-bg); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    button { min-height:42px; padding:9px 16px; border:1px solid transparent; border-radius:8px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { color:#fff; background:var(--navy); }
+    .secondary { color:var(--navy); background:#fff; border-color:#9fb2c8; }
+    button:hover { filter:brightness(1.05); }
+    button:focus-visible { outline:3px solid rgba(47,111,176,.3); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .feedback { display:none; margin-top:20px; padding:17px 19px; border-radius:10px; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:#0d5f3a; background:var(--success-bg); border:1px solid #abdcc5; }
+    .feedback.incorrect { color:#7b251c; background:var(--error-bg); border:1px solid #f0b6b1; }
+    .feedback.solution { color:#654b00; background:var(--gold-bg); border:1px solid #ead486; }
+    .feedback h3 { margin:0 0 5px; font-size:1rem; }
+    .feedback p { margin:4px 0 0; }
+    .method { font-weight:750; }
+    .completion { display:none; padding:28px; text-align:center; background:var(--pale-blue); border-radius:12px; }
+    .completion.show { display:block; }
+    .completion h2 { color:var(--navy); margin-top:0; }
+    .completion p { font-size:1.08rem; }
+    .quiz.hidden { display:none; }
+    .note { margin:12px 0 0; color:var(--muted); font-size:.88rem; }
+    code { padding:.08em .3em; color:#15365b; background:#e7eff8; border-radius:4px; font-size:.95em; }
+    @media (max-width:620px) { .page { width:min(100% - 20px,940px); margin:10px auto; } .hero,main { padding:22px 18px; } .status-row,.step-row { align-items:flex-start; flex-direction:column; gap:3px; } .scenario-card,.question-card { padding:19px 18px; } th,td { padding:7px 8px; } }
+
+    .section-links { display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.88rem; }
+    .section-links a { color:#fff;text-decoration:underline;text-underline-offset:3px; }
+    .section-links a[aria-current="page"] { font-weight:750; }
+    .question-card { min-height:110px; }
+    .scenario-card p { font-size:1.04rem; }
+    .feedback { overflow-wrap:anywhere; }
+    .feedback code { white-space:normal; }
+    .answer-note { font-size:.9rem; }
+
+ [hidden] { display:none !important; }
+ .guide { margin-bottom:24px; border:1px solid #d8e2ec; border-radius:10px; padding:12px 16px; background:#f8fafc; }
+ .guide summary { cursor:pointer; font-weight:750; color:var(--navy); }
+ .guide p { margin:8px 0; }
+ .guide table { margin-top:12px; }
+ .guide th,.guide td { text-align:left; }
+ .case-strip { display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 8px; }
+ .case-item { display:block;padding:8px;border:1px solid #b9c8d9;border-radius:7px;font-size:.8rem;color:var(--muted);text-align:center; }
+ .case-item.current { background:var(--navy);color:white;border-color:var(--navy); }
+ .step-row { margin-top:18px;margin-bottom:8px; }
+ .interval-inputs { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
+ .answer-area input,.answer-area select { width:100%;max-width:100%; }
+ .answer-area fieldset { margin:0;padding:0;border:0; }
+ .answer-area legend { color:var(--navy);font-weight:750;margin-bottom:8px; }
+ .answer-area label.choice-option { display:flex;align-items:flex-start;gap:12px;padding:12px 14px;margin-bottom:10px;border:1px solid #b8c6d6;border-radius:8px;font-weight:400;color:var(--ink);cursor:pointer; }
+ .answer-area label.choice-option:focus-within { outline:2px solid var(--blue);outline-offset:2px; }
+ .answer-area input[type=radio] { flex:0 0 18px;width:18px;min-height:18px;height:18px;padding:0;margin:4px 0 0;accent-color:var(--navy); }
+ .answer-area input { font-variant-numeric:tabular-nums; }
+ caption { text-align:left;color:var(--muted);padding:0 0 7px;font-size:.89rem; }
+ .feedback p { margin:9px 0; }
+ .feedback h4,.review h4 { color:var(--navy);margin:18px 0 6px; }
+ .feedback td,.review td { text-align:left; }
+ .feedback th,.review th { text-align:left; }
+ .calculator { margin-top:18px;padding:0 14px 12px;background:#fff;border:1px solid #d8e2ec;border-radius:8px; }
+ .interval-answer { font-size:1.1rem; }
+ .review { margin-top:20px;padding:14px 17px;border:1px solid #c7d4e2;border-radius:10px;background:#f8fafc; }
+ .review summary { color:var(--navy);font-weight:750;cursor:pointer; }
+ .review-content { overflow-wrap:anywhere; }
+ .scenario-card h2:focus { outline:none; }
+ .footer-note { margin-top:20px;font-size:.85rem;color:var(--muted); }
+ @media(max-width:620px) { .case-strip { grid-template-columns:1fr 1fr; } .interval-inputs { grid-template-columns:1fr; } .guide { padding:12px; } }
+ @media(prefers-reduced-motion:reduce) { .progress-bar { transition:none; } }
+</style></head>
+<body><div class="page"><header class="hero"><p class="eyebrow">STAT 312 · Class 16 · 16 Problems</p><h1>Confidence Intervals for a Population Mean</h1><p class="subtitle">Choose the method, construct the interval, and interpret it. Four cases, four problems each.</p></header>
+<main><details class="guide"><summary>Study guide: choosing an interval</summary><p>Use n ≥ 30 as the large-sample guideline. All large-sample problems here have n &gt; 30; all small-sample problems have n &lt; 30.</p><div class="table-wrap"><table><thead><tr><th scope="col">Information</th><th scope="col">Interval</th><th scope="col">TI-84 Stats entry</th></tr></thead><tbody><tr><td>Normal population; known σ, any n</td><td>x̄ ± z*σ/√n (exact)</td><td>ZInterval; σ = population SD</td></tr><tr><td>Population PMF; n &gt; 30</td><td>x̄ ± z*σ/√n (CLT approximation)</td><td>ZInterval; derive population σ from the PMF</td></tr><tr><td>Unknown σ; known sample s; n &gt; 30</td><td>x̄ ± z*s/√n (large-sample approximation)</td><td>ZInterval; enter s in the σ field</td></tr><tr><td>Normal population; unknown σ; n &lt; 30</td><td>x̄ ± t*s/√n; df = n − 1 (exact)</td><td>TInterval; Sx = s</td></tr></tbody></table></div><p>The critical value leaves α/2 in each tail, where α = 1 − confidence level. A normal population gives an exact Z interval with known σ even for a small n. Use the standard deviation, not the variance, in the calculator.</p></details><section id="quiz" class="quiz"><div class="status-row"><span id="problemNumber"></span><span id="scoreDisplay" aria-live="polite"></span></div><div id="progressTrack" class="progress-track" role="progressbar" aria-label="Completed guided steps" aria-valuemin="0" aria-valuemax="52" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div>
+<div class="case-strip" aria-label="Problem cases"><span id="caseA" class="case-item">A · Known σ / normal</span><span id="caseB" class="case-item">B · PMF / large n</span><span id="caseC" class="case-item">C · Unknown σ / large n</span><span id="caseD" class="case-item">D · Unknown σ / small n</span></div>
+<article class="scenario-card"><span id="sourceTag" class="tag"></span><h2 id="scenarioTitle" tabindex="-1"></h2><div id="scenarioText"></div></article><div class="step-row"><span id="stepNumber"></span><span id="stepLabel"></span></div><article class="question-card"><h3>Question</h3><div id="questionText"></div></article>
+<div class="answer-area"><fieldset id="choiceArea" aria-describedby="answerNote"><legend>Your answer</legend><label class="choice-option" for="choice0"><input id="choice0" type="radio" name="answerChoice"><span id="choiceText0"></span></label><label class="choice-option" for="choice1"><input id="choice1" type="radio" name="answerChoice"><span id="choiceText1"></span></label><label class="choice-option" for="choice2"><input id="choice2" type="radio" name="answerChoice"><span id="choiceText2"></span></label><label class="choice-option" for="choice3"><input id="choice3" type="radio" name="answerChoice"><span id="choiceText3"></span></label></fieldset><div id="numericArea" hidden><div><label id="answerLabel" for="answerInput">Lower endpoint</label><input id="answerInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"></div><div id="upperField" hidden><label for="upperInput">Upper endpoint</label><input id="upperInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="answerNote"></div></div><p id="answerNote" class="note answer-note"></p></div>
+<div class="actions"><button id="checkButton" class="primary" type="button">Check Answer</button><button id="showButton" class="secondary" type="button">Show Solution</button><button id="nextButton" class="secondary" type="button" disabled>Next Step</button></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div><details id="workedReview" class="review" hidden><summary>Review the complete worked solution for this problem</summary><div id="reviewContent" class="review-content"></div></details>
+<p class="note">The 16 problems appear in fixed order: A1–A4, B1–B4, C1–C4, D1–D4. Complete the linked steps in order. Each step allows one scored attempt; blank or invalid input does not use an attempt. Show Solution earns no point. Reloading resets your progress.</p></section>
+<section id="completion" class="completion" aria-live="polite"><h2>Practice Complete</h2><p id="finalScore"></p><button id="restartButton" class="primary" type="button">Restart from Problem A1</button></section><noscript><p>This quiz requires JavaScript. Enable JavaScript in your browser and reopen this file.</p></noscript>
+<p class="footer-note">Based on STAT 312 Class 16: Interval Estimation. Calculator reference: <a href="https://education.ti.com/html/eguides/graphing/84Plus/PDFs/TI-84-Plus-guidebook_EN.pdf#page=236" target="_blank" rel="noopener noreferrer">TI official guide, ZInterval and TInterval</a>. The quiz works offline; only this optional reference link needs internet access.</p></main></div>
+<script>const problems = [
+  {
+    "id": "A1",
+    "group": "A",
+    "title": "Student Heights",
+    "tag": "Case A · Known population variance or SD · Normal population",
+    "scenario": "<p>Student heights are normally distributed with a known population standard deviation of 6.4 cm. A random sample of 40 students has a sample mean height of 173.8 cm.<\/p><p><strong>Task:<\/strong> Construct and interpret a 95% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          }
+        ],
+        "answer": "known-z",
+        "solution": "<p>Use <strong>ZInterval with population σ<\/strong>: the population standard deviation σ is known. The population is normal, so the Z pivot is exactly standard normal for any sample size. Here n = 40 ≥ 30; the normal-population assumption already gives an exact result.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>95% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the method justified in the previous step.",
+        "answer": [
+          171.8166558966254,
+          175.78334410337462
+        ],
+        "displayAnswer": "[171.82, 175.78] cm",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = σ/√n = 6.4/√40 = 1.01192885 cm.<\/p><p>Margin of error = z* × SE = 1.98334410 cm.<\/p><p>CI: x̄ ± z*(σ/√n) = 173.8 ± 1.98334410.<\/p><p class=\"interval-answer\">95% CI for μ: <strong>[171.82, 175.78] cm<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>σ = 6.4<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>173.8<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>40<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "individuals",
+            "text": "Approximately 95% of individual observations from this population are between 171.82 and 175.78 cm."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.95 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.95."
+          },
+          {
+            "value": "mean",
+            "text": "We are 95% confident that the true population mean height of the student population is between 171.82 and 175.78 cm."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 95% confident that the true population mean height of the student population is between 171.82 and 175.78 cm.<\/strong><\/p><p>Over many independent repetitions, about 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the height of one student, measured in cm. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 173.8. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>ZInterval with population σ<\/strong>: the population standard deviation σ is known. The population is normal, so the Z pivot is exactly standard normal for any sample size. Here n = 40 ≥ 30; the normal-population assumption already gives an exact result.<\/p><p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = σ/√n = 6.4/√40 = 1.01192885 cm.<\/p><p>Margin of error = z* × SE = 1.98334410 cm.<\/p><p>CI: x̄ ± z*(σ/√n) = 173.8 ± 1.98334410.<\/p><p class=\"interval-answer\">95% CI for μ: <strong>[171.82, 175.78] cm<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>σ = 6.4<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>173.8<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>40<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 95% confident that the true population mean height of the student population is between 171.82 and 175.78 cm.<\/strong><\/p><p>Over many independent repetitions, about 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "A2",
+    "group": "A",
+    "title": "Air-Filled Tire Weights",
+    "tag": "Case A · Known population variance or SD · Normal population",
+    "scenario": "<p>The weight of an air-filled tire of a particular model is normally distributed with a known population standard deviation of 1.2 pounds. A random sample of 16 tires has a sample mean weight of 18.9 pounds.<\/p><p><strong>Task:<\/strong> Construct and interpret a 90% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          }
+        ],
+        "answer": "known-z",
+        "solution": "<p>Use <strong>ZInterval with population σ<\/strong>: the population standard deviation σ is known. The population is normal, so the Z pivot is exactly standard normal for any sample size. Here n = 16 &lt; 30; a small sample does not require a t interval when σ is known.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>90% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the method justified in the previous step.",
+        "answer": [
+          18.406543911914557,
+          19.39345608808544
+        ],
+        "displayAnswer": "[18.41, 19.39] pounds",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 90%; α = 0.1; α/2 = 0.05. The positive standard normal critical value with area 0.95 to its left is <strong>z* ≈ 1.64485363<\/strong>. On TI-84, enter <code>invNorm(0.95, 0, 1)<\/code>.<\/p><p>SE = σ/√n = 1.2/√16 = 0.30000000 pounds.<\/p><p>Margin of error = z* × SE = 0.49345609 pounds.<\/p><p>CI: x̄ ± z*(σ/√n) = 18.9 ± 0.49345609.<\/p><p class=\"interval-answer\">90% CI for μ: <strong>[18.41, 19.39] pounds<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>σ = 1.2<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>18.9<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>16<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.9<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.9 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.9."
+          },
+          {
+            "value": "mean",
+            "text": "We are 90% confident that the true population mean weight of all tires of this model is between 18.41 and 19.39 pounds."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 90% of individual observations from this population are between 18.41 and 19.39 pounds."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 90% confident that the true population mean weight of all tires of this model is between 18.41 and 19.39 pounds.<\/strong><\/p><p>Over many independent repetitions, about 90% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the weight of one air-filled tire, measured in pounds. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 18.9. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>ZInterval with population σ<\/strong>: the population standard deviation σ is known. The population is normal, so the Z pivot is exactly standard normal for any sample size. Here n = 16 &lt; 30; a small sample does not require a t interval when σ is known.<\/p><p>Confidence level = 90%; α = 0.1; α/2 = 0.05. The positive standard normal critical value with area 0.95 to its left is <strong>z* ≈ 1.64485363<\/strong>. On TI-84, enter <code>invNorm(0.95, 0, 1)<\/code>.<\/p><p>SE = σ/√n = 1.2/√16 = 0.30000000 pounds.<\/p><p>Margin of error = z* × SE = 0.49345609 pounds.<\/p><p>CI: x̄ ± z*(σ/√n) = 18.9 ± 0.49345609.<\/p><p class=\"interval-answer\">90% CI for μ: <strong>[18.41, 19.39] pounds<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>σ = 1.2<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>18.9<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>16<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.9<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 90% confident that the true population mean weight of all tires of this model is between 18.41 and 19.39 pounds.<\/strong><\/p><p>Over many independent repetitions, about 90% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "A3",
+    "group": "A",
+    "title": "Battery Capacities",
+    "tag": "Case A · Known population variance or SD · Normal population",
+    "scenario": "<p>Battery capacity is normally distributed with a known population variance of 400 (mAh)². A random sample of 25 batteries has a sample mean capacity of 2490 mAh.<\/p><p><strong>Task:<\/strong> Construct and interpret a 99% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          }
+        ],
+        "answer": "known-z",
+        "solution": "<p>Use <strong>ZInterval with population σ<\/strong>: the population variance is known, so take its square root to obtain σ. The population is normal, so the Z pivot is exactly standard normal for any sample size. Here n = 25 &lt; 30; a small sample does not require a t interval when σ is known.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>99% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the method justified in the previous step.",
+        "answer": [
+          2479.6966827858046,
+          2500.3033172141954
+        ],
+        "displayAnswer": "[2479.70, 2500.30] mAh",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 99%; α = 0.01; α/2 = 0.005. The positive standard normal critical value with area 0.995 to its left is <strong>z* ≈ 2.57582930<\/strong>. On TI-84, enter <code>invNorm(0.995, 0, 1)<\/code>.<\/p><p>SE = σ/√n = 20/√25 = 4.00000000 mAh.<\/p><p>Margin of error = z* × SE = 10.30331721 mAh.<\/p><p>CI: x̄ ± z*(σ/√n) = 2490 ± 10.30331721.<\/p><p class=\"interval-answer\">99% CI for μ: <strong>[2479.70, 2500.30] mAh<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>σ = 20<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>2490<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>25<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.99<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.99."
+          },
+          {
+            "value": "mean",
+            "text": "We are 99% confident that the true population mean capacity of all batteries of this type is between 2479.70 and 2500.30 mAh."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 99% of individual observations from this population are between 2479.70 and 2500.30 mAh."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.99 of falling in this particular interval."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 99% confident that the true population mean capacity of all batteries of this type is between 2479.70 and 2500.30 mAh.<\/strong><\/p><p>Over many independent repetitions, about 99% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the capacity of one battery, measured in mAh. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 2490. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>The given population variance is 400. Therefore σ = √(400) = 20 mAh.<\/p><p>Use <strong>ZInterval with population σ<\/strong>: the population variance is known, so take its square root to obtain σ. The population is normal, so the Z pivot is exactly standard normal for any sample size. Here n = 25 &lt; 30; a small sample does not require a t interval when σ is known.<\/p><p>Confidence level = 99%; α = 0.01; α/2 = 0.005. The positive standard normal critical value with area 0.995 to its left is <strong>z* ≈ 2.57582930<\/strong>. On TI-84, enter <code>invNorm(0.995, 0, 1)<\/code>.<\/p><p>SE = σ/√n = 20/√25 = 4.00000000 mAh.<\/p><p>Margin of error = z* × SE = 10.30331721 mAh.<\/p><p>CI: x̄ ± z*(σ/√n) = 2490 ± 10.30331721.<\/p><p class=\"interval-answer\">99% CI for μ: <strong>[2479.70, 2500.30] mAh<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>σ = 20<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>2490<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>25<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.99<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 99% confident that the true population mean capacity of all batteries of this type is between 2479.70 and 2500.30 mAh.<\/strong><\/p><p>Over many independent repetitions, about 99% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "A4",
+    "group": "A",
+    "title": "University Commute Times",
+    "tag": "Case A · Known population variance or SD · Normal population",
+    "scenario": "<p>Commute times for students at a university are normally distributed with a known population variance of 81 minutes². A random sample of 9 students has a sample mean commute time of 31.5 minutes.<\/p><p><strong>Task:<\/strong> Construct and interpret a 95% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          }
+        ],
+        "answer": "known-z",
+        "solution": "<p>Use <strong>ZInterval with population σ<\/strong>: the population variance is known, so take its square root to obtain σ. The population is normal, so the Z pivot is exactly standard normal for any sample size. Here n = 9 &lt; 30; a small sample does not require a t interval when σ is known.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>95% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the method justified in the previous step.",
+        "answer": [
+          25.620108046379837,
+          37.37989195362016
+        ],
+        "displayAnswer": "[25.62, 37.38] minutes",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = σ/√n = 9/√9 = 3.00000000 minutes.<\/p><p>Margin of error = z* × SE = 5.87989195 minutes.<\/p><p>CI: x̄ ± z*(σ/√n) = 31.5 ± 5.87989195.<\/p><p class=\"interval-answer\">95% CI for μ: <strong>[25.62, 37.38] minutes<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>σ = 9<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>31.5<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>9<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "mean",
+            "text": "We are 95% confident that the true population mean commute time for students at this university is between 25.62 and 37.38 minutes."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 95% of individual observations from this population are between 25.62 and 37.38 minutes."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.95 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.95."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 95% confident that the true population mean commute time for students at this university is between 25.62 and 37.38 minutes.<\/strong><\/p><p>Over many independent repetitions, about 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the commute time of one student, measured in minutes. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 31.5. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>The given population variance is 81. Therefore σ = √(81) = 9 minutes.<\/p><p>Use <strong>ZInterval with population σ<\/strong>: the population variance is known, so take its square root to obtain σ. The population is normal, so the Z pivot is exactly standard normal for any sample size. Here n = 9 &lt; 30; a small sample does not require a t interval when σ is known.<\/p><p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = σ/√n = 9/√9 = 3.00000000 minutes.<\/p><p>Margin of error = z* × SE = 5.87989195 minutes.<\/p><p>CI: x̄ ± z*(σ/√n) = 31.5 ± 5.87989195.<\/p><p class=\"interval-answer\">95% CI for μ: <strong>[25.62, 37.38] minutes<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>σ = 9<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>31.5<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>9<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 95% confident that the true population mean commute time for students at this university is between 25.62 and 37.38 minutes.<\/strong><\/p><p>Over many independent repetitions, about 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "B1",
+    "group": "B",
+    "title": "Digital Thickness Measurements",
+    "tag": "Case B · Population PMF · n > 30",
+    "scenario": "<p>A digital instrument records thickness in discrete steps. Its population PMF is shown below. The positions of the possible measurements are expressed relative to the unknown population mean μ. A random sample of 50 independent measurements has a sample mean of 21.92 mm.<\/p><div class=\"table-wrap\"><table><caption>Population PMF of X; μ is unknown<\/caption><thead><tr><th scope=\"row\">x (mm)<\/th><th scope=\"col\">μ − 2<\/th><th scope=\"col\">μ − 1<\/th><th scope=\"col\">μ<\/th><th scope=\"col\">μ + 1<\/th><th scope=\"col\">μ + 2<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">P(X = x)<\/th><td>0.1<\/td><td>0.2<\/td><td>0.4<\/td><td>0.2<\/td><td>0.1<\/td><\/tr><\/tbody><\/table><\/div><p class=\"note\">These are population probabilities, not sample frequencies. The weighted deviations from μ sum to zero. Calculate σ² = Σ(x − μ)²P(X = x).<\/p><p><strong>Task:<\/strong> Construct and interpret a 95% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          }
+        ],
+        "answer": "known-z",
+        "solution": "<p>Use <strong>ZInterval with σ calculated from the population PMF<\/strong>. The PMF is not a normal population. Since n = 50 &gt; 30, use the CLT normal approximation to obtain an <strong>approximate<\/strong> interval for μ. The table gives known population probabilities, so the resulting σ is a population SD.<\/p>"
+      },
+      {
+        "kind": "number",
+        "label": "Calculate the population SD",
+        "prompt": "Use the population PMF to calculate <strong>σ<\/strong>. Enter the standard deviation, not the variance. Round to <strong>four decimal places<\/strong>.",
+        "answer": 1.0954451150103321,
+        "displayAnswer": "1.0954",
+        "tolerance": 5.1e-05,
+        "solution": "<p>The table gives X = μ + d at each stated deviation d. Because ΣdP(X = μ + d) = 0, the population mean is μ.<\/p><p>σ² = E[(X − μ)²] = (-2)²(0.1) + (-1)²(0.2) + (0)²(0.4) + (1)²(0.2) + (2)²(0.1) = <strong>1.2<\/strong> (mm)².<\/p><p>σ = √(1.2) = <strong>1.0954<\/strong> mm. The unknown location μ does not enter this variance calculation. This is a population SD derived from the PMF.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>95% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the large-sample normal approximation.",
+        "answer": [
+          21.616363685148404,
+          22.2236363148516
+        ],
+        "displayAnswer": "[21.62, 22.22] mm",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = σ/√n = √(1.2)/√50 = 0.15491933 mm.<\/p><p>Margin of error = z* × SE = 0.30363631 mm.<\/p><p>CI: x̄ ± z*(σ/√n) = 21.92 ± 0.30363631.<\/p><p class=\"interval-answer\">95% approximate CI for μ: <strong>[21.62, 22.22] mm<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>√(1.2) ≈ 1.09544512<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>21.92<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>50<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>Use the unrounded square root of the PMF variance. Do not enter the PMF as raw sample data or as a frequency list in the interval menu.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "individuals",
+            "text": "Approximately 95% of individual observations from this population are between 21.62 and 22.22 mm."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.95 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.95."
+          },
+          {
+            "value": "mean",
+            "text": "We are 95% confident that the true population mean recorded thickness from this process is between 21.62 and 22.22 mm."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 95% confident that the true population mean recorded thickness from this process is between 21.62 and 22.22 mm.<\/strong><\/p><p>With the CLT approximation used here, approximately 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is one recorded thickness measurement, measured in mm. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 21.92. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>ZInterval with σ calculated from the population PMF<\/strong>. The PMF is not a normal population. Since n = 50 &gt; 30, use the CLT normal approximation to obtain an <strong>approximate<\/strong> interval for μ. The table gives known population probabilities, so the resulting σ is a population SD.<\/p><p>The table gives X = μ + d at each stated deviation d. Because ΣdP(X = μ + d) = 0, the population mean is μ.<\/p><p>σ² = E[(X − μ)²] = (-2)²(0.1) + (-1)²(0.2) + (0)²(0.4) + (1)²(0.2) + (2)²(0.1) = <strong>1.2<\/strong> (mm)².<\/p><p>σ = √(1.2) = <strong>1.0954<\/strong> mm. The unknown location μ does not enter this variance calculation. This is a population SD derived from the PMF.<\/p><p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = σ/√n = √(1.2)/√50 = 0.15491933 mm.<\/p><p>Margin of error = z* × SE = 0.30363631 mm.<\/p><p>CI: x̄ ± z*(σ/√n) = 21.92 ± 0.30363631.<\/p><p class=\"interval-answer\">95% approximate CI for μ: <strong>[21.62, 22.22] mm<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>√(1.2) ≈ 1.09544512<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>21.92<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>50<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>Use the unrounded square root of the PMF variance. Do not enter the PMF as raw sample data or as a frequency list in the interval menu.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 95% confident that the true population mean recorded thickness from this process is between 21.62 and 22.22 mm.<\/strong><\/p><p>With the CLT approximation used here, approximately 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "B2",
+    "group": "B",
+    "title": "Parts-Cost Categories",
+    "tag": "Case B · Population PMF · n > 30",
+    "scenario": "<p>A repair business uses five parts-cost categories with the population PMF below. Their costs are given relative to the unknown population mean μ, with μ > 20 dollars. A random sample of 64 independent repair jobs has a sample mean parts cost of 63.40 dollars.<\/p><div class=\"table-wrap\"><table><caption>Population PMF of X; μ is unknown<\/caption><thead><tr><th scope=\"row\">x (dollars)<\/th><th scope=\"col\">μ − 20<\/th><th scope=\"col\">μ − 10<\/th><th scope=\"col\">μ<\/th><th scope=\"col\">μ + 10<\/th><th scope=\"col\">μ + 20<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">P(X = x)<\/th><td>0.1<\/td><td>0.25<\/td><td>0.3<\/td><td>0.25<\/td><td>0.1<\/td><\/tr><\/tbody><\/table><\/div><p class=\"note\">These are population probabilities, not sample frequencies. The weighted deviations from μ sum to zero. Calculate σ² = Σ(x − μ)²P(X = x).<\/p><p><strong>Task:<\/strong> Construct and interpret a 90% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          }
+        ],
+        "answer": "known-z",
+        "solution": "<p>Use <strong>ZInterval with σ calculated from the population PMF<\/strong>. The PMF is not a normal population. Since n = 64 &gt; 30, use the CLT normal approximation to obtain an <strong>approximate<\/strong> interval for μ. The table gives known population probabilities, so the resulting σ is a population SD.<\/p>"
+      },
+      {
+        "kind": "number",
+        "label": "Calculate the population SD",
+        "prompt": "Use the population PMF to calculate <strong>σ<\/strong>. Enter the standard deviation, not the variance. Round to <strong>four decimal places<\/strong>.",
+        "answer": 11.40175425099138,
+        "displayAnswer": "11.4018",
+        "tolerance": 5.1e-05,
+        "solution": "<p>The table gives X = μ + d at each stated deviation d. Because ΣdP(X = μ + d) = 0, the population mean is μ.<\/p><p>σ² = E[(X − μ)²] = (-20)²(0.1) + (-10)²(0.25) + (0)²(0.3) + (10)²(0.25) + (20)²(0.1) = <strong>130<\/strong> (dollars)².<\/p><p>σ = √(130) = <strong>11.4018<\/strong> dollars. The unknown location μ does not enter this variance calculation. This is a population SD derived from the PMF.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>90% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the large-sample normal approximation.",
+        "answer": [
+          61.05572289583093,
+          65.74427710416907
+        ],
+        "displayAnswer": "[61.06, 65.74] dollars",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 90%; α = 0.1; α/2 = 0.05. The positive standard normal critical value with area 0.95 to its left is <strong>z* ≈ 1.64485363<\/strong>. On TI-84, enter <code>invNorm(0.95, 0, 1)<\/code>.<\/p><p>SE = σ/√n = √(130)/√64 = 1.42521928 dollars.<\/p><p>Margin of error = z* × SE = 2.34427710 dollars.<\/p><p>CI: x̄ ± z*(σ/√n) = 63.4 ± 2.34427710.<\/p><p class=\"interval-answer\">90% approximate CI for μ: <strong>[61.06, 65.74] dollars<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>√(130) ≈ 11.40175425<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>63.4<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>64<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.9<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>Use the unrounded square root of the PMF variance. Do not enter the PMF as raw sample data or as a frequency list in the interval menu.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.9 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.9."
+          },
+          {
+            "value": "mean",
+            "text": "We are 90% confident that the true population mean parts cost for all repair jobs at this business is between 61.06 and 65.74 dollars."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 90% of individual observations from this population are between 61.06 and 65.74 dollars."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 90% confident that the true population mean parts cost for all repair jobs at this business is between 61.06 and 65.74 dollars.<\/strong><\/p><p>With the CLT approximation used here, approximately 90% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the parts cost for one repair job, measured in dollars. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 63.4. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>ZInterval with σ calculated from the population PMF<\/strong>. The PMF is not a normal population. Since n = 64 &gt; 30, use the CLT normal approximation to obtain an <strong>approximate<\/strong> interval for μ. The table gives known population probabilities, so the resulting σ is a population SD.<\/p><p>The table gives X = μ + d at each stated deviation d. Because ΣdP(X = μ + d) = 0, the population mean is μ.<\/p><p>σ² = E[(X − μ)²] = (-20)²(0.1) + (-10)²(0.25) + (0)²(0.3) + (10)²(0.25) + (20)²(0.1) = <strong>130<\/strong> (dollars)².<\/p><p>σ = √(130) = <strong>11.4018<\/strong> dollars. The unknown location μ does not enter this variance calculation. This is a population SD derived from the PMF.<\/p><p>Confidence level = 90%; α = 0.1; α/2 = 0.05. The positive standard normal critical value with area 0.95 to its left is <strong>z* ≈ 1.64485363<\/strong>. On TI-84, enter <code>invNorm(0.95, 0, 1)<\/code>.<\/p><p>SE = σ/√n = √(130)/√64 = 1.42521928 dollars.<\/p><p>Margin of error = z* × SE = 2.34427710 dollars.<\/p><p>CI: x̄ ± z*(σ/√n) = 63.4 ± 2.34427710.<\/p><p class=\"interval-answer\">90% approximate CI for μ: <strong>[61.06, 65.74] dollars<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>√(130) ≈ 11.40175425<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>63.4<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>64<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.9<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>Use the unrounded square root of the PMF variance. Do not enter the PMF as raw sample data or as a frequency list in the interval menu.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 90% confident that the true population mean parts cost for all repair jobs at this business is between 61.06 and 65.74 dollars.<\/strong><\/p><p>With the CLT approximation used here, approximately 90% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "B3",
+    "group": "B",
+    "title": "Package Fill-Weight Categories",
+    "tag": "Case B · Population PMF · n > 30",
+    "scenario": "<p>Package fill weights follow the discrete population PMF below. The possible weights are written relative to the unknown population mean μ. A random sample of 80 independent packages has a sample mean fill weight of 502.85 grams.<\/p><div class=\"table-wrap\"><table><caption>Population PMF of X; μ is unknown<\/caption><thead><tr><th scope=\"row\">x (grams)<\/th><th scope=\"col\">μ − 4<\/th><th scope=\"col\">μ − 2<\/th><th scope=\"col\">μ<\/th><th scope=\"col\">μ + 2<\/th><th scope=\"col\">μ + 4<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">P(X = x)<\/th><td>0.1<\/td><td>0.2<\/td><td>0.4<\/td><td>0.2<\/td><td>0.1<\/td><\/tr><\/tbody><\/table><\/div><p class=\"note\">These are population probabilities, not sample frequencies. The weighted deviations from μ sum to zero. Calculate σ² = Σ(x − μ)²P(X = x).<\/p><p><strong>Task:<\/strong> Construct and interpret a 99% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          }
+        ],
+        "answer": "known-z",
+        "solution": "<p>Use <strong>ZInterval with σ calculated from the population PMF<\/strong>. The PMF is not a normal population. Since n = 80 &gt; 30, use the CLT normal approximation to obtain an <strong>approximate<\/strong> interval for μ. The table gives known population probabilities, so the resulting σ is a population SD.<\/p>"
+      },
+      {
+        "kind": "number",
+        "label": "Calculate the population SD",
+        "prompt": "Use the population PMF to calculate <strong>σ<\/strong>. Enter the standard deviation, not the variance. Round to <strong>four decimal places<\/strong>.",
+        "answer": 2.1908902300206643,
+        "displayAnswer": "2.1909",
+        "tolerance": 5.1e-05,
+        "solution": "<p>The table gives X = μ + d at each stated deviation d. Because ΣdP(X = μ + d) = 0, the population mean is μ.<\/p><p>σ² = E[(X − μ)²] = (-4)²(0.1) + (-2)²(0.2) + (0)²(0.4) + (2)²(0.2) + (4)²(0.1) = <strong>4.8<\/strong> (grams)².<\/p><p>σ = √(4.8) = <strong>2.1909<\/strong> grams. The unknown location μ does not enter this variance calculation. This is a population SD derived from the PMF.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>99% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the large-sample normal approximation.",
+        "answer": [
+          502.2190532541797,
+          503.48094674582035
+        ],
+        "displayAnswer": "[502.22, 503.48] grams",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 99%; α = 0.01; α/2 = 0.005. The positive standard normal critical value with area 0.995 to its left is <strong>z* ≈ 2.57582930<\/strong>. On TI-84, enter <code>invNorm(0.995, 0, 1)<\/code>.<\/p><p>SE = σ/√n = √(4.8)/√80 = 0.24494897 grams.<\/p><p>Margin of error = z* × SE = 0.63094675 grams.<\/p><p>CI: x̄ ± z*(σ/√n) = 502.85 ± 0.63094675.<\/p><p class=\"interval-answer\">99% approximate CI for μ: <strong>[502.22, 503.48] grams<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>√(4.8) ≈ 2.19089023<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>502.85<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>80<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.99<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>Use the unrounded square root of the PMF variance. Do not enter the PMF as raw sample data or as a frequency list in the interval menu.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.99."
+          },
+          {
+            "value": "mean",
+            "text": "We are 99% confident that the true population mean fill weight of all packages from this process is between 502.22 and 503.48 grams."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 99% of individual observations from this population are between 502.22 and 503.48 grams."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.99 of falling in this particular interval."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 99% confident that the true population mean fill weight of all packages from this process is between 502.22 and 503.48 grams.<\/strong><\/p><p>With the CLT approximation used here, approximately 99% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the fill weight of one package, measured in grams. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 502.85. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>ZInterval with σ calculated from the population PMF<\/strong>. The PMF is not a normal population. Since n = 80 &gt; 30, use the CLT normal approximation to obtain an <strong>approximate<\/strong> interval for μ. The table gives known population probabilities, so the resulting σ is a population SD.<\/p><p>The table gives X = μ + d at each stated deviation d. Because ΣdP(X = μ + d) = 0, the population mean is μ.<\/p><p>σ² = E[(X − μ)²] = (-4)²(0.1) + (-2)²(0.2) + (0)²(0.4) + (2)²(0.2) + (4)²(0.1) = <strong>4.8<\/strong> (grams)².<\/p><p>σ = √(4.8) = <strong>2.1909<\/strong> grams. The unknown location μ does not enter this variance calculation. This is a population SD derived from the PMF.<\/p><p>Confidence level = 99%; α = 0.01; α/2 = 0.005. The positive standard normal critical value with area 0.995 to its left is <strong>z* ≈ 2.57582930<\/strong>. On TI-84, enter <code>invNorm(0.995, 0, 1)<\/code>.<\/p><p>SE = σ/√n = √(4.8)/√80 = 0.24494897 grams.<\/p><p>Margin of error = z* × SE = 0.63094675 grams.<\/p><p>CI: x̄ ± z*(σ/√n) = 502.85 ± 0.63094675.<\/p><p class=\"interval-answer\">99% approximate CI for μ: <strong>[502.22, 503.48] grams<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>√(4.8) ≈ 2.19089023<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>502.85<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>80<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.99<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>Use the unrounded square root of the PMF variance. Do not enter the PMF as raw sample data or as a frequency list in the interval menu.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 99% confident that the true population mean fill weight of all packages from this process is between 502.22 and 503.48 grams.<\/strong><\/p><p>With the CLT approximation used here, approximately 99% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "B4",
+    "group": "B",
+    "title": "Machine Task Durations",
+    "tag": "Case B · Population PMF · n > 30",
+    "scenario": "<p>A machine has four possible task durations with the population PMF below. The durations are given relative to the unknown population mean μ, with μ > 3 minutes. A random sample of 100 independent tasks has a sample mean duration of 12.84 minutes.<\/p><div class=\"table-wrap\"><table><caption>Population PMF of X; μ is unknown<\/caption><thead><tr><th scope=\"row\">x (minutes)<\/th><th scope=\"col\">μ − 3<\/th><th scope=\"col\">μ − 1<\/th><th scope=\"col\">μ + 1<\/th><th scope=\"col\">μ + 3<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">P(X = x)<\/th><td>0.2<\/td><td>0.3<\/td><td>0.3<\/td><td>0.2<\/td><\/tr><\/tbody><\/table><\/div><p class=\"note\">These are population probabilities, not sample frequencies. The weighted deviations from μ sum to zero. Calculate σ² = Σ(x − μ)²P(X = x).<\/p><p><strong>Task:<\/strong> Construct and interpret a 95% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          }
+        ],
+        "answer": "known-z",
+        "solution": "<p>Use <strong>ZInterval with σ calculated from the population PMF<\/strong>. The PMF is not a normal population. Since n = 100 &gt; 30, use the CLT normal approximation to obtain an <strong>approximate<\/strong> interval for μ. The table gives known population probabilities, so the resulting σ is a population SD.<\/p>"
+      },
+      {
+        "kind": "number",
+        "label": "Calculate the population SD",
+        "prompt": "Use the population PMF to calculate <strong>σ<\/strong>. Enter the standard deviation, not the variance. Round to <strong>four decimal places<\/strong>.",
+        "answer": 2.04939015319192,
+        "displayAnswer": "2.0494",
+        "tolerance": 5.1e-05,
+        "solution": "<p>The table gives X = μ + d at each stated deviation d. Because ΣdP(X = μ + d) = 0, the population mean is μ.<\/p><p>σ² = E[(X − μ)²] = (-3)²(0.2) + (-1)²(0.3) + (1)²(0.3) + (3)²(0.2) = <strong>4.2<\/strong> (minutes)².<\/p><p>σ = √(4.2) = <strong>2.0494<\/strong> minutes. The unknown location μ does not enter this variance calculation. This is a population SD derived from the PMF.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>95% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the large-sample normal approximation.",
+        "answer": [
+          12.438326910947282,
+          13.241673089052718
+        ],
+        "displayAnswer": "[12.44, 13.24] minutes",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = σ/√n = √(4.2)/√100 = 0.20493902 minutes.<\/p><p>Margin of error = z* × SE = 0.40167309 minutes.<\/p><p>CI: x̄ ± z*(σ/√n) = 12.84 ± 0.40167309.<\/p><p class=\"interval-answer\">95% approximate CI for μ: <strong>[12.44, 13.24] minutes<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>√(4.2) ≈ 2.04939015<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>12.84<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>100<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>Use the unrounded square root of the PMF variance. Do not enter the PMF as raw sample data or as a frequency list in the interval menu.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "mean",
+            "text": "We are 95% confident that the true population mean task duration for this machine is between 12.44 and 13.24 minutes."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 95% of individual observations from this population are between 12.44 and 13.24 minutes."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.95 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.95."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 95% confident that the true population mean task duration for this machine is between 12.44 and 13.24 minutes.<\/strong><\/p><p>With the CLT approximation used here, approximately 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the duration of one machine task, measured in minutes. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 12.84. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>ZInterval with σ calculated from the population PMF<\/strong>. The PMF is not a normal population. Since n = 100 &gt; 30, use the CLT normal approximation to obtain an <strong>approximate<\/strong> interval for μ. The table gives known population probabilities, so the resulting σ is a population SD.<\/p><p>The table gives X = μ + d at each stated deviation d. Because ΣdP(X = μ + d) = 0, the population mean is μ.<\/p><p>σ² = E[(X − μ)²] = (-3)²(0.2) + (-1)²(0.3) + (1)²(0.3) + (3)²(0.2) = <strong>4.2<\/strong> (minutes)².<\/p><p>σ = √(4.2) = <strong>2.0494<\/strong> minutes. The unknown location μ does not enter this variance calculation. This is a population SD derived from the PMF.<\/p><p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = σ/√n = √(4.2)/√100 = 0.20493902 minutes.<\/p><p>Margin of error = z* × SE = 0.40167309 minutes.<\/p><p>CI: x̄ ± z*(σ/√n) = 12.84 ± 0.40167309.<\/p><p class=\"interval-answer\">95% approximate CI for μ: <strong>[12.44, 13.24] minutes<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>√(4.2) ≈ 2.04939015<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>12.84<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>100<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>Use the unrounded square root of the PMF variance. Do not enter the PMF as raw sample data or as a frequency list in the interval menu.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 95% confident that the true population mean task duration for this machine is between 12.44 and 13.24 minutes.<\/strong><\/p><p>With the CLT approximation used here, approximately 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "C1",
+    "group": "C",
+    "title": "Repair Parts Costs",
+    "tag": "Case C · Unknown population SD · n > 30",
+    "scenario": "<p>A car repair business randomly selects receipts from 94 independent repair jobs. The sample mean parts cost is 33.80 dollars, and the sample standard deviation is 28.60 dollars. The population standard deviation is unknown, and the population distribution is not specified.<\/p><p><strong>Task:<\/strong> Construct and interpret a 90% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          }
+        ],
+        "answer": "sample-z",
+        "solution": "<p>Use the <strong>large-sample Z approximation with s<\/strong>. Population σ is unknown, but n = 94 &gt; 30. Use the CLT approximation and estimate σ by s. On ZInterval, enter s in the field labeled σ for this approximation.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>90% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the large-sample normal approximation.",
+        "answer": [
+          28.947904243424546,
+          38.65209575657545
+        ],
+        "displayAnswer": "[28.95, 38.65] dollars",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 90%; α = 0.1; α/2 = 0.05. The positive standard normal critical value with area 0.95 to its left is <strong>z* ≈ 1.64485363<\/strong>. On TI-84, enter <code>invNorm(0.95, 0, 1)<\/code>.<\/p><p>SE = s/√n = 28.6/√94 = 2.94986476 dollars.<\/p><p>Margin of error = z* × SE = 4.85209576 dollars.<\/p><p>CI: x̄ ± z*(s/√n) = 33.8 ± 4.85209576.<\/p><p class=\"interval-answer\">90% approximate CI for μ: <strong>[28.95, 38.65] dollars<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>s = 28.6<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>33.8<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>94<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.9<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>For this course’s large-sample Z approximation, enter the supplied <strong>sample<\/strong> SD s in the σ field. This substitution produces an approximate Z interval.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "individuals",
+            "text": "Approximately 90% of individual observations from this population are between 28.95 and 38.65 dollars."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.9 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.9."
+          },
+          {
+            "value": "mean",
+            "text": "We are 90% confident that the true population mean parts cost for all repair jobs at this business is between 28.95 and 38.65 dollars."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 90% confident that the true population mean parts cost for all repair jobs at this business is between 28.95 and 38.65 dollars.<\/strong><\/p><p>With the CLT approximation used here, approximately 90% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the parts cost for one repair job, measured in dollars. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 33.8. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use the <strong>large-sample Z approximation with s<\/strong>. Population σ is unknown, but n = 94 &gt; 30. Use the CLT approximation and estimate σ by s. On ZInterval, enter s in the field labeled σ for this approximation.<\/p><p>Confidence level = 90%; α = 0.1; α/2 = 0.05. The positive standard normal critical value with area 0.95 to its left is <strong>z* ≈ 1.64485363<\/strong>. On TI-84, enter <code>invNorm(0.95, 0, 1)<\/code>.<\/p><p>SE = s/√n = 28.6/√94 = 2.94986476 dollars.<\/p><p>Margin of error = z* × SE = 4.85209576 dollars.<\/p><p>CI: x̄ ± z*(s/√n) = 33.8 ± 4.85209576.<\/p><p class=\"interval-answer\">90% approximate CI for μ: <strong>[28.95, 38.65] dollars<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>s = 28.6<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>33.8<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>94<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.9<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>For this course’s large-sample Z approximation, enter the supplied <strong>sample<\/strong> SD s in the σ field. This substitution produces an approximate Z interval.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 90% confident that the true population mean parts cost for all repair jobs at this business is between 28.95 and 38.65 dollars.<\/strong><\/p><p>With the CLT approximation used here, approximately 90% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "C2",
+    "group": "C",
+    "title": "Clinic Waiting Times",
+    "tag": "Case C · Unknown population SD · n > 30",
+    "scenario": "<p>A random sample of 64 independent patient visits has a sample mean waiting time of 42.3 minutes and a sample standard deviation of 15.2 minutes. The population standard deviation is unknown, and the population distribution is not specified.<\/p><p><strong>Task:<\/strong> Construct and interpret a 95% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          }
+        ],
+        "answer": "sample-z",
+        "solution": "<p>Use the <strong>large-sample Z approximation with s<\/strong>. Population σ is unknown, but n = 64 &gt; 30. Use the CLT approximation and estimate σ by s. On ZInterval, enter s in the field labeled σ for this approximation.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>95% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the large-sample normal approximation.",
+        "answer": [
+          38.5760684293739,
+          46.0239315706261
+        ],
+        "displayAnswer": "[38.58, 46.02] minutes",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = s/√n = 15.2/√64 = 1.90000000 minutes.<\/p><p>Margin of error = z* × SE = 3.72393157 minutes.<\/p><p>CI: x̄ ± z*(s/√n) = 42.3 ± 3.72393157.<\/p><p class=\"interval-answer\">95% approximate CI for μ: <strong>[38.58, 46.02] minutes<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>s = 15.2<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>42.3<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>64<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>For this course’s large-sample Z approximation, enter the supplied <strong>sample<\/strong> SD s in the σ field. This substitution produces an approximate Z interval.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.95 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.95."
+          },
+          {
+            "value": "mean",
+            "text": "We are 95% confident that the true population mean waiting time for all patients at this clinic is between 38.58 and 46.02 minutes."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 95% of individual observations from this population are between 38.58 and 46.02 minutes."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 95% confident that the true population mean waiting time for all patients at this clinic is between 38.58 and 46.02 minutes.<\/strong><\/p><p>With the CLT approximation used here, approximately 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the waiting time of one patient, measured in minutes. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 42.3. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use the <strong>large-sample Z approximation with s<\/strong>. Population σ is unknown, but n = 64 &gt; 30. Use the CLT approximation and estimate σ by s. On ZInterval, enter s in the field labeled σ for this approximation.<\/p><p>Confidence level = 95%; α = 0.05; α/2 = 0.025. The positive standard normal critical value with area 0.975 to its left is <strong>z* ≈ 1.95996398<\/strong>. On TI-84, enter <code>invNorm(0.975, 0, 1)<\/code>.<\/p><p>SE = s/√n = 15.2/√64 = 1.90000000 minutes.<\/p><p>Margin of error = z* × SE = 3.72393157 minutes.<\/p><p>CI: x̄ ± z*(s/√n) = 42.3 ± 3.72393157.<\/p><p class=\"interval-answer\">95% approximate CI for μ: <strong>[38.58, 46.02] minutes<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>s = 15.2<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>42.3<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>64<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>For this course’s large-sample Z approximation, enter the supplied <strong>sample<\/strong> SD s in the σ field. This substitution produces an approximate Z interval.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 95% confident that the true population mean waiting time for all patients at this clinic is between 38.58 and 46.02 minutes.<\/strong><\/p><p>With the CLT approximation used here, approximately 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "C3",
+    "group": "C",
+    "title": "Household Electricity Use",
+    "tag": "Case C · Unknown population SD · n > 30",
+    "scenario": "<p>A random sample of 100 independent households has a sample mean daily electricity use of 28.4 kWh and a sample standard deviation of 6.5 kWh. The population standard deviation is unknown, and the population distribution is not specified.<\/p><p><strong>Task:<\/strong> Construct and interpret a 99% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          }
+        ],
+        "answer": "sample-z",
+        "solution": "<p>Use the <strong>large-sample Z approximation with s<\/strong>. Population σ is unknown, but n = 100 &gt; 30. Use the CLT approximation and estimate σ by s. On ZInterval, enter s in the field labeled σ for this approximation.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>99% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the large-sample normal approximation.",
+        "answer": [
+          26.725710952693213,
+          30.074289047306785
+        ],
+        "displayAnswer": "[26.73, 30.07] kWh",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 99%; α = 0.01; α/2 = 0.005. The positive standard normal critical value with area 0.995 to its left is <strong>z* ≈ 2.57582930<\/strong>. On TI-84, enter <code>invNorm(0.995, 0, 1)<\/code>.<\/p><p>SE = s/√n = 6.5/√100 = 0.65000000 kWh.<\/p><p>Margin of error = z* × SE = 1.67428905 kWh.<\/p><p>CI: x̄ ± z*(s/√n) = 28.4 ± 1.67428905.<\/p><p class=\"interval-answer\">99% approximate CI for μ: <strong>[26.73, 30.07] kWh<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>s = 6.5<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>28.4<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>100<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.99<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>For this course’s large-sample Z approximation, enter the supplied <strong>sample<\/strong> SD s in the σ field. This substitution produces an approximate Z interval.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.99."
+          },
+          {
+            "value": "mean",
+            "text": "We are 99% confident that the true population mean daily electricity use for households in this service area is between 26.73 and 30.07 kWh."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 99% of individual observations from this population are between 26.73 and 30.07 kWh."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.99 of falling in this particular interval."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 99% confident that the true population mean daily electricity use for households in this service area is between 26.73 and 30.07 kWh.<\/strong><\/p><p>With the CLT approximation used here, approximately 99% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the daily electricity use of one household, measured in kWh. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 28.4. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use the <strong>large-sample Z approximation with s<\/strong>. Population σ is unknown, but n = 100 &gt; 30. Use the CLT approximation and estimate σ by s. On ZInterval, enter s in the field labeled σ for this approximation.<\/p><p>Confidence level = 99%; α = 0.01; α/2 = 0.005. The positive standard normal critical value with area 0.995 to its left is <strong>z* ≈ 2.57582930<\/strong>. On TI-84, enter <code>invNorm(0.995, 0, 1)<\/code>.<\/p><p>SE = s/√n = 6.5/√100 = 0.65000000 kWh.<\/p><p>Margin of error = z* × SE = 1.67428905 kWh.<\/p><p>CI: x̄ ± z*(s/√n) = 28.4 ± 1.67428905.<\/p><p class=\"interval-answer\">99% approximate CI for μ: <strong>[26.73, 30.07] kWh<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>s = 6.5<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>28.4<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>100<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.99<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>For this course’s large-sample Z approximation, enter the supplied <strong>sample<\/strong> SD s in the σ field. This substitution produces an approximate Z interval.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 99% confident that the true population mean daily electricity use for households in this service area is between 26.73 and 30.07 kWh.<\/strong><\/p><p>With the CLT approximation used here, approximately 99% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "C4",
+    "group": "C",
+    "title": "Tire Lifetimes",
+    "tag": "Case C · Unknown population SD · n > 30",
+    "scenario": "<p>A random sample of 36 independent tires has a sample mean lifetime of 47800 miles and a sample standard deviation of 5200 miles. The population standard deviation is unknown, and the population distribution is not specified.<\/p><p><strong>Task:<\/strong> Construct and interpret a 98% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          }
+        ],
+        "answer": "sample-z",
+        "solution": "<p>Use the <strong>large-sample Z approximation with s<\/strong>. Population σ is unknown, but n = 36 &gt; 30. Use the CLT approximation and estimate σ by s. On ZInterval, enter s in the field labeled σ for this approximation.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>98% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the large-sample normal approximation.",
+        "answer": [
+          45783.83184249794,
+          49816.16815750206
+        ],
+        "displayAnswer": "[45783.83, 49816.17] miles",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 98%; α = 0.02; α/2 = 0.01. The positive standard normal critical value with area 0.99 to its left is <strong>z* ≈ 2.32634787<\/strong>. On TI-84, enter <code>invNorm(0.99, 0, 1)<\/code>.<\/p><p>SE = s/√n = 5200/√36 = 866.66666667 miles.<\/p><p>Margin of error = z* × SE = 2016.16815750 miles.<\/p><p>CI: x̄ ± z*(s/√n) = 47800 ± 2016.16815750.<\/p><p class=\"interval-answer\">98% approximate CI for μ: <strong>[45783.83, 49816.17] miles<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>s = 5200<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>47800<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>36<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.98<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>For this course’s large-sample Z approximation, enter the supplied <strong>sample<\/strong> SD s in the σ field. This substitution produces an approximate Z interval.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "mean",
+            "text": "We are 98% confident that the true population mean lifetime of all tires of this type is between 45783.83 and 49816.17 miles."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 98% of individual observations from this population are between 45783.83 and 49816.17 miles."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.98 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.98."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 98% confident that the true population mean lifetime of all tires of this type is between 45783.83 and 49816.17 miles.<\/strong><\/p><p>With the CLT approximation used here, approximately 98% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the lifetime of one tire, measured in miles. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 47800. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use the <strong>large-sample Z approximation with s<\/strong>. Population σ is unknown, but n = 36 &gt; 30. Use the CLT approximation and estimate σ by s. On ZInterval, enter s in the field labeled σ for this approximation.<\/p><p>Confidence level = 98%; α = 0.02; α/2 = 0.01. The positive standard normal critical value with area 0.99 to its left is <strong>z* ≈ 2.32634787<\/strong>. On TI-84, enter <code>invNorm(0.99, 0, 1)<\/code>.<\/p><p>SE = s/√n = 5200/√36 = 866.66666667 miles.<\/p><p>Margin of error = z* × SE = 2016.16815750 miles.<\/p><p>CI: x̄ ± z*(s/√n) = 47800 ± 2016.16815750.<\/p><p class=\"interval-answer\">98% approximate CI for μ: <strong>[45783.83, 49816.17] miles<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>7: ZInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">σ<\/th><td>s = 5200<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>47800<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>36<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.98<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p>Enter a <strong>standard deviation<\/strong> in the σ field. Do not enter σ² or the standard error.<\/p><p>For this course’s large-sample Z approximation, enter the supplied <strong>sample<\/strong> SD s in the σ field. This substitution produces an approximate Z interval.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 98% confident that the true population mean lifetime of all tires of this type is between 45783.83 and 49816.17 miles.<\/strong><\/p><p>With the CLT approximation used here, approximately 98% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "D1",
+    "group": "D",
+    "title": "Pin Hardness",
+    "tag": "Case D · Unknown population SD · Normal population · n < 30",
+    "scenario": "<p>A random sample of 12 pins has a sample mean hardness of 49.2 and a sample standard deviation of 1.8 hardness units. The population standard deviation is unknown. Assume that population hardness is normally distributed.<\/p><p><strong>Task:<\/strong> Construct and interpret a 90% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          }
+        ],
+        "answer": "small-t",
+        "solution": "<p>Use <strong>TInterval<\/strong>: σ is unknown, n = 12 &lt; 30, and the population is normal. The statistic (X̄ − μ)/(S/√n) has a t distribution with <strong>df = 11<\/strong>. Use the sample SD s.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>90% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the method justified in the previous step.",
+        "answer": [
+          48.266830874838895,
+          50.13316912516111
+        ],
+        "displayAnswer": "[48.27, 50.13] hardness units",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 90%; α = 0.1; α/2 = 0.05. With df = 11, the positive t critical value with area 0.95 to its left is <strong>t* ≈ 1.79588482<\/strong>. TInterval uses the required t critical value automatically.<\/p><p>SE = s/√n = 1.8/√12 = 0.51961524 hardness units.<\/p><p>Margin of error = t* × SE = 0.93316913 hardness units.<\/p><p>CI: x̄ ± t*(s/√n) = 49.2 ± 0.93316913.<\/p><p class=\"interval-answer\">90% CI for μ: <strong>[48.27, 50.13] hardness units<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>8: TInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>49.2<\/td><\/tr><tr><th scope=\"row\">Sx<\/th><td>1.8<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>12<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.9<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p><code>Sx<\/code> takes s. TInterval uses df = n − 1 automatically; you do not enter df or t* on this screen.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "individuals",
+            "text": "Approximately 90% of individual observations from this population are between 48.27 and 50.13 hardness units."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.9 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.9."
+          },
+          {
+            "value": "mean",
+            "text": "We are 90% confident that the true population mean hardness of all pins produced by this process is between 48.27 and 50.13 hardness units."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 90% confident that the true population mean hardness of all pins produced by this process is between 48.27 and 50.13 hardness units.<\/strong><\/p><p>Over many independent repetitions, about 90% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the hardness of one pin, measured in hardness units. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 49.2. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>TInterval<\/strong>: σ is unknown, n = 12 &lt; 30, and the population is normal. The statistic (X̄ − μ)/(S/√n) has a t distribution with <strong>df = 11<\/strong>. Use the sample SD s.<\/p><p>Confidence level = 90%; α = 0.1; α/2 = 0.05. With df = 11, the positive t critical value with area 0.95 to its left is <strong>t* ≈ 1.79588482<\/strong>. TInterval uses the required t critical value automatically.<\/p><p>SE = s/√n = 1.8/√12 = 0.51961524 hardness units.<\/p><p>Margin of error = t* × SE = 0.93316913 hardness units.<\/p><p>CI: x̄ ± t*(s/√n) = 49.2 ± 0.93316913.<\/p><p class=\"interval-answer\">90% CI for μ: <strong>[48.27, 50.13] hardness units<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>8: TInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>49.2<\/td><\/tr><tr><th scope=\"row\">Sx<\/th><td>1.8<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>12<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.9<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p><code>Sx<\/code> takes s. TInterval uses df = n − 1 automatically; you do not enter df or t* on this screen.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 90% confident that the true population mean hardness of all pins produced by this process is between 48.27 and 50.13 hardness units.<\/strong><\/p><p>Over many independent repetitions, about 90% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "D2",
+    "group": "D",
+    "title": "Student Commute Times",
+    "tag": "Case D · Unknown population SD · Normal population · n < 30",
+    "scenario": "<p>A random sample of 25 students has a sample mean commute time of 34.6 minutes and a sample standard deviation of 9 minutes. The population standard deviation is unknown. Assume that commute times are normally distributed.<\/p><p><strong>Task:<\/strong> Construct and interpret a 95% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          }
+        ],
+        "answer": "small-t",
+        "solution": "<p>Use <strong>TInterval<\/strong>: σ is unknown, n = 25 &lt; 30, and the population is normal. The statistic (X̄ − μ)/(S/√n) has a t distribution with <strong>df = 24<\/strong>. Use the sample SD s.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>95% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the method justified in the previous step.",
+        "answer": [
+          30.88498258906956,
+          38.315017410930444
+        ],
+        "displayAnswer": "[30.88, 38.32] minutes",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 95%; α = 0.05; α/2 = 0.025. With df = 24, the positive t critical value with area 0.975 to its left is <strong>t* ≈ 2.06389856<\/strong>. TInterval uses the required t critical value automatically.<\/p><p>SE = s/√n = 9/√25 = 1.80000000 minutes.<\/p><p>Margin of error = t* × SE = 3.71501741 minutes.<\/p><p>CI: x̄ ± t*(s/√n) = 34.6 ± 3.71501741.<\/p><p class=\"interval-answer\">95% CI for μ: <strong>[30.88, 38.32] minutes<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>8: TInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>34.6<\/td><\/tr><tr><th scope=\"row\">Sx<\/th><td>9<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>25<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p><code>Sx<\/code> takes s. TInterval uses df = n − 1 automatically; you do not enter df or t* on this screen.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.95 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.95."
+          },
+          {
+            "value": "mean",
+            "text": "We are 95% confident that the true population mean commute time for students at this university is between 30.88 and 38.32 minutes."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 95% of individual observations from this population are between 30.88 and 38.32 minutes."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 95% confident that the true population mean commute time for students at this university is between 30.88 and 38.32 minutes.<\/strong><\/p><p>Over many independent repetitions, about 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the commute time of one student, measured in minutes. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 34.6. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>TInterval<\/strong>: σ is unknown, n = 25 &lt; 30, and the population is normal. The statistic (X̄ − μ)/(S/√n) has a t distribution with <strong>df = 24<\/strong>. Use the sample SD s.<\/p><p>Confidence level = 95%; α = 0.05; α/2 = 0.025. With df = 24, the positive t critical value with area 0.975 to its left is <strong>t* ≈ 2.06389856<\/strong>. TInterval uses the required t critical value automatically.<\/p><p>SE = s/√n = 9/√25 = 1.80000000 minutes.<\/p><p>Margin of error = t* × SE = 3.71501741 minutes.<\/p><p>CI: x̄ ± t*(s/√n) = 34.6 ± 3.71501741.<\/p><p class=\"interval-answer\">95% CI for μ: <strong>[30.88, 38.32] minutes<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>8: TInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>34.6<\/td><\/tr><tr><th scope=\"row\">Sx<\/th><td>9<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>25<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p><code>Sx<\/code> takes s. TInterval uses df = n − 1 automatically; you do not enter df or t* on this screen.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 95% confident that the true population mean commute time for students at this university is between 30.88 and 38.32 minutes.<\/strong><\/p><p>Over many independent repetitions, about 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "D3",
+    "group": "D",
+    "title": "Tensile Strengths",
+    "tag": "Case D · Unknown population SD · Normal population · n < 30",
+    "scenario": "<p>A random sample of 9 specimens has a sample mean tensile strength of 412 MPa and a sample standard deviation of 18 MPa. The population standard deviation is unknown. Assume that tensile strengths are normally distributed.<\/p><p><strong>Task:<\/strong> Construct and interpret a 99% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          },
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          }
+        ],
+        "answer": "small-t",
+        "solution": "<p>Use <strong>TInterval<\/strong>: σ is unknown, n = 9 &lt; 30, and the population is normal. The statistic (X̄ − μ)/(S/√n) has a t distribution with <strong>df = 8<\/strong>. Use the sample SD s.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>99% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the method justified in the previous step.",
+        "answer": [
+          391.8676760119996,
+          432.1323239880004
+        ],
+        "displayAnswer": "[391.87, 432.13] MPa",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 99%; α = 0.01; α/2 = 0.005. With df = 8, the positive t critical value with area 0.995 to its left is <strong>t* ≈ 3.35538733<\/strong>. TInterval uses the required t critical value automatically.<\/p><p>SE = s/√n = 18/√9 = 6.00000000 MPa.<\/p><p>Margin of error = t* × SE = 20.13232399 MPa.<\/p><p>CI: x̄ ± t*(s/√n) = 412 ± 20.13232399.<\/p><p class=\"interval-answer\">99% CI for μ: <strong>[391.87, 432.13] MPa<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>8: TInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>412<\/td><\/tr><tr><th scope=\"row\">Sx<\/th><td>18<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>9<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.99<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p><code>Sx<\/code> takes s. TInterval uses df = n − 1 automatically; you do not enter df or t* on this screen.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.99."
+          },
+          {
+            "value": "mean",
+            "text": "We are 99% confident that the true population mean tensile strength of this material is between 391.87 and 432.13 MPa."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 99% of individual observations from this population are between 391.87 and 432.13 MPa."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.99 of falling in this particular interval."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 99% confident that the true population mean tensile strength of this material is between 391.87 and 432.13 MPa.<\/strong><\/p><p>Over many independent repetitions, about 99% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the tensile strength of one test specimen, measured in MPa. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 412. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>TInterval<\/strong>: σ is unknown, n = 9 &lt; 30, and the population is normal. The statistic (X̄ − μ)/(S/√n) has a t distribution with <strong>df = 8<\/strong>. Use the sample SD s.<\/p><p>Confidence level = 99%; α = 0.01; α/2 = 0.005. With df = 8, the positive t critical value with area 0.995 to its left is <strong>t* ≈ 3.35538733<\/strong>. TInterval uses the required t critical value automatically.<\/p><p>SE = s/√n = 18/√9 = 6.00000000 MPa.<\/p><p>Margin of error = t* × SE = 20.13232399 MPa.<\/p><p>CI: x̄ ± t*(s/√n) = 412 ± 20.13232399.<\/p><p class=\"interval-answer\">99% CI for μ: <strong>[391.87, 432.13] MPa<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>8: TInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>412<\/td><\/tr><tr><th scope=\"row\">Sx<\/th><td>18<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>9<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.99<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p><code>Sx<\/code> takes s. TInterval uses df = n − 1 automatically; you do not enter df or t* on this screen.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 99% confident that the true population mean tensile strength of this material is between 391.87 and 432.13 MPa.<\/strong><\/p><p>Over many independent repetitions, about 99% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  },
+  {
+    "id": "D4",
+    "group": "D",
+    "title": "Bottle Fill Volumes",
+    "tag": "Case D · Unknown population SD · Normal population · n < 30",
+    "scenario": "<p>A random sample of 20 bottles has a sample mean fill volume of 501.6 mL and a sample standard deviation of 3.2 mL. The population standard deviation is unknown. Assume that fill volumes are normally distributed.<\/p><p><strong>Task:<\/strong> Construct and interpret a 95% confidence interval for the population mean μ. Treat the observations in the random sample as independent.<\/p>",
+    "steps": [
+      {
+        "kind": "choice",
+        "label": "Choose the method",
+        "prompt": "Which confidence-interval method should be used for this problem?",
+        "options": [
+          {
+            "value": "unavailable",
+            "text": "The information given is insufficient to construct any of these intervals."
+          },
+          {
+            "value": "known-z",
+            "text": "Z interval using the population standard deviation σ: σ is known directly or can be calculated from the population PMF."
+          },
+          {
+            "value": "sample-z",
+            "text": "Large-sample Z approximation using s: σ is unknown and n ≥ 30."
+          },
+          {
+            "value": "small-t",
+            "text": "t interval using s, with df = n − 1: σ is unknown, n < 30, and the population is normal."
+          }
+        ],
+        "answer": "small-t",
+        "solution": "<p>Use <strong>TInterval<\/strong>: σ is unknown, n = 20 &lt; 30, and the population is normal. The statistic (X̄ − μ)/(S/√n) has a t distribution with <strong>df = 19<\/strong>. Use the sample SD s.<\/p>"
+      },
+      {
+        "kind": "interval",
+        "label": "Construct the confidence interval",
+        "prompt": "Construct the <strong>95% confidence interval for μ<\/strong>. Enter both endpoints in increasing order, rounded to <strong>two decimal places<\/strong>. Use the method justified in the previous step.",
+        "answer": [
+          500.10235389945626,
+          503.0976461005438
+        ],
+        "displayAnswer": "[500.10, 503.10] mL",
+        "tolerance": 0.0051,
+        "solution": "<p>Confidence level = 95%; α = 0.05; α/2 = 0.025. With df = 19, the positive t critical value with area 0.975 to its left is <strong>t* ≈ 2.09302405<\/strong>. TInterval uses the required t critical value automatically.<\/p><p>SE = s/√n = 3.2/√20 = 0.71554175 mL.<\/p><p>Margin of error = t* × SE = 1.49764610 mL.<\/p><p>CI: x̄ ± t*(s/√n) = 501.6 ± 1.49764610.<\/p><p class=\"interval-answer\">95% CI for μ: <strong>[500.10, 503.10] mL<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>8: TInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>501.6<\/td><\/tr><tr><th scope=\"row\">Sx<\/th><td>3.2<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>20<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p><code>Sx<\/code> takes s. TInterval uses df = n − 1 automatically; you do not enter df or t* on this screen.<\/p><\/div>"
+      },
+      {
+        "kind": "choice",
+        "label": "Interpret the interval",
+        "prompt": "Which statement correctly interprets this confidence interval for the population mean?",
+        "options": [
+          {
+            "value": "mean",
+            "text": "We are 95% confident that the true population mean fill volume of all bottles from this filling line is between 500.10 and 503.10 mL."
+          },
+          {
+            "value": "individuals",
+            "text": "Approximately 95% of individual observations from this population are between 500.10 and 503.10 mL."
+          },
+          {
+            "value": "fixed-probability",
+            "text": "After these data have been observed, the fixed population mean μ has probability 0.95 of falling in this particular interval."
+          },
+          {
+            "value": "sample",
+            "text": "The observed sample mean is unknown, and this interval contains that observed sample mean with probability 0.95."
+          }
+        ],
+        "answer": "mean",
+        "solution": "<p><strong>We are 95% confident that the true population mean fill volume of all bottles from this filling line is between 500.10 and 503.10 mL.<\/strong><\/p><p>Over many independent repetitions, about 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+      }
+    ],
+    "fullSolution": "<p><strong>Random variable:<\/strong> X is the fill volume of one bottle, measured in mL. The estimator is the random sample mean X̄; the observed sample mean is x̄ = 501.6. The target is μ, the population mean, not the mean of this one observed sample.<\/p><p>Use <strong>TInterval<\/strong>: σ is unknown, n = 20 &lt; 30, and the population is normal. The statistic (X̄ − μ)/(S/√n) has a t distribution with <strong>df = 19<\/strong>. Use the sample SD s.<\/p><p>Confidence level = 95%; α = 0.05; α/2 = 0.025. With df = 19, the positive t critical value with area 0.975 to its left is <strong>t* ≈ 2.09302405<\/strong>. TInterval uses the required t critical value automatically.<\/p><p>SE = s/√n = 3.2/√20 = 0.71554175 mL.<\/p><p>Margin of error = t* × SE = 1.49764610 mL.<\/p><p>CI: x̄ ± t*(s/√n) = 501.6 ± 1.49764610.<\/p><p class=\"interval-answer\">95% CI for μ: <strong>[500.10, 503.10] mL<\/strong>.<\/p><p>Keep full precision until the last step. Calculator endpoints may differ slightly from hand calculations that round the critical value early.<\/p><div class=\"calculator\"><h4>TI-84 calculator<\/h4><p>Press <code>STAT<\/code>, move to <code>TESTS<\/code>, select <code>8: TInterval<\/code>, and choose <code>Stats<\/code>. Read the full menu name.<\/p><div class=\"table-wrap\"><table><caption>TI-84 Stats entries for this problem<\/caption><thead><tr><th scope=\"col\">Field<\/th><th scope=\"col\">Entry<\/th><\/tr><\/thead><tbody><tr><th scope=\"row\">Inpt<\/th><td>Stats<\/td><\/tr><tr><th scope=\"row\">x̄<\/th><td>501.6<\/td><\/tr><tr><th scope=\"row\">Sx<\/th><td>3.2<\/td><\/tr><tr><th scope=\"row\">n<\/th><td>20<\/td><\/tr><tr><th scope=\"row\">C-Level<\/th><td>0.95<\/td><\/tr><\/tbody><\/table><\/div><p>Move to <code>Calculate<\/code> and press <code>ENTER<\/code>. The calculator returns the lower and upper endpoints. Enter the confidence level as a decimal, not as α or a z value.<\/p><p><code>Sx<\/code> takes s. TInterval uses df = n − 1 automatically; you do not enter df or t* on this screen.<\/p><\/div><h4>Interpretation<\/h4><p><strong>We are 95% confident that the true population mean fill volume of all bottles from this filling line is between 500.10 and 503.10 mL.<\/strong><\/p><p>Over many independent repetitions, about 95% of intervals constructed by this procedure would contain the fixed population mean μ. The confidence level describes the procedure’s long-run coverage; it is not the fraction of individual observations in this interval or a probability assigned to the fixed μ after observing the interval.<\/p>"
+  }
+];
+
+let position=0,stepIndex=0,score=0,completed=0,locked=false;
+const totalSteps=problems.reduce((n,q)=>n+q.steps.length,0);
+const $=id=>document.getElementById(id);
+function currentProblem(){return problems[position];}
+function currentStep(){return currentProblem().steps[stepIndex];}
+function parseNumber(raw){
+ const text=String(raw).trim().replace(/[−–]/g,'-');
+ const number=/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i;
+ const parts=text.split('/');
+ if(parts.length===2){const a=parts[0].trim(),b=parts[1].trim();return number.test(a)&&number.test(b)&&Number(b)!==0?Number(a)/Number(b):NaN;}
+ return number.test(text)?Number(text):NaN;
+}
+function submittedValues(){const s=currentStep();return s.kind==='choice'?(s.options.find((o,i)=>$('choice'+i).checked)||{value:''}).value:s.kind==='interval'?[parseNumber($('answerInput').value),parseNumber($('upperInput').value)]:parseNumber($('answerInput').value);}
+function validAnswer(s,value){
+ if(s.kind==='choice')return s.options.some(o=>o.value===value);
+ if(s.kind==='interval')return value.every(Number.isFinite)&&value[0]<value[1];
+ return Number.isFinite(value)&&value>=0;
+}
+function isCorrect(s,value){
+ if(s.kind==='choice')return value===s.answer;
+ if(s.kind==='interval')return value.every((v,i)=>Math.abs(v-s.answer[i])<=s.tolerance);
+ return Math.abs(value-s.answer)<=s.tolerance;
+}
+function displayAnswer(s){return s.kind==='choice'?s.options.find(o=>o.value===s.answer).text:s.displayAnswer;}
+function updateProgress(){
+ $('scoreDisplay').textContent='Score: '+score+' / '+completed+' completed steps';
+ $('progressBar').style.width=(100*completed/totalSteps)+'%';
+ $('progressTrack').setAttribute('aria-valuenow',completed);
+ $('progressTrack').setAttribute('aria-valuetext',completed+' of '+totalSteps+' steps completed');
+}
+function renderQuestion(){
+ const q=currentProblem(),s=currentStep();locked=false;
+ $('problemNumber').textContent='Problem '+(position+1)+' of '+problems.length+' · '+q.id;
+ $('stepNumber').textContent='Step '+(stepIndex+1)+' of '+q.steps.length;
+ $('stepLabel').textContent=s.label;updateProgress();
+ for(const group of ['A','B','C','D']){
+  const item=$('case'+group);item.className='case-item'+(q.group===group?' current':'');
+  if(q.group===group)item.setAttribute('aria-current','step');else item.removeAttribute('aria-current');
+ }
+ $('sourceTag').textContent=q.tag;$('scenarioTitle').textContent=q.id+' · '+q.title;$('scenarioText').innerHTML=q.scenario;
+ $('questionText').innerHTML='<p>'+s.prompt+'</p>';
+ $('choiceArea').hidden=s.kind!=='choice';$('numericArea').hidden=s.kind==='choice';$('upperField').hidden=s.kind!=='interval';
+ $('numericArea').className=s.kind==='interval'?'interval-inputs':'';
+ $('answerLabel').textContent=s.kind==='interval'?'Lower endpoint':'Population standard deviation σ';
+ for(let i=0;i<4;i++){const input=$('choice'+i);input.checked=false;input.disabled=false;input.value=s.options?s.options[i].value:'';$('choiceText'+i).textContent=s.options?String.fromCharCode(65+i)+'. '+s.options[i].text:'';}
+ for(const id of ['answerInput','upperInput']){const input=$(id);input.value='';input.disabled=false;input.className='';input.setAttribute('aria-invalid','false');}
+ $('choiceArea').setAttribute('aria-invalid','false');
+ $('answerInput').placeholder=s.kind==='interval'?'Lower bound, two decimals':'Standard deviation, four decimals';$('upperInput').placeholder='Upper bound, two decimals';
+ $('answerNote').textContent=s.kind==='choice'?'Select one answer. Each step allows one scored attempt.':s.kind==='interval'?'Enter numbers without units or %. Both endpoints must be correct to earn one point. Keep full precision in intermediate calculations.':'Enter a nonnegative number without units or %. Keep full precision when you use this SD in the next step.';
+ $('feedback').className='feedback';$('feedback').innerHTML='';$('checkButton').disabled=false;$('showButton').disabled=false;$('nextButton').disabled=true;
+ $('nextButton').textContent=stepIndex<q.steps.length-1?'Next Step':position<problems.length-1?'Next Problem':'Finish Practice';
+ $('workedReview').hidden=true;$('workedReview').open=false;$('reviewContent').innerHTML='';
+ if(stepIndex===0)$('scenarioTitle').focus();else $(s.kind==='choice'?'choice0':'answerInput').focus();
+}
+function finishAttempt(showOnly=false){
+ if(locked)return;const q=currentProblem(),s=currentStep(),value=submittedValues(),feedback=$('feedback');
+ if(!showOnly&&!validAnswer(s,value)){
+  feedback.className='feedback show incorrect';feedback.textContent=s.kind==='choice'?'Choose one answer before checking.':s.kind==='interval'?'Enter two finite numbers in increasing order. Do not include units, brackets, or %.':'Enter a finite, nonnegative numerical value without units or %.';
+  const focus=$(s.kind==='choice'?'choice0':'answerInput');$(s.kind==='choice'?'choiceArea':'answerInput').setAttribute('aria-invalid','true');focus.focus();return;
+ }
+ const correct=!showOnly&&isCorrect(s,value);if(correct)score++;completed++;locked=true;updateProgress();
+ for(const id of ['answerInput','upperInput','choice0','choice1','choice2','choice3']){$(id).disabled=true;$(id).setAttribute('aria-invalid','false');}
+ $('choiceArea').setAttribute('aria-invalid','false');
+ if(s.kind!=='choice')$('answerInput').className=showOnly?'':correct?'correct':'incorrect';
+ if(s.kind==='interval')$('upperInput').className=showOnly?'':correct?'correct':'incorrect';
+ $('checkButton').disabled=true;$('showButton').disabled=true;$('nextButton').disabled=false;
+ feedback.className='feedback show '+(showOnly?'solution':correct?'correct':'incorrect');
+ feedback.innerHTML='<h3>'+(showOnly?'Solution (no point awarded)':correct?'Correct.':'Not quite.')+'</h3><p><strong>Answer:</strong> '+displayAnswer(s)+'</p>'+s.solution;
+ if(stepIndex===q.steps.length-1){$('workedReview').hidden=false;$('reviewContent').innerHTML=q.fullSolution;}
+}
+function nextQuestion(){
+ if(!locked)return;
+ if(stepIndex<currentProblem().steps.length-1){stepIndex++;renderQuestion();return;}
+ if(position<problems.length-1){position++;stepIndex=0;renderQuestion();return;}
+ $('quiz').classList.add('hidden');$('completion').classList.add('show');
+ $('finalScore').textContent='You completed all 16 problems. Your score is '+score+' out of '+totalSteps+' guided steps.';$('restartButton').focus();
+}
+function startRound(){position=0;stepIndex=0;score=0;completed=0;locked=false;$('quiz').classList.remove('hidden');$('completion').classList.remove('show');renderQuestion();}
+function onEnter(e){if(e.key==='Enter'&&!locked){e.preventDefault();finishAttempt(false);}}
+for(const id of ['answerInput','upperInput','choice0','choice1','choice2','choice3'])$(id).addEventListener('keydown',onEnter);
+$('checkButton').addEventListener('click',()=>finishAttempt(false));$('showButton').addEventListener('click',()=>finishAttempt(true));$('nextButton').addEventListener('click',nextQuestion);$('restartButton').addEventListener('click',startRound);startRound();
+
+</script></body></html>
