@@ -91,6 +91,12 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 
 - [Confidence Intervals for a Population Mean (16 main problems; 4 cases × 4 problems)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class16/class16_confidence_intervals_population_mean.html)
 
+### Class 19_R-Session
+
+- [R session for Hypothesis Tests of a Single Sample](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class19_Rsession/STAT312_Hypothesis_Tests_in_R.html)
+
+
+
 ## Class 16 Update - October 31, 2026
 
 Added **one self-contained HTML quiz with 16 main problems**, based on the examples in `Class16_STAT312_FA26.pdf` and the interface in `class11_exponential_probabilities.html`. Existing content and links are retained.
