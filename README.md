@@ -91,11 +91,71 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 
 - [Confidence Intervals for a Population Mean (16 main problems; 4 cases × 4 problems)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class16/class16_confidence_intervals_population_mean.html)
 
+<!-- BEGIN STAT312 CLASS17-19 LINKS -->
+### Class 17: Hypotheses, Decision Errors, and Error Probabilities
+
+- [Hypotheses, Type I Error, and Type II Error (12 main problems; 32 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class17/class17_hypotheses_and_errors.html)
+- [Type I Error, Type II Error, and Power (8 main problems; 56 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class17/class17_type_i_ii_error_probabilities.html)
+
+### Class 18: One-Sample Z-Tests with Known Population SD
+
+- [One-Sample Z-Tests: Known Population SD (9 main problems; 81 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class18/class18_one_sample_z_tests.html)
+
+### Class 19: t-Tests and Large-Sample Mean Tests
+
+- [t-Tests and Large-Sample Mean Tests (12 main problems; 114 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class19/class19_t_tests_and_large_sample_tests.html)
+
+<!-- END STAT312 CLASS17-19 LINKS -->
+
 ### Class 19_R-Session
 
 - [R session for Hypothesis Tests of a Single Sample](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class19_Rsession/STAT312_Hypothesis_Tests_in_R.html)
 
 
+
+<!-- BEGIN STAT312 CLASS17-19 DETAILS -->
+## Classes 17-19 Update - November 4, 2026
+
+Added four self-contained HTML practice quizzes using the Class16 interface and the Class17-19 Canvas question structure. Existing course links and the Class19 R-session materials are retained.
+
+| Practice | Main problems | Scored steps | Coverage |
+|---|---:|---:|---|
+| Hypotheses, Type I Error, and Type II Error | 12 | 32 | Population hypotheses, contextual Type I/II errors, p-value meaning, alpha-beta and sample-size constraints |
+| Type I Error, Type II Error, and Power | 8 | 56 | Standard errors, alpha, beta, power, observed Z-statistics, p-values, and decisions at two levels |
+| One-Sample Z-Tests: Known Population SD | 9 | 81 | Known population SD/variance, all three tails, critical-region and p-value decisions, matching two-sided intervals |
+| t-Tests and Large-Sample Mean Tests | 12 | 114 | Six exact t scenarios and six specified large-sample Z approximations, all three tails, degrees of freedom, matching intervals |
+
+The bank contains **41 main problems and 283 guided steps**. Cases mix rejection and nonrejection, signed one-sided critical values, two-sided positive critical magnitudes, supplied SDs and variances, and positive and negative observed statistics.
+
+### Question format and grading
+
+- Main scenarios and linked steps appear in fixed order. Multiple-choice positions are varied reproducibly. Each guided step is worth one point.
+- A mean-test scenario asks for hypotheses/direction, procedure, standard error, critical value, signed observed statistic, critical-region decision, p-value, and contextual p-value decision. Exact t scenarios also ask for integer degrees of freedom. Two-sided scenarios add separate lower/upper confidence limits and an interval-based decision.
+- Check Answer permits one scored attempt. Blank, nonnumeric, out-of-domain, or noninteger degrees-of-freedom input does not consume an attempt. Show Solution completes the step without a point. A complete worked solution becomes available after the last step of each scenario.
+- Numerical answers use four decimal places, except integer degrees of freedom. The grading tolerance is 0.0001 around the four-decimal key. Signed decimals, fractions, and scientific notation are accepted. Keep intermediate precision. A very small positive p-value may round to 0.0000; decisions use its unrounded value.
+- Independent scenario steps do not carry a student's earlier arithmetic error into later answer keys. The p-value decision and matching confidence interval use the stated alpha and the same reference distribution.
+- All four pages include native MathML equations, questions, CSS, and JavaScript. They work offline without R, Shiny, external scripts, or a login. Reloading resets progress. The optional TI reference requires internet access.
+
+### Statistical assumptions and source precision
+
+- Classes17-18 error probabilities use the explicitly proposed rejection rule, not an imposed alpha of 0.05. Beta uses the specified true alternative mean. The subsequent observed-data p-value is a separate calculation under the null.
+- Increasing sample size at fixed alpha reduces beta at a fixed nonnull mean in the normal model. With fixed sample-mean cutoffs, beta can instead increase if the alternative mean lies inside the nonrejection interval.
+- Known population SD and a normal population give an exact Z reference even for small samples. Normal populations with unknown SD permit exact t inference with $df=n-1$. Large-sample scenarios explicitly request the lecture's normal approximation and assume independent random sampling, finite positive variance, and adequate approximation. A sample size above 30 alone is insufficient.
+- Propellant calculations retain $\sigma=2.5$ and $\sigma/\sqrt{n}$, instead of treating the rounded SE of 0.79 as exact. At n = 10 and cutoffs [48.5, 51.5], alpha is approximately 0.0577796 and beta at mean 50.5 is approximately 0.891261.
+- Fishing-line calculations give alpha approximately 0.0786496 and beta 0.5 at a true mean equal to the cutoff. Differences from the lecture's 0.0793 reflect its early standardization rounding.
+- The battery example with mean 60.1, sample SD 18, n = 42, and null mean 75 gives $Z=-5.364613$ and p approximately 4.056145e-8. This corrects the lecture's -5.298 and 5.8e-8 without changing its rejection decision.
+- The bulb example gives a matching 95% interval of (773.6864, 802.3136) hours. All two-sided decisions use the absolute observed statistic. Source lecture PDFs and the original Canvas packages were not edited.
+
+### Repository placement
+
+    Class17/class17_hypotheses_and_errors.html
+    Class17/class17_type_i_ii_error_probabilities.html
+    Class18/class18_one_sample_z_tests.html
+    Class19/class19_t_tests_and_large_sample_tests.html
+
+The new public links become available after these HTML files and this README are committed, pushed, and the existing GitHub Pages deployment completes. The Class19_Rsession folder remains a separate lesson.
+
+<!-- END STAT312 CLASS17-19 DETAILS -->
 
 ## Class 16 Update - October 31, 2026
 
