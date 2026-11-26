@@ -65,6 +65,51 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 ### Class 11: Exponential Distribution and Its Relationship with the Poisson Distribution
 - [Exponential Probabilities and the Poisson Connection (10 questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class11/class11_exponential_probabilities.html)
 
+### Class 12: Joint, Marginal, and Conditional Distributions; Statistical Independence
+
+- [Joint Probability (4 main problems; 16 short-answer subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class12/class12_joint_probabilities.html)
+- [Marginal Probability (4 main problems; 8 short-answer subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class12/class12_marginal_probabilities.html)
+- [Conditional Probability (4 main problems; 8 short-answer subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class12/class12_conditional_probabilities.html)
+- [Statistical Independence (3 main problems; 9 True/False subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class12/class12_statistical_independence.html)
+
+
+### Class 13: Covariance and Correlation
+
+- [Covariance and Correlation: Concepts (10 True/False questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class13/class13_covariance_correlation_concepts.html)
+- [Covariance and Correlation: Calculations and Interpretation (6 main problems; 66 subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class13/class13_covariance_correlation_calculations.html)
+
+
+### Class 14: Expectation, Variance, and Sampling Distributions
+
+- [Expectation and Variance Theorems (5 expectation + 5 variance questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class14_15/class14_expectation_variance_theorems.html)
+- [Sampling Distribution of a Sample Mean (10 questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class14_15/class14_sample_mean_sampling_distribution.html)
+- [Sampling Distribution of Two-Sample Mean Difference (10 questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class14_15/class15_two_sample_mean_difference.html)
+
+
+### Class 16: Confidence Intervals for a Population Mean
+
+- [Confidence Intervals for a Population Mean (16 main problems; 4 cases × 4 problems)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class16/class16_confidence_intervals_population_mean.html)
+
+<!-- BEGIN STAT312 CLASS17-19 LINKS -->
+### Class 17: Hypotheses, Decision Errors, and Error Probabilities
+
+- [Hypotheses, Type I Error, and Type II Error (12 main problems; 32 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class17/class17_hypotheses_and_errors.html)
+- [Type I Error, Type II Error, and Power (8 main problems; 56 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class17/class17_type_i_ii_error_probabilities.html)
+
+### Class 18: One-Sample Z-Tests with Known Population SD
+
+- [One-Sample Z-Tests: Known Population SD (9 main problems; 81 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class18/class18_one_sample_z_tests.html)
+
+### Class 19: t-Tests and Large-Sample Mean Tests
+
+- [t-Tests and Large-Sample Mean Tests (12 main problems; 114 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class19/class19_t_tests_and_large_sample_tests.html)
+
+<!-- END STAT312 CLASS17-19 LINKS -->
+
+### Class 19_R-Session
+
+- [R session for Hypothesis Tests of a Single Sample](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class19_Rsession/STAT312_Hypothesis_Tests_in_R.html)
+
 <!-- BEGIN STAT312 CLASS20-22 LINKS -->
 ### Class 20: Statistical Inference on Two Independent Samples
 
