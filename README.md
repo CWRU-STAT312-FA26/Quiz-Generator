@@ -65,154 +65,77 @@ Interactive concept quizzes and computational practice tools for STAT 312 studen
 ### Class 11: Exponential Distribution and Its Relationship with the Poisson Distribution
 - [Exponential Probabilities and the Poisson Connection (10 questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class11/class11_exponential_probabilities.html)
 
+<!-- BEGIN STAT312 CLASS20-22 LINKS -->
+### Class 20: Statistical Inference on Two Independent Samples
 
-### Class 12: Joint, Marginal, and Conditional Distributions; Statistical Independence
+- [Statistical Inference on Two Independent Samples (12 problems, 126 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class20/class20_two_independent_samples.html)
 
-- [Joint Probability (4 main problems; 16 short-answer subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class12/class12_joint_probabilities.html)
-- [Marginal Probability (4 main problems; 8 short-answer subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class12/class12_marginal_probabilities.html)
-- [Conditional Probability (4 main problems; 8 short-answer subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class12/class12_conditional_probabilities.html)
-- [Statistical Independence (3 main problems; 9 True/False subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class12/class12_statistical_independence.html)
+### Class 21: Simple Linear Regression
 
+- [Simple Linear Regression (15 problems, 28 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class21/class21_simple_linear_regression.html)
 
-### Class 13: Covariance and Correlation
+### Class 22: Simple Linear Regression Inference and Diagnostics
 
-- [Covariance and Correlation: Concepts (10 True/False questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class13/class13_covariance_correlation_concepts.html)
-- [Covariance and Correlation: Calculations and Interpretation (6 main problems; 66 subquestions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class13/class13_covariance_correlation_calculations.html)
+- [Simple Linear Regression Inference and Diagnostics (10 problems, 36 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class22/class22_regression_inference_diagnostics.html)
+<!-- END STAT312 CLASS20-22 LINKS -->
 
+<!-- BEGIN STAT312 CLASS20-22 DETAILS -->
+## Classes 20–22 Update - November 26, 2026
 
-### Class 14: Expectation, Variance, and Sampling Distributions
-
-- [Expectation and Variance Theorems (5 expectation + 5 variance questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class14_15/class14_expectation_variance_theorems.html)
-- [Sampling Distribution of a Sample Mean (10 questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class14_15/class14_sample_mean_sampling_distribution.html)
-- [Sampling Distribution of Two-Sample Mean Difference (10 questions)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class14_15/class15_two_sample_mean_difference.html)
-
-
-### Class 16: Confidence Intervals for a Population Mean
-
-- [Confidence Intervals for a Population Mean (16 main problems; 4 cases × 4 problems)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class16/class16_confidence_intervals_population_mean.html)
-
-<!-- BEGIN STAT312 CLASS17-19 LINKS -->
-### Class 17: Hypotheses, Decision Errors, and Error Probabilities
-
-- [Hypotheses, Type I Error, and Type II Error (12 main problems; 32 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class17/class17_hypotheses_and_errors.html)
-- [Type I Error, Type II Error, and Power (8 main problems; 56 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class17/class17_type_i_ii_error_probabilities.html)
-
-### Class 18: One-Sample Z-Tests with Known Population SD
-
-- [One-Sample Z-Tests: Known Population SD (9 main problems; 81 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class18/class18_one_sample_z_tests.html)
-
-### Class 19: t-Tests and Large-Sample Mean Tests
-
-- [t-Tests and Large-Sample Mean Tests (12 main problems; 114 guided steps)](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class19/class19_t_tests_and_large_sample_tests.html)
-
-<!-- END STAT312 CLASS17-19 LINKS -->
-
-### Class 19_R-Session
-
-- [R session for Hypothesis Tests of a Single Sample](https://cwru-stat312-fa26.github.io/Quiz-Generator/Class19_Rsession/STAT312_Hypothesis_Tests_in_R.html)
-
-
-
-<!-- BEGIN STAT312 CLASS17-19 DETAILS -->
-## Classes 17-19 Update - November 4, 2026
-
-Added four self-contained HTML practice quizzes using the Class16 interface and the Class17-19 Canvas question structure. Existing course links and the Class19 R-session materials are retained.
-
-| Practice | Main problems | Scored steps | Coverage |
+| Class | Problems | Guided steps | Coverage |
 |---|---:|---:|---|
-| Hypotheses, Type I Error, and Type II Error | 12 | 32 | Population hypotheses, contextual Type I/II errors, p-value meaning, alpha-beta and sample-size constraints |
-| Type I Error, Type II Error, and Power | 8 | 56 | Standard errors, alpha, beta, power, observed Z-statistics, p-values, and decisions at two levels |
-| One-Sample Z-Tests: Known Population SD | 9 | 81 | Known population SD/variance, all three tails, critical-region and p-value decisions, matching two-sided intervals |
-| t-Tests and Large-Sample Mean Tests | 12 | 114 | Six exact t scenarios and six specified large-sample Z approximations, all three tails, degrees of freedom, matching intervals |
+| Class 20 | 12 | 126 | Four known-variance Z scenarios, four pooled t scenarios, and four Welch t scenarios. Each case includes a left-tailed test, a right-tailed test, and two two-sided tests with matching confidence intervals. |
+| Class 21 | 15 | 28 | Model assumptions, coefficient interpretation, least-squares estimates, fitted values, residuals, error variance, the sums of squares, and R². |
+| Class 22 | 10 | 36 | Slope t tests and confidence intervals, wire-bond R output, and diagnostic plots for constant spread, funnel and diamond patterns, and curvature. |
 
-The bank contains **41 main problems and 283 guided steps**. Cases mix rejection and nonrejection, signed one-sided critical values, two-sided positive critical magnitudes, supplied SDs and variances, and positive and negative observed statistics.
+- **Check Answer** gives immediate feedback and allows one scored attempt per step. **Show Solution** reveals the worked answer without awarding a point. After the last step, review the full worked solution.
+- Keep intermediate precision and report numerical answers to four decimal places, except when asked for integer degrees of freedom. Keep fractional Welch degrees of freedom when calculating test and interval results.
+- Each HTML file contains its own equations, questions, and grading. Open it in a browser with JavaScript enabled to practice offline. The R output is embedded, so students can complete the questions without installing R.
+- Rebuild from the course workspace with `python3 -B Quiz_Generator/Class20_22/build.py`. The builder uses R with Cairo graphics and Pandoc. Use `--pandoc` to specify a Pandoc path.
+- The new GitHub Pages links will work once these files are published.
+<!-- END STAT312 CLASS20-22 DETAILS -->
 
-### Question format and grading
+## Class 10 and Class 11 Update - September 29, 2026
 
-- Main scenarios and linked steps appear in fixed order. Multiple-choice positions are varied reproducibly. Each guided step is worth one point.
-- A mean-test scenario asks for hypotheses/direction, procedure, standard error, critical value, signed observed statistic, critical-region decision, p-value, and contextual p-value decision. Exact t scenarios also ask for integer degrees of freedom. Two-sided scenarios add separate lower/upper confidence limits and an interval-based decision.
-- Check Answer permits one scored attempt. Blank, nonnumeric, out-of-domain, or noninteger degrees-of-freedom input does not consume an attempt. Show Solution completes the step without a point. A complete worked solution becomes available after the last step of each scenario.
-- Numerical answers use four decimal places, except integer degrees of freedom. The grading tolerance is 0.0001 around the four-decimal key. Signed decimals, fractions, and scientific notation are accepted. Keep intermediate precision. A very small positive p-value may round to 0.0000; decisions use its unrounded value.
-- Independent scenario steps do not carry a student's earlier arithmetic error into later answer keys. The p-value decision and matching confidence interval use the stated alpha and the same reference distribution.
-- All four pages include native MathML equations, questions, CSS, and JavaScript. They work offline without R, Shiny, external scripts, or a login. Reloading resets progress. The optional TI reference requires internet access.
+This update adds **5 sections with 10 short-answer questions each (50 questions total)** based on the Class 10 and Class 11 lecture slides. Each question requests one numerical answer.
 
-### Statistical assumptions and source precision
+| Class | Section | Questions | Main topics |
+|---|---|---:|---|
+| 10 | Standard normal probabilities | 10 | Left and right tails, intervals, central areas, and two tails |
+| 10 | Normal probabilities | 10 | Standardization, scenario-based tail and interval probabilities |
+| 10 | Standard normal percentiles and quantiles | 10 | Left-tail and right-tail cutoffs; symmetric central areas |
+| 10 | Normal percentiles and quantiles | 10 | Percentiles, upper-tail cutoffs, central-interval boundaries and half-width |
+| 11 | Exponential probabilities and the Poisson connection | 10 | 6 waiting-time questions and 4 Poisson-process connection questions |
 
-- Classes17-18 error probabilities use the explicitly proposed rejection rule, not an imposed alpha of 0.05. Beta uses the specified true alternative mean. The subsequent observed-data p-value is a separate calculation under the null.
-- Increasing sample size at fixed alpha reduces beta at a fixed nonnull mean in the normal model. With fixed sample-mean cutoffs, beta can instead increase if the alternative mean lies inside the nonrejection interval.
-- Known population SD and a normal population give an exact Z reference even for small samples. Normal populations with unknown SD permit exact t inference with $df=n-1$. Large-sample scenarios explicitly request the lecture's normal approximation and assume independent random sampling, finite positive variance, and adequate approximation. A sample size above 30 alone is insufficient.
-- Propellant calculations retain $\sigma=2.5$ and $\sigma/\sqrt{n}$, instead of treating the rounded SE of 0.79 as exact. At n = 10 and cutoffs [48.5, 51.5], alpha is approximately 0.0577796 and beta at mean 50.5 is approximately 0.891261.
-- Fishing-line calculations give alpha approximately 0.0786496 and beta 0.5 at a true mean equal to the cutoff. Differences from the lecture's 0.0793 reflect its early standardization rounding.
-- The battery example with mean 60.1, sample SD 18, n = 42, and null mean 75 gives $Z=-5.364613$ and p approximately 4.056145e-8. This corrects the lecture's -5.298 and 5.8e-8 without changing its rejection decision.
-- The bulb example gives a matching 95% interval of (773.6864, 802.3136) hours. All two-sided decisions use the absolute observed statistic. Source lecture PDFs and the original Canvas packages were not edited.
+### Practice Features
 
-### Repository placement
+- Questions appear one at a time in a new random order each round.
+- **Check Answer** provides immediate feedback and a worked explanation.
+- **Show Solution** reveals the answer and explanation without awarding a point.
+- Each question allows one scored attempt; invalid or blank input can be corrected before submitting.
+- A round ends after all 10 questions, with a score and a restart option.
+- All numerical answers should be rounded to **four decimal places**. Probabilities accept equivalent decimals, fractions, percentages, and scientific notation. Quantiles require a numerical value, including its sign, without units or a percent sign.
+- Calculators are allowed. These new sections do not require R code.
+- The HTML files are self-contained and work offline with JavaScript enabled.
 
-    Class17/class17_hypotheses_and_errors.html
-    Class17/class17_type_i_ii_error_probabilities.html
-    Class18/class18_one_sample_z_tests.html
-    Class19/class19_t_tests_and_large_sample_tests.html
+### Distribution Conventions
 
-The new public links become available after these HTML files and this README are committed, pushed, and the existing GitHub Pages deployment completes. The Class19_Rsession folder remains a separate lesson.
+- Normal scenarios state the **mean and standard deviation** explicitly; in the notation N(μ, σ²), the second parameter is the variance.
+- For a percentile or quantile, convert the given area to a **left-tail cumulative probability** before using inverse normal.
+- The exponential **mean** is β and the **rate** is λ = 1/β. For a homogeneous Poisson process, a count over length t has mean λt = t/β.
+- Use matching time units before evaluating a probability. Exponential waiting times and Poisson event counts are different random variables.
 
-<!-- END STAT312 CLASS17-19 DETAILS -->
-
-## Class 16 Update - October 31, 2026
-
-Added **one self-contained HTML quiz with 16 main problems**, based on the examples in `Class16_STAT312_FA26.pdf` and the interface in `class11_exponential_probabilities.html`. Existing content and links are retained.
-
-| Case | Population and information | Course method | Main problems |
-|---|---|---|---:|
-| A | Normal population; known population variance or standard deviation; both small and large samples | Exact Z interval using σ | 4 |
-| B | Discrete population PMF; n > 30 | Calculate population σ from the PMF, then use the CLT Z approximation | 4 |
-| C | Unknown population σ; supplied sample s; n > 30 | Large-sample Z approximation using s | 4 |
-| D | Normal population; unknown population σ; supplied sample s; n < 30 | Exact t interval using s, with df = n − 1 | 4 |
-
-### Problem Format and Coverage
-
-The problems follow the lecture examples: heights, air-filled tire weights, commute times, repair costs, and pin hardness, with additional engineering and science contexts. Confidence levels include 90%, 95%, 98%, and 99%. Two Case A problems provide **population variance**, so students must take its square root before calculating the standard error or using ZInterval. Small samples in Case A still use Z because the population is normal and σ is known.
-
-Each main problem has three linked steps:
-
-1. Select the correct interval method and justification (multiple choice).
-2. Calculate the lower and upper CI endpoints (two numerical short-answer fields).
-3. Interpret the interval for the population mean (multiple choice).
-
-Case B adds a numerical step before the interval calculation: derive the population standard deviation from the PMF. This gives **52 scored guided steps**: 16 method selections, 4 PMF standard deviations, 16 endpoint pairs, and 16 interpretations. An endpoint pair earns one point only when both endpoints are correct. Each complete worked solution identifies the random variable, distinguishes the observed sample mean from the population mean, gives the sampling-distribution justification, computes the critical value, standard error and margin of error, and interprets the final interval.
-
-**PMF construction:** The population PMF tables list values relative to an unknown location μ, for example μ − 2, μ − 1, μ, μ + 1, μ + 2. The stated probabilities have zero weighted deviation from μ. Students use σ² = Σ(x − μ)²P(X = x) and σ = sqrt(σ²). This supplies a known population variance while leaving the population mean unknown; a fully specified numerical population PMF would already determine its mean. These are population probabilities, not an observed frequency table.
-
-**Course convention:** n ≥ 30 is the lecture’s large-sample guideline. All Case B and C samples in this quiz have n > 30. Use x̄ ± z*σ/sqrt(n) in Case B and x̄ ± z*s/sqrt(n) in Case C. Both are explicitly labeled approximate intervals. In Case D, use x̄ ± t*s/sqrt(n) under the stated normal-population assumption. The interpretation refers to long-run coverage of the population mean, not the fraction of individual observations inside the interval or a post-data probability for the fixed mean.
-
-### TI-84 Calculator Instructions
-
-Every interval solution includes problem-specific **Stats** entries:
-
-- **ZInterval:** `STAT` → `TESTS` → `7: ZInterval` → `Stats`. Enter `σ`, `x̄`, `n`, and `C-Level`; select `Calculate` and press `ENTER`.
-- **Known variance:** take the square root to obtain σ first. The σ field takes a standard deviation, not a variance or standard error.
-- **Population PMF:** calculate σ from the PMF and retain its unrounded value. Do not treat the PMF probabilities as raw sample observations or sample frequencies in the interval menu.
-- **Large-sample unknown σ:** following this course’s approximation, enter the supplied sample standard deviation s in the ZInterval field labeled σ.
-- **TInterval:** `STAT` → `TESTS` → `8: TInterval` → `Stats`. Enter `x̄`, `Sx = s`, `n`, and `C-Level`; select `Calculate` and press `ENTER`. The calculator automatically uses df = n − 1. No critical value or degrees of freedom is entered on this screen.
-- Enter the confidence level as a decimal, for example `.95`; do not enter α or the z critical value. Read the full menu name if a menu layout differs.
-
-The student-facing label is **TI-84**, and the instructions use the standard text-based menus without CE-specific features. The official TI reference used to verify these menus is the [TI-84 Plus guidebook, Chapter 13, printed page 229 (PDF page 236)](https://education.ti.com/html/eguides/graphing/84Plus/PDFs/TI-84-Plus-guidebook_EN.pdf#page=236), which documents the basic monochrome model under its official TI-84 Plus name; a separate non-Plus hardware model was not assumed or verified.
-
-### Student Instructions and Quiz Behavior
-
-1. Problems and their linked steps appear in **fixed order**: A1–A4, B1–B4, C1–C4, D1–D4. Restart begins at A1 in the same order.
-2. Round the PMF population standard deviation to **four decimal places** and the CI endpoints to **two decimal places**. Keep full precision for all intermediate calculations, including critical values and square roots. Endpoint grading allows 0.0051 absolute error; SD grading allows 0.000051.
-3. Enter numbers without units, brackets, commas, or percent signs. Signed decimals, fractions, and scientific notation are accepted. Enter the lower endpoint before the upper endpoint.
-4. **Check Answer** permits one scored attempt per step. Blank, nonnumeric, or reversed endpoint input does not consume an attempt. **Show Solution** completes that step without awarding a point. **Next Step** and **Next Problem** keep the calculations in sequence.
-5. After the interpretation step, the complete worked solution for that main problem becomes available. A collapsible study guide summarizes the four methods.
-6. The score and progress bar track 52 guided steps across 16 main problems. Reloading resets progress. The HTML includes all styles, scripts and question data, works offline with JavaScript enabled, and sends no student responses to a server. Only the optional official-reference link requires internet access.
-
-### Class 16 Repository Placement
+### Files Added
 
 ```text
-Class16/
-  class16_confidence_intervals_population_mean.html
-README.md
+Class10/
+  class10_standard_normal_probabilities.html
+  class10_normal_probabilities.html
+  class10_standard_normal_quantiles.html
+  class10_normal_quantiles.html
+Class11/
+  class11_exponential_probabilities.html
+README_Class10_Class11_Updated.qmd
 ```
 
-Copy the `Class16` folder into the Quiz-Generator repository root and replace the root `README.md` with this version. Preserve the existing course folders. The new GitHub Pages link becomes active after the files are committed and the Pages deployment completes.
-
+The accompanying `README_Class10_Class11_Updated.qmd` extends the previous practice guide and includes the new section descriptions and launch links. Keep the `Class10` and `Class11` folder names exactly as shown when adding these files to the repository; the cross-section links use that structure.
